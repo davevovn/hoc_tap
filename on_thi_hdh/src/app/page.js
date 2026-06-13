@@ -21,7 +21,7 @@ function getQuizzes() {
         try {
           const data = JSON.parse(fileContent);
           return {
-            id: data.id || file.replace(".json", ""),
+            id: file.replace(".json", ""),
             title: data.title || "Đề thi không tên",
             description: data.description || "Không có mô tả.",
             questionCount: data.questions ? data.questions.length : 0,
