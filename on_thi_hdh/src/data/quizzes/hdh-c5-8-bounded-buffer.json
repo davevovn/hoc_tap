@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c5-8-bounded-buffer",
+  "title": "Hệ điều hành - Chương 5: Bài toán Bounded-Buffer (Producer-Consumer)",
+  "description": "Kiểm tra kiến thức về bài toán đồng bộ kinh điển Đệm giới hạn (Bounded-Buffer / Producer-Consumer), vai trò của các semaphore empty/full/mutex, và phân tích lỗi deadlock khi lập trình sai thứ tự khóa.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Bài toán Đệm giới hạn (Bounded-Buffer / Producer-Consumer) mô tả kịch bản nào sau đây?",
+      "type": "single",
+      "options": [
+        "Hai tiến trình cùng ghi vào một file văn bản cùng lúc.",
+        "Một nhóm tiến trình (Producers) tạo ra thông tin và đặt vào bộ đệm có kích thước giới hạn N, trong khi một nhóm khác (Consumers) lấy thông tin từ bộ đệm đó ra để xử lý.",
+        "Nhiều tiến trình cùng tranh giành kết nối Internet của hệ thống.",
+        "Hệ điều hành cấp phát bộ nhớ ảo cho các tiến trình con."
+      ],
+      "correct": [1],
+      "explanation": "Bounded-Buffer là bài toán kinh điển mô tả mối quan hệ giữa bên sản xuất dữ liệu (Producer) đưa dữ liệu vào khay đệm chứa tối đa N phần tử, và bên tiêu thụ dữ liệu (Consumer) lấy dữ liệu từ khay đệm đó ra để xử lý."
+    },
+    {
+      "id": 2,
+      "question": "Trong giải pháp sử dụng Semaphore cho bài toán Bounded-Buffer, ba Semaphore nào được sử dụng và giá trị khởi tạo của chúng là gì? (Bộ đệm có kích thước N)",
+      "type": "single",
+      "options": [
+        "mutex = 0, empty = 1, full = N",
+        "mutex = 1, empty = N, full = 0",
+        "mutex = 1, empty = 0, full = N",
+        "mutex = N, empty = 1, full = 0"
+      ],
+      "correct": [1],
+      "explanation": "Giải pháp chuẩn sử dụng 3 semaphore:\n1. `mutex` (Binary Semaphore) khởi tạo bằng 1 để bảo vệ miền găng truy cập đệm.\n2. `empty` (Counting Semaphore) khởi tạo bằng N để đếm số ô trống còn lại.\n3. `full` (Counting Semaphore) khởi tạo bằng 0 để đếm số ô đã chứa dữ liệu."
+    },
+    {
+      "id": 3,
+      "question": "Đoạn mã giả chuẩn của tiến trình Nhà sản xuất (Producer) sử dụng Semaphore là gì?",
+      "type": "single",
+      "options": [
+        "wait(mutex); wait(empty); // thêm vào buffer; signal(mutex); signal(full);",
+        "wait(empty); wait(mutex); // thêm vào buffer; signal(mutex); signal(full);",
+        "wait(full); wait(mutex); // thêm vào buffer; signal(mutex); signal(empty);",
+        "wait(empty); wait(mutex); // thêm vào buffer; signal(full); signal(mutex);"
+      ],
+      "correct": [1],
+      "explanation": "Producer trước tiên phải chờ có ô trống bằng `wait(empty)`. Khi có ô trống, nó xin khóa miền găng bằng `wait(mutex)`. Sau khi bỏ dữ liệu vào đệm, nó nhả miền găng `signal(mutex)` và thông báo có thêm 1 ô đầy cho Consumer bằng `signal(full)`."
+    },
+    {
+      "id": 4,
+      "question": "Đoạn mã giả chuẩn của tiến trình Người tiêu dùng (Consumer) sử dụng Semaphore là gì?",
+      "type": "single",
+      "options": [
+        "wait(mutex); wait(full); // lấy dữ liệu; signal(mutex); signal(empty);",
+        "wait(full); wait(mutex); // lấy dữ liệu; signal(mutex); signal(empty);",
+        "wait(empty); wait(mutex); // lấy dữ liệu; signal(mutex); signal(full);",
+        "wait(full); wait(mutex); // lấy dữ liệu; signal(empty); signal(mutex);"
+      ],
+      "correct": [1],
+      "explanation": "Consumer trước tiên phải chờ có phần tử dữ liệu bằng `wait(full)`. Khi có dữ liệu, nó xin khóa miền găng bằng `wait(mutex)`. Sau khi lấy dữ liệu ra khỏi đệm, nó nhả miền găng `signal(mutex)` và thông báo cho Producer là có thêm 1 ô trống mới bằng `signal(empty)`."
+    },
+    {
+      "id": 5,
+      "question": "Điều gì xảy ra nếu trong mã nguồn của Producer, lập trình viên đảo thứ tự hai dòng lệnh wait thành:\n```c\nwait(mutex);\nwait(empty);\n```",
+      "type": "single",
+      "options": [
+        "Chương trình chạy bình thường nhưng hiệu năng bị giảm đi một chút.",
+        "Deadlock (Bế tắc) xảy ra khi bộ đệm bị đầy (full).",
+        "Quy tắc loại trừ tương hỗ (Mutual Exclusion) bị vi phạm.",
+        "Bộ đệm sẽ bị ghi đè và mất dữ liệu."
+      ],
+      "correct": [1],
+      "explanation": "Nếu đảo thứ tự, khi bộ đệm đầy (`empty = 0`), Producer chạy sẽ gọi `wait(mutex)` thành công và giữ khóa. Tiếp tục nó gọi `wait(empty)` và bị chặn vì đệm không còn chỗ trống. Lúc này, Consumer chạy muốn lấy dữ liệu để giải phóng chỗ trống sẽ gọi `wait(full)` thành công nhưng bị kẹt cứng ở `wait(mutex)` (do Producer đang giữ). Hai bên khóa chặt nhau, dẫn đến Deadlock."
+    },
+    {
+      "id": 6,
+      "question": "Điều gì xảy ra nếu trong mã nguồn của Consumer, lập trình viên đảo thứ tự hai dòng lệnh wait thành:\n```c\nwait(mutex);\nwait(full);\n```",
+      "type": "single",
+      "options": [
+        "Chương trình chạy bình thường nhưng tốn bộ nhớ hơn.",
+        "Deadlock (Bế tắc) xảy ra khi bộ đệm trống rỗng (empty).",
+        "Quy tắc loại trừ tương hỗ bị vi phạm.",
+        "Tạo ra lỗi Race Condition trên biến đếm."
+      ],
+      "correct": [1],
+      "explanation": "Nếu đảo thứ tự, khi bộ đệm trống (`full = 0`), Consumer chạy gọi `wait(mutex)` thành công và giữ khóa. Tiếp tục nó gọi `wait(full)` và bị chặn vì không có dữ liệu. Producer chạy muốn sản xuất dữ liệu để nạp vào đệm sẽ bị kẹt ngay ở dòng `wait(mutex)` đầu tiên. Cả hai cùng kẹt vô hạn (Deadlock)."
+    },
+    {
+      "id": 7,
+      "question": "Tại sao việc hoán đổi thứ tự các lệnh 'signal(mutex)' và 'signal(full)' ở cuối đoạn mã của Producer KHÔNG gây ra Deadlock?",
+      "type": "single",
+      "options": [
+        "Vì thao tác signal() không bao giờ chặn (block) tiến trình gọi nó; nó chỉ tăng giá trị semaphore và đánh thức tiến trình khác.",
+        "Vì signal(mutex) tự động hủy bỏ tất cả các khóa khác.",
+        "Vì mutex và full có độ ưu tiên ngang nhau.",
+        "Thực tế nó vẫn gây ra deadlock."
+      ],
+      "correct": [0],
+      "explanation": "Thao tác `signal()` không mang tính chất chặn. Dù Producer gọi `signal(mutex)` trước hay `signal(full)` trước, giá trị các semaphore đều được tăng lên hữu hạn và không tiến trình nào bị kẹt lại tại các dòng này. Tuy nhiên, lập trình tốt nên nhả `mutex` sớm nhất có thể để giải phóng miền găng cho các tiến trình khác."
+    },
+    {
+      "id": 8,
+      "question": "Giả sử kích thước bộ đệm N = 8. Tại mọi thời điểm hoạt động bình thường, biểu thức nào sau đây luôn ĐÚNG về mối quan hệ giữa giá trị của semaphore 'empty' và 'full'?",
+      "type": "single",
+      "options": [
+        "empty - full = 8",
+        "empty + full = 8",
+        "empty * full = 8",
+        "empty + full <= 8"
+      ],
+      "correct": [1],
+      "explanation": "Biến `empty` đếm số ô trống, `full` đếm số ô chứa dữ liệu. Tổng số ô trống và số ô chứa dữ liệu trong bộ đệm luôn bằng kích thước vật lý tối đa của bộ đệm, tức là `empty + full = N = 8` (ở đây ta xét giá trị không âm khi không có tiến trình bị chặn)."
+    },
+    {
+      "id": 9,
+      "question": "Vai trò cụ thể của Semaphore 'empty' trong bài toán là gì?",
+      "type": "single",
+      "options": [
+        "Đảm bảo loại trừ tương hỗ khi ghi vào bộ đệm.",
+        "Ngăn chặn Producer ghi thêm dữ liệu khi bộ đệm đã đầy (hoãn Producer khi empty = 0).",
+        "Ngăn chặn Consumer đọc dữ liệu khi bộ đệm đang trống.",
+        "Đếm tổng số tiến trình Consumer đang chờ."
+      ],
+      "correct": [1],
+      "explanation": "Semaphore `empty` đại diện cho tài nguyên ô nhớ trống dành cho Producer. Khi bộ đệm đầy, `empty` về bằng 0. Nếu Producer cố tình sản xuất tiếp, lệnh `wait(empty)` sẽ chặn nó lại để chờ Consumer ăn bớt dữ liệu làm trống ô nhớ."
+    },
+    {
+      "id": 10,
+      "question": "Vai trò cụ thể của Semaphore 'full' trong bài toán là gì?",
+      "type": "single",
+      "options": [
+        "Bảo vệ miền găng của bộ đệm.",
+        "Ngăn chặn Consumer lấy dữ liệu khi bộ đệm đang trống rỗng (hoãn Consumer khi full = 0).",
+        "Ngăn chặn Producer ghi dữ liệu khi bộ đệm đã đầy.",
+        "Xóa sạch bộ đệm khi hệ thống bị quá tải."
+      ],
+      "correct": [1],
+      "explanation": "Semaphore `full` đại diện cho tài nguyên ô nhớ chứa dữ liệu dành cho Consumer. Khi bộ đệm rỗng, `full` về bằng 0. Nếu Consumer cố lấy dữ liệu, `wait(full)` sẽ chặn nó lại để chờ Producer sản xuất thêm dữ liệu bỏ vào."
+    },
+    {
+      "id": 11,
+      "question": "Vai trò của Semaphore 'mutex' trong bài toán Bounded-Buffer là gì?",
+      "type": "single",
+      "options": [
+        "Đồng bộ hóa tốc độ chạy của Producer và Consumer.",
+        "Đảm bảo loại trừ tương hỗ (Mutual Exclusion) - chỉ cho phép duy nhất một tiến trình (dù là Producer hay Consumer) được sửa đổi cấu trúc dữ liệu của bộ đệm tại một thời điểm.",
+        "Đếm số lượng ô nhớ trống của bộ đệm.",
+        "Đánh thức tiến trình khi bộ đệm bị tràn."
+      ],
+      "correct": [1],
+      "explanation": "Khi đưa phần tử vào hoặc lấy phần tử ra khỏi bộ đệm, các con trỏ ghi (`in`), đọc (`out`) và mảng bộ đệm bị thay đổi. Nếu nhiều Producer hoặc Consumer cùng thao tác đồng thời sẽ gây Race Condition. Khóa `mutex` đảm bảo tính toàn vẹn của cấu trúc bộ đệm."
+    },
+    {
+      "id": 12,
+      "question": "Trong trường hợp nào chúng ta có thể KHÔNG cần sử dụng Semaphore 'mutex' mà bài toán vẫn chạy đúng?",
+      "type": "single",
+      "options": [
+        "Khi hệ thống có nhiều nhân xử lý.",
+        "Khi bộ đệm chỉ có kích thước N = 1, và chỉ có duy nhất 1 tiến trình Producer chạy song song với duy nhất 1 tiến trình Consumer.",
+        "Khi sử dụng ngôn ngữ lập trình Python để viết ứng dụng.",
+        "Không bao giờ được bỏ mutex trong bất kỳ kịch bản nào."
+      ],
+      "correct": [1],
+      "explanation": "Nếu chỉ có đúng 1 Producer và 1 Consumer, và kích thước đệm N = 1 (hoặc đệm thiết kế dạng vòng quay có cơ chế chỉ số in/out tách biệt hoàn toàn không chồng chéo), việc đồng bộ luân phiên đã được kiểm soát triệt để bởi `empty` và `full`. Tuy nhiên, với N > 1 hoặc khi có từ 2 Producer/Consumer trở lên, bắt buộc phải có `mutex` để tránh xung đột ghi/đọc đồng thời."
+    },
+    {
+      "id": 13,
+      "question": "Giả sử bộ đệm có kích thước N = 5. Ban đầu bộ đệm rỗng. Có 2 luồng Producer và 1 luồng Consumer hoạt động. Chuỗi sự kiện diễn ra như sau:\n1. Producer 1 sản xuất 1 sản phẩm.\n2. Producer 2 sản xuất 1 sản phẩm.\n3. Consumer tiêu thụ 1 sản phẩm.\nHỏi giá trị của semaphore 'full' sau 3 bước trên là bao nhiêu?",
+      "type": "single",
+      "options": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "correct": [1],
+      "explanation": "Phân tích:\n- Khởi đầu: full = 0, empty = 5.\n1. Producer 1 sản xuất -> full tăng thành 1.\n2. Producer 2 sản xuất -> full tăng thành 2.\n3. Consumer tiêu thụ -> full giảm đi 1 còn 1.\nVậy giá trị cuối cùng của `full` là 1."
+    },
+    {
+      "id": 14,
+      "question": "Tại sao giải pháp Bounded-Buffer sử dụng Semaphore lại hoạt động chính xác cho cả kịch bản có nhiều tiến trình Nhà sản xuất (Multiple Producers) và nhiều tiến trình Người tiêu dùng (Multiple Consumers)?",
+      "type": "single",
+      "options": [
+        "Vì Semaphore đếm tự động phân chia CPU đều cho các luồng.",
+        "Vì khóa 'mutex' đảm bảo các thao tác thêm/xóa phần tử đệm luôn chạy tuần tự loại trừ tương hỗ, trong khi 'empty' và 'full' quản lý số lượng tài nguyên chính xác bất kể số lượng luồng tranh chấp.",
+        "Vì hệ điều hành tự động nhân bản bộ đệm cho mỗi luồng.",
+        "Vì các tiến trình tự liên lạc với nhau qua mạng để điều phối."
+      ],
+      "correct": [1],
+      "explanation": "Khóa `mutex = 1` chặn đứng mọi truy cập đồng thời của tất cả các Producers và Consumers vào khay đệm (đảm bảo tuần tự hóa thao tác trên vùng nhớ). Các cờ hiệu `empty` và `full` kiểm soát số lượng ô khả dụng một cách nguyên tử, giúp giải pháp mở rộng hoàn hảo cho mọi số lượng luồng."
+    },
+    {
+      "id": 15,
+      "question": "Khi thiết kế giải pháp Bounded-Buffer bằng Monitor (ví dụ lớp BoundedBuffer trong Java), chúng ta sử dụng những công cụ nào để đồng bộ điều kiện thay thế cho Semaphore?",
+      "type": "single",
+      "options": [
+        "Hai biến điều kiện (Condition variables) thường đặt tên là 'notFull' và 'notEmpty'.",
+        "Các biến khóa spinlock phần cứng.",
+        "Mảng các biến volatile.",
+        "Chỉ thị CompareAndSwap."
+      ],
+      "correct": [0],
+      "explanation": "Trong giải pháp Monitor, ta định nghĩa 2 biến điều kiện: `notFull` (luồng Producer sẽ gọi wait nếu đệm đầy) và `notEmpty` (luồng Consumer sẽ gọi wait nếu đệm trống). Thao tác Loại trừ tương hỗ đã được Monitor tự động đảm bảo nên không cần biến mutex."
+    },
+    {
+      "id": 16,
+      "question": "Giả sử bộ đệm chứa dữ liệu dưới dạng hàng đợi vòng tròn (circular queue) với mảng `buffer[N]`, con trỏ ghi `in` và đọc `out`. Lệnh gán nào sau đây mô tả đúng cách thêm một phần tử `next_produced` của Producer vào miền găng?",
+      "type": "single",
+      "options": [
+        "buffer[in] = next_produced; in = in + 1;",
+        "buffer[in] = next_produced; in = (in + 1) % N;",
+        "in = (in + 1) % N; buffer[in] = next_produced;",
+        "buffer[out] = next_produced; out = (out + 1) % N;"
+      ],
+      "correct": [1],
+      "explanation": "Producer thêm sản phẩm vào vị trí `in` hiện tại, sau đó cập nhật con trỏ ghi vòng tròn bằng công thức `in = (in + 1) % N`. `out` là con trỏ dành cho Consumer lấy dữ liệu."
+    },
+    {
+      "id": 17,
+      "question": "Giả sử bộ đệm trống rỗng. Có 3 tiến trình Consumer đồng thời chạy trước Producer. Chúng sẽ lần lượt gọi lệnh và rơi vào trạng thái nào?",
+      "type": "single",
+      "options": [
+        "Chúng chạy bình thường và trả về giá trị null.",
+        "Cả 3 tiến trình đều vượt qua wait(full) và bị chặn ở wait(mutex).",
+        "Cả 3 tiến trình đều bị chặn tại dòng lệnh wait(full) và nằm trong hàng đợi chờ của semaphore full.",
+        "Hệ thống sẽ bị sập do lỗi chia cho 0."
+      ],
+      "correct": [2],
+      "explanation": "Vì bộ đệm rỗng, `full = 0`. Lần lượt 3 Consumer chạy sẽ gọi `wait(full)` làm giá trị `full` giảm xuống -1, -2, rồi -3. Cả 3 tiến trình đều bị chặn ngay tại dòng lệnh đầu tiên này và xếp hàng ngủ trong hàng đợi chờ của semaphore `full`. Chúng chưa hề đụng tới dòng `wait(mutex)`."
+    },
+    {
+      "id": 18,
+      "question": "Giả sử bộ đệm đầy (empty = 0). Có 2 tiến trình Producer chạy. Chúng sẽ bị chặn ở đâu?",
+      "type": "single",
+      "options": [
+        "Bị chặn tại dòng lệnh wait(mutex).",
+        "Bị chặn tại dòng lệnh wait(empty) và nằm trong hàng đợi chờ của semaphore empty.",
+        "Chúng sẽ ghi đè dữ liệu và làm hỏng sản phẩm cũ.",
+        "Chúng tự động chuyển sang tiêu thụ sản phẩm."
+      ],
+      "correct": [1],
+      "explanation": "Vì bộ đệm đầy, `empty = 0`. Hai Producer gọi `wait(empty)` sẽ làm giá trị semaphore này giảm xuống -1 rồi -2, và cả hai luồng đều bị chặn lại tại đây, xếp hàng chờ đợi trong danh sách của semaphore `empty` cho đến khi Consumer ăn bớt sản phẩm và gọi `signal(empty)`."
+    },
+    {
+      "id": 19,
+      "question": "Nếu ta đưa lệnh tăng chỉ số đọc dữ liệu `out = (out + 1) % N` của Consumer ra khỏi vùng bảo vệ của 'mutex' (đặt sau `signal(mutex)`), chuyện gì nguy hiểm sẽ xảy ra nếu có nhiều luồng Consumer chạy đồng thời?",
+      "type": "single",
+      "options": [
+        "Chương trình chạy bình thường không lỗi.",
+        "Xảy ra lỗi Race Condition trên biến 'out', dẫn đến việc các Consumer có thể đọc trùng một ô dữ liệu hoặc đọc vượt qua giới hạn chưa sản xuất.",
+        "Producer sẽ không thể sản xuất được nữa.",
+        "Đệm tự động tăng kích thước."
+      ],
+      "correct": [1],
+      "explanation": "Nếu `out` nằm ngoài vùng bảo vệ của `mutex`, hai luồng Consumer chạy song song có thể cùng đọc một giá trị `out`, dẫn đến cả hai cùng lấy chung một phần tử dữ liệu ở `buffer[out]` (đọc trùng), và sau đó cùng tăng `out` không đồng bộ gây hỗn loạn chỉ số đọc dữ liệu."
+    },
+    {
+      "id": 20,
+      "question": "Trong giải pháp Monitor cho bài toán Bounded-Buffer, khi một Producer thêm dữ liệu vào đệm thành công, nó phải gọi lệnh nào để đánh thức các Consumer đang chờ đợi dữ liệu?",
+      "type": "single",
+      "options": [
+        "notEmpty.signal() (hoặc notify() trong Java)",
+        "notFull.signal()",
+        "mutex.release()",
+        "notEmpty.wait()"
+      ],
+      "correct": [0],
+      "explanation": "Consumer bị ngủ ở biến điều kiện `notEmpty` khi đệm trống. Khi Producer sản xuất thêm 1 sản phẩm vào đệm (đệm không còn trống nữa), nó phải phát tín hiệu `notEmpty.signal()` (hoặc `notify()`) để báo cho Consumer biết có dữ liệu mới và tỉnh dậy để tiêu thụ."
+    }
+  ]
+}

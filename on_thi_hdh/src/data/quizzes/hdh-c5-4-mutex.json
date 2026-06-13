@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c5-4-mutex",
+  "title": "Hệ điều hành - Chương 5: Khóa Mutex (Mutex Locks)",
+  "description": "Kiểm tra kiến thức về Khóa loại trừ tương hỗ Mutex (Mutex Locks), cơ chế acquire/release, Spinlock, cơ chế sở hữu khóa (Ownership) và so sánh giữa Spinlock với Sleeping Mutex.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Thuật ngữ 'Mutex' là từ viết tắt của cụm từ nào?",
+      "type": "single",
+      "options": [
+        "Multiprocessing Execution",
+        "Mutual Exclusion",
+        "Multiple Text Files",
+        "Multi-tasking Extension"
+      ],
+      "correct": [1],
+      "explanation": "Mutex là viết tắt của 'Mutual Exclusion' (Loại trừ tương hỗ). Đây là một công cụ phần mềm dùng để bảo vệ các miền găng và ngăn chặn tình trạng Race Condition."
+    },
+    {
+      "id": 2,
+      "question": "Hai hàm cơ bản được sử dụng để thao tác với khóa Mutex là gì?",
+      "type": "single",
+      "options": [
+        "lock() và unlock() (hoặc acquire() và release())",
+        "wait() và signal()",
+        "open() và close()",
+        "start() và stop()"
+      ],
+      "correct": [0],
+      "explanation": "Khóa Mutex được thao tác bằng hai hàm cơ bản: `acquire()` (để lấy khóa trước khi vào miền găng) và `release()` (để giải phóng khóa sau khi ra khỏi miền găng)."
+    },
+    {
+      "id": 3,
+      "question": "Hành vi logic của hàm 'acquire()' trong khóa Mutex diễn ra như thế nào?",
+      "type": "single",
+      "options": [
+        "Nó giải phóng khóa ngay lập tức và đưa luồng vào hàng đợi ngủ.",
+        "Nó liên tục kiểm tra nếu khóa bận; khi khóa trống (available = true), nó chuyển khóa thành bận (available = false) và đi tiếp.",
+        "Nó tăng giá trị của khóa lên 1 đơn vị.",
+        "Nó kiểm tra xem có tiến trình nào khác đang chạy không và tắt CPU đi."
+      ],
+      "correct": [1],
+      "explanation": "Về mặt logic, hàm `acquire()` sẽ kiểm tra biến trạng thái `available`. Nếu `available` bằng `false` (khóa đang bị chiếm), nó sẽ chờ. Khi khóa rảnh (`available` bằng `true`), nó đặt `available = false` để chiếm giữ khóa."
+    },
+    {
+      "id": 4,
+      "question": "Đặc điểm quan trọng nhất phân biệt Khóa Mutex với Semaphore là gì?",
+      "type": "single",
+      "options": [
+        "Khóa Mutex chỉ có thể được viết bằng ngôn ngữ Java.",
+        "Khóa Mutex có khái niệm sở hữu khóa (Ownership) - chỉ luồng nào đã khóa Mutex đó mới được phép mở khóa nó.",
+        "Khóa Mutex luôn chạy nhanh hơn Semaphore gấp 100 lần.",
+        "Khóa Mutex không cần phần cứng hỗ trợ."
+      ],
+      "correct": [1],
+      "explanation": "Đặc tính cốt lõi của Mutex là Khái niệm Sở hữu (Ownership). Chỉ luồng (thread) đã gọi `acquire()` thành công trên Mutex mới được phép gọi `release()` để mở khóa nó. Ngược lại, Semaphore không có tính sở hữu; bất kỳ luồng nào cũng có thể gọi `signal()` trên Semaphore."
+    },
+    {
+      "id": 5,
+      "question": "Spinlock là gì?",
+      "type": "single",
+      "options": [
+        "Là khóa Mutex sử dụng cơ chế bận đợi (Busy Waiting) - luồng liên tục chạy vòng lặp kiểm tra trạng thái khóa cho đến khi lấy được khóa.",
+        "Là loại khóa tự động xoay chuyển các luồng qua các CPU khác nhau.",
+        "Là khóa chỉ dùng cho ổ đĩa quay (HDD).",
+        "Là khóa tự động bị hủy sau 1 chu kỳ xung nhịp."
+      ],
+      "correct": [0],
+      "explanation": "Spinlock (Khóa xoay) là loại Mutex lock yêu cầu tiến trình phải liên tục chạy vòng lặp kiểm tra điều kiện lấy khóa (vòng lặp bận đợi). Tiến trình 'xoay' (spin) trên CPU để chờ khóa trống."
+    },
+    {
+      "id": 6,
+      "question": "Trong kịch bản nào sau đây, việc sử dụng Spinlock là HỢP LÝ và HIỆU QUẢ nhất?",
+      "type": "single",
+      "options": [
+        "Khi luồng cần chờ một thao tác đọc tập tin lớn từ đĩa cứng (I/O).",
+        "Khi thời gian luồng cần thực thi trong miền găng cực kỳ ngắn và hệ thống có nhiều nhân xử lý (Multiprocessor).",
+        "Khi hệ thống chỉ có một CPU duy nhất (Single-core).",
+        "Khi cần đồng bộ hóa giữa các máy tính khác nhau qua mạng."
+      ],
+      "correct": [1],
+      "explanation": "Context switch (chuyển ngữ cảnh luồng) tiêu tốn khá nhiều thời gian của CPU. Nếu thời gian chờ khóa ngắn hơn thời gian thực hiện chuyển ngữ cảnh, việc sử dụng Spinlock sẽ hiệu quả hơn vì luồng không phải đi ngủ rồi thức dậy, giúp tránh được chi phí chuyển đổi ngữ cảnh."
+    },
+    {
+      "id": 7,
+      "question": "Tại sao Spinlock lại CỰC KỲ KHÔNG HIỆU QUẢ trên hệ thống đơn nhân (Single-core)?",
+      "type": "single",
+      "options": [
+        "Vì hệ thống đơn nhân không thể chạy được vòng lặp while.",
+        "Vì luồng đang chờ sẽ chiếm dụng 100% CPU để chạy vòng lặp bận đợi, ngăn cản luồng đang giữ khóa được chạy để giải phóng khóa đó.",
+        "Vì phần cứng đơn nhân không hỗ trợ chỉ thị nguyên tử.",
+        "Vì Spinlock yêu cầu tối thiểu phải có 2 CPU chạy song song."
+      ],
+      "correct": [1],
+      "explanation": "Trên hệ thống đơn nhân, nếu luồng A giữ khóa bị ngắt và luồng B chạy cố lấy khóa, luồng B sẽ chạy vòng lặp spinlock liên tục cho đến hết lát cắt thời gian (time quantum) của nó mà không làm được gì có ích, bởi vì luồng A không được cấp CPU thì làm sao giải phóng được khóa. Điều này gây lãng phí năng lực CPU nghiêm trọng."
+    },
+    {
+      "id": 8,
+      "question": "Khái niệm 'Mutex ngủ' (Sleeping Mutex) hoạt động khác Spinlock như thế nào khi khóa đang bị chiếm giữ?",
+      "type": "single",
+      "options": [
+        "Sleeping Mutex sẽ tắt nguồn CPU để tiết kiệm điện.",
+        "Sleeping Mutex sẽ đưa luồng yêu cầu vào hàng đợi bị chặn (Blocked Queue) và chuyển sang trạng thái ngủ (Sleep), nhường CPU cho tiến trình khác; khi khóa giải phóng, luồng mới được đánh thức.",
+        "Sleeping Mutex sẽ tự động hủy bỏ luồng đang yêu cầu khóa.",
+        "Sleeping Mutex sẽ tăng độ ưu tiên của luồng đang chờ lên mức cao nhất."
+      ],
+      "correct": [1],
+      "explanation": "Với Sleeping Mutex, thay vì bận đợi làm tốn CPU, luồng không lấy được khóa sẽ tự nguyện nhường CPU, đi vào hàng đợi chặn (block) và ngủ. Khi luồng giữ khóa gọi giải phóng, nhân hệ điều hành sẽ đánh thức (wakeup) luồng đang ngủ dậy để lấy khóa."
+    },
+    {
+      "id": 9,
+      "question": "Nhược điểm lớn nhất của 'Mutex ngủ' (Sleeping Mutex) so với Spinlock là gì?",
+      "type": "single",
+      "options": [
+        "Nó tiêu tốn nhiều điện năng hơn spinlock.",
+        "Nó tốn chi phí chuyển ngữ cảnh (Context Switch overhead) khi đưa luồng đi ngủ và đánh thức luồng dậy.",
+        "Nó không đảm bảo được Loại trừ tương hỗ.",
+        "Nó chỉ hoạt động ở User Mode."
+      ],
+      "correct": [1],
+      "explanation": "Chi phí chuyển ngữ cảnh bao gồm lưu trữ trạng thái thanh ghi, đổi bảng trang bộ nhớ, cập nhật cache CPU. Nếu thời gian chờ khóa quá ngắn, chi phí này sẽ lớn hơn nhiều so với việc để luồng chạy vòng lặp bận đợi trong vài chu kỳ máy."
+    },
+    {
+      "id": 10,
+      "question": "Thư viện luồng chuẩn POSIX (pthread) trong C cung cấp cấu trúc dữ liệu nào để biểu diễn khóa Mutex?",
+      "type": "single",
+      "options": [
+        "pthread_lock_t",
+        "pthread_mutex_t",
+        "mutex_lock_t",
+        "pthread_cond_t"
+      ],
+      "correct": [1],
+      "explanation": "Trong thư viện Pthreads (POSIX threads), khóa Mutex được định nghĩa bằng kiểu dữ liệu `pthread_mutex_t`."
+    },
+    {
+      "id": 11,
+      "question": "Để phòng ngừa lỗi quên giải phóng khóa Mutex khi xảy ra ngoại lệ (Exception) trong Java/C#, chúng ta nên đặt lệnh giải phóng khóa ở khối lệnh nào?",
+      "type": "single",
+      "options": [
+        "Khối catch",
+        "Khối finally",
+        "Khối try",
+        "Đặt ở bất kỳ đâu trong hàm main"
+      ],
+      "correct": [1],
+      "explanation": "Khối `finally` luôn được đảm bảo thực thi dù chương trình có chạy bình thường hay xảy ra ngoại lệ. Đặt giải phóng khóa tại đây đảm bảo tài nguyên dùng chung luôn được mở khóa, tránh treo hệ thống."
+    },
+    {
+      "id": 12,
+      "question": "Khái niệm 'Recursive Mutex' (hay Reentrant Lock) là gì?",
+      "type": "single",
+      "options": [
+        "Là khóa tự động gọi lại chính nó cho đến khi bộ nhớ bị tràn.",
+        "Là loại khóa Mutex cho phép luồng đang giữ khóa có thể yêu cầu khóa đó nhiều lần nữa mà không bị tự deadlock chính mình.",
+        "Là khóa chỉ sử dụng trong các hàm đệ quy của thuật toán tìm kiếm.",
+        "Là khóa có thể được giải phóng bởi bất kỳ luồng nào khác."
+      ],
+      "correct": [1],
+      "explanation": "Một Mutex thông thường nếu bị một luồng gọi khóa lần thứ 2 khi chính luồng đó chưa mở khóa lần 1 sẽ gây tự khóa (self-deadlock). Recursive Mutex giải quyết vấn đề này bằng cách ghi nhận luồng sở hữu và số lần khóa (`lock count`). Khi luồng gọi mở khóa đủ số lần tương ứng, khóa mới thực sự được giải phóng."
+    },
+    {
+      "id": 13,
+      "question": "Hiện tượng 'Tranh chấp khóa' (Lock Contention) xảy ra khi nào?",
+      "type": "single",
+      "options": [
+        "Khi một luồng mở khóa Mutex quá nhiều lần.",
+        "Khi nhiều luồng cùng cố gắng chiếm đoạt một khóa Mutex tại một thời điểm, dẫn đến phần lớn các luồng bị chặn hoặc phải xoay chờ.",
+        "Khi hệ điều hành không thể cấp phát bộ nhớ cho khóa Mutex.",
+        "Khi có sự xung đột giữa khóa Mutex của phần mềm và phần cứng."
+      ],
+      "correct": [1],
+      "explanation": "Tranh chấp khóa (Lock Contention) là một điểm nghẽn hiệu năng. Khi nhiều luồng cùng tranh nhau một khóa, hầu hết sẽ phải đi ngủ hoặc bận đợi, làm giảm tính song song thực sự của chương trình đa luồng."
+    },
+    {
+      "id": 14,
+      "question": "Trong thư viện Pthreads, hàm nào được dùng để kiểm tra thử xem khóa Mutex có rảnh không mà KHÔNG bị chặn (non-blocking) nếu khóa đang bận?",
+      "type": "single",
+      "options": [
+        "pthread_mutex_lock()",
+        "pthread_mutex_trylock()",
+        "pthread_mutex_test()",
+        "pthread_mutex_unlock()"
+      ],
+      "correct": [1],
+      "explanation": "Hàm `pthread_mutex_trylock()` cố gắng chiếm khóa. Nếu khóa rảnh, nó lấy khóa và trả về 0. Nếu khóa đang bận, nó trả về mã lỗi `EBUSY` ngay lập tức thay vì đưa luồng vào trạng thái chặn (ngủ) như hàm `pthread_mutex_lock()`."
+    },
+    {
+      "id": 15,
+      "question": "Điều gì xảy ra nếu tiến trình A cố tình gọi hàm giải phóng một Mutex thường (Standard Mutex) mà tiến trình B đang nắm giữ (sở hữu)?",
+      "type": "single",
+      "options": [
+        "Khóa lập tức được mở thành công mà không có cảnh báo nào.",
+        "Hệ điều hành sẽ trả về lỗi (ví dụ: EPERM) hoặc gây lỗi không xác định vì vi phạm quyền sở hữu khóa.",
+        "Hệ thống sẽ chuyển ngữ cảnh của tiến trình A sang tiến trình B.",
+        "Tiến trình B sẽ bị ép buộc kết thúc ngay lập tức."
+      ],
+      "correct": [1],
+      "explanation": "Với các thư viện chuẩn như Pthreads, việc gọi unlock một Mutex mà luồng hiện tại không sở hữu sẽ trả về lỗi hoặc sinh ra hành vi bất định (undefined behavior). Mutex bắt buộc tuân thủ nguyên tắc: Luồng nào khóa thì luồng đó phải mở."
+    },
+    {
+      "id": 16,
+      "question": "Kỹ thuật tối ưu hóa khóa 'Khóa thô' (Coarse-grained locking) so với 'Khóa mịn' (Fine-grained locking) như thế nào?",
+      "type": "single",
+      "options": [
+        "Khóa thô sử dụng một khóa duy nhất cho toàn bộ cấu trúc dữ liệu lớn; khóa mịn sử dụng nhiều khóa riêng lẻ cho từng phần nhỏ của cấu trúc dữ liệu.",
+        "Khóa mịn dễ lập trình và ít bị lỗi deadlock hơn khóa thô.",
+        "Khóa thô luôn mang lại hiệu năng song song cao hơn khóa mịn.",
+        "Không có sự khác biệt về số lượng khóa sử dụng."
+      ],
+      "correct": [0],
+      "explanation": "Coarse-grained locking (khóa thô) dùng 1 khóa cho toàn bộ đối tượng (ví dụ: khóa cả Linked List), dễ viết nhưng hiệu năng kém vì các luồng tranh chấp nhau cao. Fine-grained locking (khóa mịn) dùng nhiều khóa (ví dụ: khóa từng node của Linked List), giúp tăng hiệu năng đa luồng nhưng code phức tạp và rất dễ dẫn đến deadlock."
+    },
+    {
+      "id": 17,
+      "question": "Trong ngôn ngữ Java, từ khóa nào cung cấp cơ chế khóa loại trừ tương hỗ tích hợp sẵn cho các phương thức hoặc khối lệnh?",
+      "type": "single",
+      "options": [
+        "volatile",
+        "synchronized",
+        "transient",
+        "serialize"
+      ],
+      "correct": [1],
+      "explanation": "Từ khóa `synchronized` trong Java dùng để đánh dấu một phương thức hoặc một khối lệnh. Khi một luồng thực thi khối lệnh này, nó sẽ tự động chiếm giữ khóa màn hình (monitor lock) của đối tượng đó, đảm bảo loại trừ tương hỗ."
+    },
+    {
+      "id": 18,
+      "question": "Một khóa Mutex được coi là bị 'treo' (Deadlocked) giữa hai luồng khi nào?",
+      "type": "single",
+      "options": [
+        "Khi cả hai luồng cùng cố gắng mở khóa cùng một Mutex.",
+        "Khi luồng 1 đang giữ Mutex A và chờ Mutex B, trong khi luồng 2 đang giữ Mutex B và chờ Mutex A.",
+        "Khi khóa Mutex bị xóa khỏi bộ nhớ bởi bộ dọn rác (Garbage Collector).",
+        "Khi luồng giữ khóa bị giảm độ ưu tiên xuống mức thấp nhất."
+      ],
+      "correct": [1],
+      "explanation": "Đây là kịch bản Deadlock kinh điển. Hai luồng giữ tài nguyên của nhau và chờ đợi tài nguyên đối phương giải phóng, dẫn đến cả hai bị kẹt cứng mãi mãi."
+    },
+    {
+      "id": 19,
+      "question": "Đặc điểm nào sau đây là ĐÚNG đối với thiết bị khóa Mutex hoạt động trong nhân (Kernel-level Mutex)?",
+      "type": "single",
+      "options": [
+        "Nó không thể dùng để đồng bộ các luồng ở không gian người dùng (User space).",
+        "Khi luồng bị chặn, nhân sẽ lập lịch chuyển sang chạy luồng khác, giúp tối ưu hóa tài nguyên CPU.",
+        "Nó hoàn toàn không tốn bất kỳ chu kỳ CPU nào khi chuyển ngữ cảnh.",
+        "Nó không bao giờ gây ra hiện tượng nghịch đảo độ ưu tiên (priority inversion)."
+      ],
+      "correct": [1],
+      "explanation": "Kernel-level Mutex được quản lý bởi nhân HĐH. Khi luồng bị chặn, nhân đưa luồng đó vào trạng thái ngủ và chọn luồng khác thực thi, giúp hệ thống hoạt động hiệu quả. Nó vẫn tốn chi phí chuyển ngữ cảnh và vẫn có nguy cơ bị Priority Inversion."
+    },
+    {
+      "id": 20,
+      "question": "Khi sử dụng khóa Mutex, việc giữ khóa quá lâu trong miền găng sẽ trực tiếp gây ra tác hại gì cho chương trình?",
+      "type": "single",
+      "options": [
+        "Hệ thống sẽ bị hết bộ nhớ RAM ngay lập tức.",
+        "Làm tăng đáng kể thời gian đáp ứng (latency) của hệ thống và làm giảm hiệu năng song song do các luồng khác phải xếp hàng chờ đợi lâu.",
+        "Làm mất tính nguyên tử của các chỉ thị máy tính.",
+        "Làm hỏng mã nguồn chương trình."
+      ],
+      "correct": [1],
+      "explanation": "Thời gian giữ khóa càng lâu thì xác suất các luồng khác va chạm vào khóa bận càng cao. Các luồng khác phải dừng hoạt động để chờ khóa được mở, khiến ứng dụng chạy tuần tự hóa (serialization) thay vì song song, làm giảm hiệu năng tổng thể của chương trình đa luồng."
+    }
+  ]
+}

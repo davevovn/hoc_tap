@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c5-6-monitors",
+  "title": "Hệ điều hành - Chương 5: Monitor",
+  "description": "Kiểm tra kiến thức về Monitor, kiểu dữ liệu trừu tượng đồng bộ, biến điều kiện (Condition variables), thao tác wait/signal, so sánh với Semaphore và cơ chế synchronized của Java.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Monitor là gì trong đồng bộ tiến trình?",
+      "type": "single",
+      "options": [
+        "Là một thiết bị phần cứng dùng để theo dõi nhiệt độ của CPU.",
+        "Là một kiểu dữ liệu trừu tượng (Abstract Data Type - ADT) đóng gói dữ liệu dùng chung và các hàm thao tác, tự động đảm bảo loại trừ tương hỗ.",
+        "Là một phần mềm diệt virus chạy ngầm trong nhân hệ điều hành.",
+        "Là hàng đợi lập lịch của CPU."
+      ],
+      "correct": [1],
+      "explanation": "Monitor là một cấu trúc ngôn ngữ lập trình cấp cao (dạng ADT). Nó bao gồm các biến chia sẻ và các hàm thành viên. Đặc điểm quan trọng nhất của Monitor là tại một thời điểm, chỉ có nhiều nhất một luồng được phép hoạt động bên trong nó, đảm bảo Loại trừ tương hỗ tự động."
+    },
+    {
+      "id": 2,
+      "question": "Ai chịu trách nhiệm đảm bảo Loại trừ tương hỗ (Mutual Exclusion) cho một Monitor?",
+      "type": "single",
+      "options": [
+        "Lập trình viên viết mã nguồn bằng cách gọi acquire/release.",
+        "Trình biên dịch (Compiler) hoặc hệ thống thực thi (Runtime system) tự động chèn mã khóa mở khóa.",
+        "Phần cứng bo mạch chủ của máy tính.",
+        "Người quản trị hệ thống."
+      ],
+      "correct": [1],
+      "explanation": "Khác với Mutex hay Semaphore (nơi lập trình viên phải tự nhớ gọi khóa/mở khóa), với Monitor, trình biên dịch chịu trách nhiệm biên dịch và tự động chèn mã loại trừ tương hỗ ở lối vào và lối ra của các phương thức bên trong Monitor. Lập trình viên không cần gọi khóa thủ công."
+    },
+    {
+      "id": 3,
+      "question": "Để đồng bộ hóa các luồng dựa trên các điều kiện tùy biến trong Monitor, người ta sử dụng cấu trúc nào?",
+      "type": "single",
+      "options": [
+        "Biến điều kiện (Condition Variables)",
+        "Biến Semaphore đếm",
+        "Biến khóa spinlock",
+        "Mảng cờ hiệu flag"
+      ],
+      "correct": [0],
+      "explanation": "Để luồng có thể chờ đợi một sự kiện cụ thể xảy ra trong Monitor (ví dụ: chờ bộ đệm có dữ liệu), Monitor cung cấp một cơ chế gọi là Biến điều kiện (Condition variables), thường được khai báo với kiểu dữ liệu `condition`."
+    },
+    {
+      "id": 4,
+      "question": "Hai thao tác cơ bản được phép thực hiện trên biến điều kiện 'x' trong Monitor là gì?",
+      "type": "single",
+      "options": [
+        "x.lock() và x.unlock()",
+        "x.wait() và x.signal()",
+        "x.acquire() và x.release()",
+        "x.sleep() và x.wakeup()"
+      ],
+      "correct": [1],
+      "explanation": "Các thao tác duy nhất được phép trên biến điều kiện `condition x` là `x.wait()` (để đi ngủ chờ điều kiện thỏa mãn) và `x.signal()` (để đánh thức luồng đang ngủ)."
+    },
+    {
+      "id": 5,
+      "question": "Thao tác 'x.wait()' trên biến điều kiện 'x' hoạt động như thế nào?",
+      "type": "single",
+      "options": [
+        "Nó kiểm tra nếu x rảnh thì đi tiếp, ngược lại bận đợi.",
+        "Nó lập tức đình chỉ luồng gọi, đưa luồng vào hàng đợi của x, giải phóng khóa loại trừ tương hỗ của Monitor để luồng khác có thể vào.",
+        "Nó giảm giá trị số nguyên của x đi 1 đơn vị.",
+        "Nó đánh thức tất cả các luồng đang ngủ trên biến x."
+      ],
+      "correct": [1],
+      "explanation": "Khi luồng gọi `x.wait()`, nó sẽ bị chặn ngay lập tức. Để tránh khóa cứng Monitor (khiến luồng khác không vào được để làm thay đổi điều kiện), hệ thống sẽ tự động giải phóng quyền độc chiếm Monitor của luồng này, cho phép luồng khác đi vào Monitor."
+    },
+    {
+      "id": 6,
+      "question": "Thao tác 'x.signal()' trên biến điều kiện 'x' trong Monitor hoạt động như thế nào?",
+      "type": "single",
+      "options": [
+        "Nó tăng giá trị đếm của biến x lên 1 đơn vị.",
+        "Nó đánh thức chính xác một tiến trình đang bị chặn sau lệnh x.wait() (nếu có); nếu không có tiến trình nào chờ, lệnh này không có tác dụng gì (tín hiệu bị bỏ qua).",
+        "Nó giải phóng toàn bộ Monitor và kết thúc chương trình.",
+        "Nó đưa luồng hiện tại vào trạng thái ngủ."
+      ],
+      "correct": [1],
+      "explanation": "Lệnh `x.signal()` đánh thức một luồng đang ngủ trên `x` dậy. Điểm khác biệt lớn so với Semaphore là biến điều kiện không có bộ đếm trạng thái: nếu không có luồng nào đang gọi `x.wait()` tại thời điểm đó, lệnh `x.signal()` sẽ trôi qua vô ích (tín hiệu bị mất)."
+    },
+    {
+      "id": 7,
+      "question": "Sự khác biệt cốt lõi giữa thao tác 'x.signal()' của biến điều kiện và 'signal(S)' của Semaphore là gì?",
+      "type": "single",
+      "options": [
+        "x.signal() chạy chậm hơn signal(S) của Semaphore.",
+        "x.signal() không lưu trữ trạng thái lịch sử (không có bộ đếm tăng lên); nếu không có luồng chờ, tín hiệu bị mất. Trong khi signal(S) luôn tăng giá trị Semaphore lên 1 và lưu lại cho lần wait tiếp theo.",
+        "x.signal() chỉ hoạt động ở Kernel Mode.",
+        "x.signal() tự động đánh thức mọi luồng, còn signal(S) chỉ đánh thức một luồng."
+      ],
+      "correct": [1],
+      "explanation": "Biến điều kiện trong Monitor không có trạng thái hay giá trị nội tại. Lệnh `x.signal()` chỉ như một tiếng chuông gọi: có ai chờ thì thức dậy, không có ai thì tiếng chuông tắt (tín hiệu biến mất). Còn Semaphore là biến đếm lưu giữ trạng thái tích lũy của tín hiệu."
+    },
+    {
+      "id": 8,
+      "question": "Sự khác biệt cốt lõi giữa thao tác 'x.wait()' của biến điều kiện và 'wait(S)' của Semaphore là gì?",
+      "type": "single",
+      "options": [
+        "x.wait() luôn luôn chặn luồng gọi vô điều kiện. Còn wait(S) của Semaphore chỉ chặn luồng nếu giá trị Semaphore sau khi giảm xuống nhỏ hơn 0.",
+        "x.wait() chỉ chạy được trên hệ thống đa nhân.",
+        "x.wait() sử dụng cơ chế bận đợi (busy waiting), còn wait(S) thì không.",
+        "x.wait() không giải phóng khóa của Monitor."
+      ],
+      "correct": [0],
+      "explanation": "Lệnh `x.wait()` luôn luôn đưa luồng gọi vào trạng tháiBlocked mà không kiểm tra bất kỳ giá trị nào (vì bản thân biến điều kiện không chứa giá trị số). Đối với Semaphore, luồng chỉ bị chặn khi tài nguyên đã hết (giá trị Semaphore âm)."
+    },
+    {
+      "id": 9,
+      "question": "Trong ngữ nghĩa Monitor của Hoare (Signal and Wait), khi luồng P gọi 'x.signal()' đánh thức luồng Q đang chờ, điều gì sẽ xảy ra tiếp theo?",
+      "type": "single",
+      "options": [
+        "Q tiếp tục ngủ cho đến khi P thoát khỏi Monitor.",
+        "P lập tức đi ngủ tạm thời (hoặc rời Monitor) nhường quyền điều khiển Monitor cho Q chạy ngay lập tức.",
+        "Cả P và Q cùng chạy song song đồng thời bên trong Monitor.",
+        "P bị hủy bỏ bởi hệ điều hành."
+      ],
+      "correct": [1],
+      "explanation": "Mô hình Hoare (Signal and Wait) yêu cầu tính tức thời: luồng được đánh thức Q phải chạy ngay lập tức để đảm bảo điều kiện nó chờ vẫn còn đúng. Luồng phát tín hiệu P phải tạm dừng và xếp hàng đợi ngoài Monitor cho đến khi Q nhường lại hoặc thoát ra."
+    },
+    {
+      "id": 10,
+      "question": "Trong ngữ nghĩa Monitor của Mesa (Signal and Continue) - được dùng rộng rãi trong Java và Pthreads - khi luồng P gọi 'x.signal()' đánh thức luồng Q, điều gì xảy ra?",
+      "type": "single",
+      "options": [
+        "Q được chạy ngay lập tức còn P đi ngủ.",
+        "P tiếp tục thực thi cho đến khi thoát khỏi phương thức của Monitor; luồng Q được chuyển sang hàng đợi lối vào của Monitor để tranh chấp vào lại khi Monitor rảnh.",
+        "Monitor tự động nhân bản thành hai thực thể để cả hai luồng cùng chạy.",
+        "Luồng Q lập tức bị hủy để tránh xung đột."
+      ],
+      "correct": [1],
+      "explanation": "Mô hình Mesa (Signal and Continue) đơn giản và hiệu quả hơn: luồng phát tín hiệu P tiếp tục chạy hết phần việc của mình trong Monitor. Luồng được đánh thức Q chỉ được chuyển về trạng thái sẵn sàng tranh chấp khóa Monitor. Khi Monitor trống, Q mới có cơ hội vào."
+    },
+    {
+      "id": 11,
+      "question": "Tại sao trong Java, khi gọi 'wait()' của một đối tượng, chúng ta bắt buộc phải bọc nó trong vòng lặp 'while' thay vì câu lệnh 'if'?\n```java\nwhile (!condition) { obj.wait(); }\n```",
+      "type": "single",
+      "options": [
+        "Vì cú pháp Java bắt buộc như vậy, dùng 'if' sẽ bị lỗi biên dịch.",
+        "Để đối phó với mô hình Mesa (luồng thức dậy có thể bị luồng khác chiếm mất điều kiện trước) và hiện tượng đánh thức giả (Spurious Wakeups) - đảm bảo kiểm tra lại điều kiện sau khi thức dậy.",
+        "Để tăng tốc độ thực thi của luồng lên gấp hai lần.",
+        "Vì vòng lặp while tự động giải phóng bộ nhớ RAM dư thừa."
+      ],
+      "correct": [1],
+      "explanation": "Trong mô hình Mesa, luồng thức dậy không được chạy ngay mà phải xếp hàng chờ khóa Monitor. Trong lúc chờ, luồng khác có thể đã vào Monitor trước và làm điều kiện không còn thỏa mãn nữa. Việc dùng vòng lặp `while` đảm bảo sau khi tỉnh dậy, luồng sẽ kiểm tra lại điều kiện, nếu vẫn sai thì lại ngủ tiếp."
+    },
+    {
+      "id": 12,
+      "question": "Ngôn ngữ lập trình nào sau đây tích hợp sẵn cơ chế Monitor ở cấp độ ngôn ngữ?",
+      "type": "multiple",
+      "options": [
+        "Java",
+        "C#",
+        "C chuẩn (ANSI C)",
+        "Assembly"
+      ],
+      "correct": [0, 1],
+      "explanation": "Java và C# là các ngôn ngữ lập trình hiện đại tích hợp sẵn khái niệm Monitor. Trong Java, mỗi đối tượng đều có một khóa màn hình (monitor lock) kích hoạt qua từ khóa `synchronized` và các phương thức `wait()`, `notify()` (tương đương signal)."
+    },
+    {
+      "id": 13,
+      "question": "Trong Java, phương thức nào của lớp Object tương đương với thao tác 'signal()' trên biến điều kiện của Monitor?",
+      "type": "single",
+      "options": [
+        "notify()",
+        "notifyAll()",
+        "resume()",
+        "start()"
+      ],
+      "correct": [0],
+      "explanation": "Hàm `notify()` trong Java đánh thức ngẫu nhiên một luồng đang gọi `wait()` trên khóa của đối tượng đó, tương đương với lệnh `signal()` trên biến điều kiện."
+    },
+    {
+      "id": 14,
+      "question": "Sự khác biệt giữa phương thức 'notify()' và 'notifyAll()' của Java là gì?",
+      "type": "single",
+      "options": [
+        "notify() giải phóng khóa đối tượng, notifyAll() thì không.",
+        "notify() chỉ đánh thức một luồng ngẫu nhiên đang chờ trên đối tượng; notifyAll() đánh thức toàn bộ các luồng đang chờ trên đối tượng đó.",
+        "notifyAll() chỉ chạy được trên hệ thống đa xử lý.",
+        "notify() chỉ dùng cho luồng có độ ưu tiên cao."
+      ],
+      "correct": [1],
+      "explanation": "Hàm `notifyAll()` gửi tín hiệu đánh thức tới tất cả các luồng đang ngủ trong hàng đợi chờ của đối tượng đó. Chúng sẽ cùng thức dậy và tranh giành khóa Monitor của đối tượng."
+    },
+    {
+      "id": 15,
+      "question": "Trong các kịch bản sau, kịch bản nào thể hiện một luồng đang ở trong hàng đợi lối vào (Entry Queue) của Monitor?",
+      "type": "single",
+      "options": [
+        "Luồng đang chạy bình thường trong miền dư (Remainder Section).",
+        "Luồng gọi một phương thức của Monitor khi đã có một luồng khác đang hoạt động bên trong Monitor.",
+        "Luồng vừa gọi thành công lệnh wait() trên biến điều kiện.",
+        "Luồng vừa bị hệ điều hành hủy bỏ."
+      ],
+      "correct": [1],
+      "explanation": "Khi luồng A gọi một hàm của Monitor, nhưng Monitor đang bận (luồng B đang chạy bên trong), luồng A sẽ bị chặn lại ở Entry Queue (Hàng đợi lối vào) để chờ Monitor trống."
+    },
+    {
+      "id": 16,
+      "question": "Khi luồng thực thi lệnh 'x.wait()' trong Monitor, nó được di chuyển từ hàng đợi nào sang hàng đợi nào?",
+      "type": "single",
+      "options": [
+        "Từ hàng đợi của biến x sang hàng đợi lối vào (Entry Queue) của Monitor.",
+        "Từ hàng đợi lối vào (Entry Queue) của Monitor sang hàng đợi chờ của biến điều kiện x.",
+        "Từ CPU sang hàng đợi Ready Queue của hệ thống.",
+        "Từ hàng đợi Ready Queue sang hàng đợi của biến điều kiện x."
+      ],
+      "correct": [1],
+      "explanation": "Luồng đang chạy trong Monitor (tức là đã vượt qua Entry Queue trước đó) khi gọi `x.wait()` sẽ giải phóng Monitor và tự đưa mình vào hàng đợi riêng của biến điều kiện `x` để ngủ."
+    },
+    {
+      "id": 17,
+      "question": "Khi luồng gọi 'x.signal()' thành công và đánh thức một luồng khác dậy (xét mô hình Mesa), luồng được đánh thức đó sẽ được chuyển đi đâu?",
+      "type": "single",
+      "options": [
+        "Được chạy trực tiếp trên CPU ngay lập tức.",
+        "Chuyển từ hàng đợi của biến điều kiện x sang hàng đợi lối vào (Entry Queue) của Monitor để chờ giành khóa.",
+        "Chuyển sang Remainder Section của tiến trình.",
+        "Đi vào hàng đợi ngủ của hệ điều hành."
+      ],
+      "correct": [1],
+      "explanation": "Trong mô hình Mesa, luồng được đánh thức không được chạy ngay lập tức mà nó được di chuyển từ hàng đợi ngủ của `x` về hàng đợi lối vào (Entry Queue) của Monitor để xếp hàng xin khóa khi Monitor rảnh."
+    },
+    {
+      "id": 18,
+      "question": "Tại sao việc sử dụng Monitor lại AN TOÀN và ít lỗi hơn việc sử dụng trực tiếp các Semaphore?",
+      "type": "single",
+      "options": [
+        "Vì Monitor không bao giờ gây ra hiện tượng deadlock.",
+        "Vì loại trừ tương hỗ được tự động quản lý bởi trình biên dịch, tránh được các lỗi logic phổ biến do con người như quên gọi mở khóa, nhầm lẫn thứ tự gọi wait/signal.",
+        "Vì Monitor chạy hoàn toàn ở phần cứng CPU.",
+        "Vì Monitor tự động nhân bản biến chia sẻ cho mỗi luồng."
+      ],
+      "correct": [1],
+      "explanation": "Với Semaphore, chỉ cần lập trình viên quên gọi `signal()`, hoặc viết nhầm thứ tự `wait(S)` thành `signal(S)` là chương trình sẽ bị lỗi nghiêm trọng hoặc deadlock. Monitor cấu trúc hóa việc này ở mức ngôn ngữ, trình biên dịch chịu trách nhiệm sinh mã đồng bộ hóa ra vào, giảm thiểu lỗi của con người."
+    },
+    {
+      "id": 19,
+      "question": "Biến điều kiện trong Monitor có chứa giá trị số nguyên giống Semaphore hay không?",
+      "type": "single",
+      "options": [
+        "Có, nó lưu trữ số luồng tối đa được phép truy cập.",
+        "Không, nó không có giá trị số nguyên nội tại; nó chỉ đơn thuần đại diện cho một danh sách các luồng đang chờ sự kiện.",
+        "Có, giá trị của nó luôn là 0 hoặc 1.",
+        "Có, nó phản ánh số lượng luồng đang chạy song song."
+      ],
+      "correct": [1],
+      "explanation": "Biến điều kiện trong Monitor hoàn toàn không lưu trữ giá trị số nguyên (khác với Semaphore). Nó chỉ là một điểm neo để luồng bám vào xếp hàng chờ (`wait`) và nhận tín hiệu đánh thức (`signal`)."
+    },
+    {
+      "id": 20,
+      "question": "Trong các kịch bản sau, điều gì xảy ra nếu luồng A gọi 'x.signal()' khi hàng đợi của biến điều kiện 'x' đang rỗng?",
+      "type": "single",
+      "options": [
+        "Hệ thống sẽ báo lỗi NullPointerException.",
+        "Tín hiệu bị bỏ qua hoàn toàn, không có trạng thái nào thay đổi và Monitor tiếp tục hoạt động bình thường.",
+        "Giá trị của x tăng lên 1 đơn vị để dành cho luồng gọi wait sau này.",
+        "Luồng A sẽ bị chặn ngủ trên hàng đợi lối vào."
+      ],
+      "correct": [1],
+      "explanation": "Vì biến điều kiện không lưu trữ trạng thái, lệnh `x.signal()` khi không có ai chờ sẽ là một thao tác vô hại (no-op) và tín hiệu bị bỏ qua hoàn toàn, không lưu lại lịch sử."
+    }
+  ]
+}

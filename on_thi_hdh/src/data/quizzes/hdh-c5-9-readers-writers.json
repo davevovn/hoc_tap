@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c5-9-readers-writers",
+  "title": "Hệ điều hành - Chương 5: Bài toán Readers-Writers",
+  "description": "Kiểm tra kiến thức về bài toán đồng bộ Bạn đọc - Người viết (Readers-Writers), phân tích mã nguồn giải pháp bằng Semaphore, so sánh hai phiên bản ưu tiên Reader/Writer và hiện tượng đói tài nguyên.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Bài toán Bạn đọc - Người viết (Readers-Writers) mô tả kịch bản đồng bộ hóa nào sau đây?",
+      "type": "single",
+      "options": [
+        "Hai tiến trình cùng trao đổi thông điệp qua đường ống (pipe).",
+        "Nhiều tiến trình cùng chia sẻ một vùng dữ liệu (như cơ sở dữ liệu); một số chỉ có nhu cầu đọc (Readers) và một số có nhu cầu cập nhật/ghi dữ liệu (Writers).",
+        "Tiến trình sản xuất dữ liệu và đưa vào hàng đợi cho tiến trình tiêu thụ.",
+        "Nhiều luồng cùng cạnh tranh quyền ghi log ra màn hình console."
+      ],
+      "correct": [1],
+      "explanation": "Readers-Writers là bài toán đồng bộ hóa việc truy cập vào cơ sở dữ liệu hoặc tập tin dùng chung. Ràng buộc là: nhiều Readers được phép đọc đồng thời (vì đọc không làm hỏng dữ liệu), nhưng tại một thời điểm chỉ có tối đa 1 Writer được phép ghi, và khi Writer ghi thì không Reader nào được phép đọc."
+    },
+    {
+      "id": 2,
+      "question": "Quy tắc loại trừ tương hỗ trong bài toán Readers-Writers được phát biểu như thế nào?",
+      "type": "single",
+      "options": [
+        "Reader loại trừ Reader; Reader loại trừ Writer; Writer loại trừ Writer.",
+        "Reader không loại trừ Reader; Reader loại trừ Writer; Writer loại trừ Writer.",
+        "Reader không loại trừ Reader; Reader không loại trừ Writer; Writer loại trừ Writer.",
+        "Không có loại trừ tương hỗ nào, các luồng chạy tự do."
+      ],
+      "correct": [1],
+      "explanation": "Quy tắc đồng bộ hóa của Readers-Writers:\n1. Nhiều Reader có thể đọc đồng thời (Reader - Reader: OK).\n2. Reader và Writer không thể chạy cùng lúc (Reader - Writer: loại trừ tương hỗ).\n3. Hai Writer không thể ghi cùng lúc (Writer - Writer: loại trừ tương hỗ)."
+    },
+    {
+      "id": 3,
+      "question": "Trong giải pháp giải quyết bài toán Readers-Writers thứ nhất (Reader Preference - Ưu tiên bạn đọc), biến 'read_count' và các Semaphore 'mutex', 'rw_mutex' có vai trò gì?",
+      "type": "single",
+      "options": [
+        "read_count lưu số lượng writers; mutex bảo vệ file; rw_mutex đếm readers.",
+        "read_count đếm số lượng readers đang đọc; mutex bảo vệ biến read_count; rw_mutex đảm bảo loại trừ tương hỗ cho việc ghi và chặn reader khi có writer đang ghi.",
+        "read_count lưu số lượng ô trống; mutex khóa reader; rw_mutex khóa writer.",
+        "Các biến này chỉ dùng để in thông tin log hệ thống."
+      ],
+      "correct": [1],
+      "explanation": "- `read_count` (int, khởi tạo = 0): Đếm số Reader đang hoạt động.\n- `mutex` (Binary Semaphore, khởi tạo = 1): Bảo vệ loại trừ tương hỗ cho thao tác tăng/giảm trên `read_count`.\n- `rw_mutex` (Binary Semaphore, khởi tạo = 1): Đảm bảo loại trừ tương hỗ cho Writer ghi dữ liệu, đồng thời chặn Readers khi Writer đang làm việc."
+    },
+    {
+      "id": 4,
+      "question": "Hãy chọn đoạn mã chính xác của tiến trình Người viết (Writer) trong giải pháp Readers-Writers thứ nhất.",
+      "type": "single",
+      "options": [
+        "wait(mutex); // ghi dữ liệu; signal(mutex);",
+        "wait(rw_mutex); // ghi dữ liệu; signal(rw_mutex);",
+        "wait(rw_mutex); wait(mutex); // ghi dữ liệu; signal(mutex); signal(rw_mutex);",
+        "wait(read_count); // ghi dữ liệu; signal(read_count);"
+      ],
+      "correct": [1],
+      "explanation": "Tiến trình Writer vô cùng đơn giản: Nó chỉ cần gọi `wait(rw_mutex)` để độc chiếm quyền truy cập ghi. Sau khi ghi xong, nó gọi `signal(rw_mutex)` để mở khóa giải phóng tài nguyên. Nó không quan tâm đến `read_count` hay `mutex` nội bộ của Reader."
+    },
+    {
+      "id": 5,
+      "question": "Hãy chọn đoạn mã chính xác của tiến trình Bạn đọc (Reader) trong giải pháp Readers-Writers thứ nhất (Ưu tiên Reader).",
+      "type": "single",
+      "options": [
+        "wait(rw_mutex); // đọc dữ liệu; signal(rw_mutex);",
+        "wait(mutex); read_count++; if (read_count == 1) wait(rw_mutex); signal(mutex); // đọc dữ liệu; wait(mutex); read_count--; if (read_count == 0) signal(rw_mutex); signal(mutex);",
+        "wait(mutex); read_count++; if (read_count == 1) wait(rw_mutex); signal(rw_mutex); // đọc dữ liệu; wait(mutex); read_count--; if (read_count == 0) signal(mutex);",
+        "read_count++; // đọc dữ liệu; read_count--;"
+      ],
+      "correct": [1],
+      "explanation": "Logic của Reader:\n- Trước khi đọc: Tăng `read_count` (được bảo vệ bởi `mutex`). Nếu đây là Reader đầu tiên (`read_count == 1`), nó phải gọi `wait(rw_mutex)` để khóa không cho Writer ghi.\n- Sau khi đọc xong: Giảm `read_count` (được bảo vệ bởi `mutex`). Nếu đây là Reader cuối cùng (`read_count == 0`), nó phải gọi `signal(rw_mutex)` để trả lại quyền ghi cho Writer."
+    },
+    {
+      "id": 6,
+      "question": "Tại sao trong đoạn mã Reader, chỉ có Bạn đọc đầu tiên (read_count == 1) mới gọi lệnh 'wait(rw_mutex)'?",
+      "type": "single",
+      "options": [
+        "Để tiết kiệm bộ nhớ RAM cho hệ thống.",
+        "Để khóa quyền ghi của Writer ngay từ khi bắt đầu có ít nhất một Reader đọc dữ liệu. Các Readers đến sau chỉ việc vào đọc chung mà không cần khóa lại lần nữa.",
+        "Vì hệ điều hành tự động khóa cho các Reader tiếp theo.",
+        "Do lỗi logic lập trình."
+      ],
+      "correct": [1],
+      "explanation": "Khi Reader đầu tiên vào đọc, nó có trách nhiệm thiết lập khóa loại trừ tương hỗ đối với Writer (`wait(rw_mutex)`). Khi khóa đã được xác lập, các Readers tiếp theo vào hệ thống chỉ cần tăng chỉ số `read_count` và vào đọc song song mà không cần tác động lên `rw_mutex` nữa, giúp nhiều Reader đọc đồng thời."
+    },
+    {
+      "id": 7,
+      "question": "Tại sao trong đoạn mã Reader, chỉ có Bạn đọc cuối cùng (read_count == 0) mới gọi lệnh 'signal(rw_mutex)'?",
+      "type": "single",
+      "options": [
+        "Vì các Reader trước đó đã tự giải phóng khóa.",
+        "Để đảm bảo Writer chỉ được phép ghi sau khi toàn bộ tất cả các Readers đang đọc đã hoàn thành việc đọc và thoát khỏi hệ thống.",
+        "Để báo hiệu cho hệ điều hành tắt luồng Reader.",
+        "Để tăng độ ưu tiên cho các Reader tiếp theo."
+      ],
+      "correct": [1],
+      "explanation": "Chỉ khi tất cả các Reader đã đọc xong (`read_count` giảm về 0), hệ thống mới an toàn cho Writer ghi dữ liệu. Do đó, Reader cuối cùng rời đi có nghĩa vụ gọi `signal(rw_mutex)` để mở khóa quyền ghi cho Writer."
+    },
+    {
+      "id": 8,
+      "question": "Tại sao trong đoạn mã Reader cần phải sử dụng Semaphore 'mutex' bao bọc các thao tác tăng giảm biến 'read_count'?",
+      "type": "single",
+      "options": [
+        "Để ngăn chặn Writer xen vào giữa việc đọc dữ liệu.",
+        "Để tránh Race Condition trên biến 'read_count' khi có nhiều luồng Reader đồng thời thực hiện thao tác vào hoặc ra hệ thống.",
+        "Để bắt các Reader phải đọc dữ liệu tuần tự luân phiên.",
+        "Để đưa Reader vào trạng thái ngủ khi cơ sở dữ liệu bị trống."
+      ],
+      "correct": [1],
+      "explanation": "Biến `read_count` là biến toàn cục chia sẻ giữa các luồng Reader. Thao tác `read_count++` và `read_count--` không phải là thao tác nguyên tử. Nếu không dùng `mutex` bảo vệ, nhiều Reader chạy song song có thể gây Race Condition làm sai lệch giá trị đếm `read_count`, dẫn đến khóa `rw_mutex` bị kẹt hoặc giải phóng sai thời điểm."
+    },
+    {
+      "id": 9,
+      "question": "Giả sử hệ thống đang áp dụng giải pháp Readers-Writers thứ nhất (Reader Preference). Có 3 Readers đang đọc dữ liệu. Đúng lúc đó, một Writer chạy và yêu cầu ghi dữ liệu. Chuyện gì xảy ra?",
+      "type": "single",
+      "options": [
+        "Writer lập tức chen ngang và ghi dữ liệu làm 3 Readers bị lỗi đọc.",
+        "Writer bị chặn ở lệnh 'wait(rw_mutex)' và phải ngủ trong hàng đợi chờ của semaphore này.",
+        "Hệ thống tự động hủy tiến trình Writer.",
+        "Writer được ghi song song với các Readers."
+      ],
+      "correct": [1],
+      "explanation": "Vì có 3 Readers đang đọc, Reader đầu tiên đã gọi `wait(rw_mutex)` thành công làm giá trị `rw_mutex` bằng 0. Khi Writer chạy, nó gọi `wait(rw_mutex)` làm giá trị giảm xuống -1, và Writer bị chặn nằm ngủ trong hàng đợi của `rw_mutex` để chờ đợi."
+    },
+    {
+      "id": 10,
+      "question": "Tại sao giải pháp Readers-Writers thứ nhất (Reader Preference) lại dễ dẫn đến tình trạng Đói tài nguyên (Starvation) của tiến trình Writer?",
+      "type": "single",
+      "options": [
+        "Vì Writer tiêu thụ quá nhiều CPU nên bị hệ điều hành phạt chặn.",
+        "Vì chỉ cần có ít nhất một Reader đang hoạt động, khóa rw_mutex luôn bị chiếm giữ. Nếu các Readers mới liên tục đến và vào đọc, biến read_count không bao giờ giảm về 0, khiến Writer phải chờ đợi vô hạn.",
+        "Vì thuật toán lập lịch luôn ưu tiên tiến trình Writer hơn.",
+        "Vì dung lượng của Writer quá lớn không ghi được vào đệm."
+      ],
+      "correct": [1],
+      "explanation": "Trong phiên bản Reader Preference, luồng Reader mới đến không cần quan tâm có Writer nào đang đợi hay không, nó cứ thế tăng `read_count` và vào đọc. Nếu có một dòng luồng Reader liên tục gối đầu nhau truy cập hệ thống, `read_count` sẽ luôn > 0, khóa `rw_mutex` không bao giờ được giải phóng và Writer sẽ bị đó đói tài nguyên vô hạn."
+    },
+    {
+      "id": 11,
+      "question": "Đặc điểm của bài toán Readers-Writers thứ hai (Writer Preference - Ưu tiên người viết) là gì?",
+      "type": "single",
+      "options": [
+        "Nó cho phép nhiều Writer ghi dữ liệu đồng thời.",
+        "Ngay khi một Writer yêu cầu ghi dữ liệu, các Readers mới đến sau sẽ bị chặn lại bên ngoài, không cho phép đọc mới để nhường quyền ưu tiên ghi cho Writer ngay khi các Readers hiện tại đọc xong.",
+        "Nó cấm hoàn toàn các Reader đọc dữ liệu.",
+        "Nó giải quyết vấn đề bằng cách tự động tắt hệ thống khi tranh chấp xảy ra."
+      ],
+      "correct": [1],
+      "explanation": "Writer Preference ưu tiên tiến trình ghi để tránh Writer bị đói. Khi một Writer đưa ra yêu cầu ghi, nó thiết lập trạng thái chờ. Bất kỳ Reader nào đến sau thời điểm đó đều phải xếp hàng chờ bên ngoài, không được phép vào đọc, dù cho miền đọc hiện tại đang có Reader hoạt động."
+    },
+    {
+      "id": 12,
+      "question": "Hậu quả của giải pháp Readers-Writers thứ hai (Writer Preference) là gì?",
+      "type": "single",
+      "options": [
+        "Writer có thể bị đói tài nguyên vô hạn.",
+        "Reader có thể bị đói tài nguyên (Starvation) nếu các tiến trình Writer liên tục yêu cầu ghi dữ liệu.",
+        "Hệ thống dễ bị tràn bộ nhớ RAM.",
+        "Các tiến trình Reader và Writer sẽ chạy song song thực sự."
+      ],
+      "correct": [1],
+      "explanation": "Ngược lại với phiên bản 1, ở phiên bản Writer Preference, nếu luồng Writer liên tục xuất hiện yêu cầu ghi, các luồng Reader mới sẽ liên tục bị chặn đứng ở lối vào và phải chờ đợi vô hạn, dẫn đến Starvation cho Reader."
+    },
+    {
+      "id": 13,
+      "question": "Trong kịch bản 1 Reader đang đọc dữ liệu, và 1 Writer đang chờ khóa ghi. Một Reader mới (Reader 2) xuất hiện. Điều gì xảy ra đối với Reader 2 trong giải pháp Readers-Writers thứ nhất (Reader Preference)?",
+      "type": "single",
+      "options": [
+        "Reader 2 bị chặn lại để nhường cho Writer ghi trước.",
+        "Reader 2 được phép vào đọc dữ liệu ngay lập tức vì read_count tăng lên 2 và nó không cần gọi wait(rw_mutex). Writer vẫn phải tiếp tục chờ.",
+        "Reader 2 bị hệ điều hành hủy bỏ.",
+        "Reader 2 và Writer cùng vào miền găng."
+      ],
+      "correct": [1],
+      "explanation": "Trong Reader Preference, Reader 2 chạy sẽ gọi `wait(mutex)` -> tăng `read_count` từ 1 lên 2. Vì `read_count == 2` (khác 1), nó không gọi `wait(rw_mutex)` mà đi thẳng vào đọc dữ liệu chung với Reader 1. Writer tiếp tục bị bỏ qua."
+    },
+    {
+      "id": 14,
+      "question": "Khóa đọc ghi (Read-Write Lock) hoạt động dựa trên nguyên lý bài toán Readers-Writers có đặc điểm gì?",
+      "type": "single",
+      "options": [
+        "Nó chỉ cho phép khóa ghi hoạt động.",
+        "Nó hỗ trợ hai chế độ khóa: khóa đọc (Read Lock - chia sẻ) và khóa ghi (Write Lock - loại trừ). Nhiều luồng có thể giữ khóa đọc cùng lúc, nhưng chỉ có một luồng giữ khóa ghi.",
+        "Nó tự động chuyển đổi dữ liệu thành dạng read-only.",
+        "Nó chỉ hoạt động trên cơ sở dữ liệu SQL."
+      ],
+      "correct": [1],
+      "explanation": "Read-Write Lock (RW Lock) là cấu trúc đồng bộ hóa cung cấp khả năng khóa chia sẻ cho thao tác đọc (`shared lock`) và khóa loại trừ tương hỗ cho thao tác ghi (`exclusive lock`), rất hữu ích khi lập trình hệ thống."
+    },
+    {
+      "id": 15,
+      "question": "Khi nào thì việc sử dụng Read-Write Lock mang lại hiệu năng cao hơn rõ rệt so với Mutex thông thường?",
+      "type": "single",
+      "options": [
+        "Khi hệ thống chỉ thực hiện các thao tác ghi dữ liệu.",
+        "Khi ứng dụng có tỷ lệ luồng đọc dữ liệu rất cao (ví dụ 99%) và tỷ lệ luồng ghi cực thấp (ví dụ 1%), giúp tối đa hóa khả năng đọc song song của CPU.",
+        "Khi bộ nhớ RAM của máy tính quá nhỏ.",
+        "Khi chạy chương trình đơn luồng."
+      ],
+      "correct": [1],
+      "explanation": "Mutex thông thường bắt các Reader cũng phải xếp hàng tuần tự để đọc dữ liệu (tốn thời gian). RW Lock cho phép hàng trăm Reader đọc song song cùng lúc, chỉ khóa khi có Writer. Do đó, nếu dữ liệu ít khi thay đổi nhưng được đọc liên tục, RW Lock tối ưu hơn nhiều."
+    },
+    {
+      "id": 16,
+      "question": "Trong POSIX threads (pthread) của C, kiểu dữ liệu nào được dùng để khai báo khóa Read-Write Lock?",
+      "type": "single",
+      "options": [
+        "pthread_mutex_t",
+        "pthread_rwlock_t",
+        "pthread_cond_t",
+        "pthread_lock_rw_t"
+      ],
+      "correct": [1],
+      "explanation": "Thư viện Pthreads hỗ trợ khóa Read-Write Lock thông qua kiểu dữ liệu `pthread_rwlock_t`."
+    },
+    {
+      "id": 17,
+      "question": "Giả sử một luồng Reader đang nắm giữ khóa đọc (Read Lock) của một rwlock. Luồng Writer gọi yêu cầu khóa ghi (Write Lock). Chuyện gì xảy ra?",
+      "type": "single",
+      "options": [
+        "Luồng Writer cướp quyền và đẩy Reader ra ngoài.",
+        "Luồng Writer bị chặn (blocked) cho đến khi Reader giải phóng khóa đọc.",
+        "Cả hai luồng cùng chạy chung chế độ.",
+        "Hệ thống trả về mã lỗi và tiếp tục thực thi Writer."
+      ],
+      "correct": [1],
+      "explanation": "Khóa ghi (Write Lock) là loại trừ tương hỗ tuyệt đối. Nó không thể được thiết lập nếu có bất kỳ luồng nào đang giữ khóa đọc (Read Lock) hoặc khóa ghi khác. Writer bắt buộc phải ngủ chờ."
+    },
+    {
+      "id": 18,
+      "question": "Giả sử một luồng Writer đang nắm giữ khóa ghi (Write Lock). Luồng Reader gọi yêu cầu khóa đọc (Read Lock). Chuyện gì xảy ra?",
+      "type": "single",
+      "options": [
+        "Luồng Reader lập tức được vào đọc.",
+        "Luồng Reader bị chặn (blocked) cho đến khi Writer giải phóng khóa ghi.",
+        "Luồng Writer tự động bị tạm dừng.",
+        "Hệ điều hành hủy bỏ luồng Writer."
+      ],
+      "correct": [1],
+      "explanation": "Khi Writer đang ghi, không ai được phép đọc để tránh đọc phải dữ liệu rác hoặc trạng thái trung gian chưa nhất quán (Dirty Read). Luồng Reader bắt buộc phải bị chặn ngủ chờ."
+    },
+    {
+      "id": 19,
+      "question": "Điều gì xảy ra nếu trong đoạn mã Reader, lập trình viên quên gọi 'signal(mutex)' sau khi tăng biến 'read_count'?\n```c\nwait(mutex);\nread_count++;\nif (read_count == 1) wait(rw_mutex);\n// quên gọi signal(mutex);\n```",
+      "type": "single",
+      "options": [
+        "Chương trình chạy bình thường không lỗi gì.",
+        "Mọi Reader đến sau sẽ bị chặn vô hạn ở lệnh 'wait(mutex)' lối vào, khiến toàn bộ hệ thống đọc bị đóng băng (deadlock).",
+        "Tiến trình Writer sẽ có cơ hội ghi dữ liệu nhanh hơn.",
+        "Biến read_count tự động tăng lên vô hạn."
+      ],
+      "correct": [1],
+      "explanation": "Nếu quên gọi `signal(mutex)`, khóa `mutex` sẽ mãi mãi bằng 0 (bận). Mọi Reader tiếp theo chạy đến dòng lệnh đầu tiên `wait(mutex)` sẽ bị chặn ngủ vĩnh viễn. Hệ thống bị deadlock hệ đọc."
+    },
+    {
+      "id": 20,
+      "question": "Ưu điểm của giải pháp Readers-Writers sử dụng cấu trúc Monitor là gì?",
+      "type": "single",
+      "options": [
+        "Không cần sử dụng biến read_count.",
+        "Đơn giản hóa việc quản lý trạng thái chờ của Reader và Writer bằng cách sử dụng các biến điều kiện và để trình biên dịch lo việc loại trừ tương hỗ cho các hàm kiểm soát.",
+        "Giúp hệ thống tăng tốc độ ghi dữ liệu lên gấp 10 lần.",
+        "Monitor tự động chuyển đổi Writer thành Reader khi cần thiết."
+      ],
+      "correct": [1],
+      "explanation": "Cài đặt Readers-Writers bằng Monitor sạch sẽ và an toàn hơn: Ta định nghĩa các hàm `acquireRead()`, `releaseRead()`, `acquireWrite()`, `releaseWrite()` bên trong Monitor. Monitor tự bảo vệ loại trừ tương hỗ cho việc kiểm tra biến trạng thái đếm, lập trình viên chỉ cần sử dụng biến điều kiện để quản lý thứ tự chờ."
+    }
+  ]
+}

@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c5-3-solutions",
+  "title": "Hệ điều hành - Chương 5: Giải pháp Đồng bộ Phần mềm & Phần cứng",
+  "description": "Kiểm tra kiến thức về các giải pháp đồng bộ hóa: Thuật toán Peterson, Vô hiệu hóa ngắt, chỉ thị nguyên tử TestAndSet, CompareAndSwap và Rào cản bộ nhớ.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Thuật toán Peterson là giải pháp đồng bộ hóa dựa trên nền tảng nào?",
+      "type": "single",
+      "options": [
+        "Đồng bộ hóa hoàn toàn bằng phần mềm (Software-based solution).",
+        "Đồng bộ hóa thông qua sự hỗ trợ của phần cứng (Hardware-based solution).",
+        "Đồng bộ hóa bằng cách sử dụng các hàm hệ thống (System calls).",
+        "Đồng bộ hóa nhờ vào kiến trúc mạng phân tán."
+      ],
+      "correct": [0],
+      "explanation": "Thuật toán Peterson là một giải pháp kinh điển thuần phần mềm (Software-based) để giải quyết bài toán miền găng cho 2 tiến trình mà không yêu cầu bất kỳ chỉ thị phần cứng đặc biệt nào khác ngoài việc đọc/ghi bộ nhớ cơ bản."
+    },
+    {
+      "id": 2,
+      "question": "Trong thuật toán Peterson cho hai tiến trình P0 và P1, biến chia sẻ 'flag' và 'turn' có ý nghĩa gì?",
+      "type": "single",
+      "options": [
+        "flag chỉ ra tiến trình nào đã hoàn thành; turn chỉ ra số luồng tối đa.",
+        "flag[i] = true nghĩa là Pi sẵn sàng vào miền găng; turn = j nghĩa là Pi nhường lượt cho Pj vào trước.",
+        "flag[i] = true nghĩa là Pi nhường lượt; turn = i nghĩa là Pi muốn vào.",
+        "flag và turn dùng để lưu trữ dữ liệu tính toán của miền găng."
+      ],
+      "correct": [1],
+      "explanation": "Mảng `boolean flag[2]` dùng để thể hiện trạng thái sẵn sàng của mỗi tiến trình (`flag[i] = true` nghĩa là Pi muốn vào miền găng). Biến số nguyên `turn` xác định ai đang có quyền vào tiếp theo; khi Pi gán `turn = j`, Pi lịch sự nhường quyền ưu tiên cho Pj."
+    },
+    {
+      "id": 3,
+      "question": "Thuật toán Peterson chứng minh thỏa mãn được những yêu cầu nào trong 3 yêu cầu của miền găng? (Xét trên kiến trúc máy tính lý thuyết lý tưởng)",
+      "type": "single",
+      "options": [
+        "Chỉ thỏa mãn Mutual Exclusion.",
+        "Thỏa mãn Mutual Exclusion và Progress nhưng vi phạm Bounded Waiting.",
+        "Thỏa mãn cả 3 yêu cầu: Mutual Exclusion, Progress và Bounded Waiting.",
+        "Không thỏa mãn yêu cầu nào do lỗi bế tắc."
+      ],
+      "correct": [2],
+      "explanation": "Trên lý thuyết, thuật toán Peterson chứng minh thỏa mãn đầy đủ cả 3 điều kiện: 1) Mutual Exclusion (chỉ 1 tiến trình vào miền găng vì `turn` chỉ nhận một giá trị duy nhất), 2) Progress (nếu đối phương không muốn vào, ta sẽ được vào ngay do `flag[j] == false`), 3) Bounded Waiting (nếu cả hai cùng muốn vào, `turn` đảm bảo mỗi tiến trình chỉ phải chờ tối đa 1 lượt)."
+    },
+    {
+      "id": 4,
+      "question": "Tại sao thuật toán Peterson có thể bị THẤT BẠI trên các kiến trúc máy tính đa nhân hiện đại?",
+      "type": "single",
+      "options": [
+        "Vì các CPU hiện đại chạy quá nhanh làm tràn biến 'turn'.",
+        "Vì trình biên dịch và CPU hiện đại có thể tự động thay đổi thứ tự thực thi của các chỉ thị không phụ thuộc nhau (Instruction Reordering) để tối ưu hiệu năng.",
+        "Vì hệ điều hành hiện đại cấm sử dụng các biến kiểu Boolean.",
+        "Vì thuật toán Peterson chỉ tương thích với ngôn ngữ lập trình Assembly."
+      ],
+      "correct": [1],
+      "explanation": "Trên các kiến trúc CPU hiện đại, để tối ưu hóa pipeline, CPU hoặc trình biên dịch có thể thực hiện tái lập lịch chỉ thị (instruction reordering) ngoài thứ tự (out-of-order execution). Ví dụ, thao tác gán `turn = j` có thể bị chạy trước `flag[i] = true`. Khi đó, sự bảo vệ của thuật toán Peterson bị phá vỡ và xảy ra race condition."
+    },
+    {
+      "id": 5,
+      "question": "Để giải quyết vấn đề tự động sắp xếp lại chỉ thị của CPU/trình biên dịch, các lập trình viên hệ thống sử dụng công cụ nào?",
+      "type": "single",
+      "options": [
+        "Rào cản bộ nhớ (Memory Barriers / Memory Fences).",
+        "Vòng lặp while vô hạn.",
+        "Bộ lập lịch tiến trình độ ưu tiên cao.",
+        "Cơ chế ảo hóa bộ nhớ."
+      ],
+      "correct": [0],
+      "explanation": "Memory Barrier (Rào cản bộ nhớ) là chỉ thị phần cứng đặc biệt ép buộc CPU/trình biên dịch không được phép tráo đổi thứ tự thực thi các lệnh đọc/ghi bộ nhớ nằm trước và sau rào cản. Nó đảm bảo các thao tác ghi dữ liệu của thuật toán Peterson được nhìn thấy đúng thứ tự trên mọi CPU."
+    },
+    {
+      "id": 6,
+      "question": "Cơ chế 'Vô hiệu hóa ngắt' (Disabling Interrupts) hoạt động như thế nào để bảo vệ miền găng?",
+      "type": "single",
+      "options": [
+        "Tạm thời tắt tất cả các ngắt phần cứng, khiến CPU thực thi liên tục đoạn mã miền găng mà không bị chuyển ngữ cảnh giữa chừng.",
+        "Ngăn chặn tiến trình gọi các hàm hệ thống (system call).",
+        "Tắt kết nối mạng của máy tính để tránh dữ liệu bị sửa đổi.",
+        "Chuyển toàn bộ dữ liệu chia sẻ sang đĩa cứng."
+      ],
+      "correct": [0],
+      "explanation": "Khi vô hiệu hóa ngắt, CPU sẽ không tiếp nhận ngắt đồng hồ (timer interrupt) hay ngắt I/O, do đó bộ lập lịch của HĐH không thể can thiệp để chuyển ngữ cảnh sang tiến trình khác. Tiến trình hiện tại sẽ độc chiếm CPU để chạy xong miền găng rồi mới bật lại ngắt."
+    },
+    {
+      "id": 7,
+      "question": "Tại sao giải pháp 'Vô hiệu hóa ngắt' KHÔNG phù hợp cho các hệ thống đa xử lý (Multiprocessor)?",
+      "type": "single",
+      "options": [
+        "Vì việc vô hiệu hóa ngắt trên một CPU không thể ngăn cản các tiến trình khác chạy song song trên các CPU (cores) còn lại truy cập vào dữ liệu chia sẻ.",
+        "Vì vô hiệu hóa ngắt sẽ làm hỏng phần cứng CPU thứ hai.",
+        "Vì hệ thống đa xử lý không hỗ trợ cơ chế ngắt phần cứng.",
+        "Vì các CPU sẽ tranh giành quyền tắt ngắt lẫn nhau dẫn đến sập nguồn máy."
+      ],
+      "correct": [0],
+      "explanation": "Trong hệ thống đa nhân, mỗi nhân chạy độc lập. Việc luồng chạy trên Core 0 gọi tắt ngắt chỉ có tác dụng trên Core 0. Luồng chạy trên Core 1 vẫn có thể truy cập bộ nhớ dùng chung bình thường, do đó không thể đảm bảo Loại trừ tương hỗ (Mutual Exclusion)."
+    },
+    {
+      "id": 8,
+      "question": "Tại sao việc cho phép chương trình người dùng (User Mode) tự ý gọi lệnh 'Vô hiệu hóa ngắt' là vô cùng nguy hiểm?",
+      "type": "single",
+      "options": [
+        "Chương trình sẽ tự động xóa sạch dữ liệu trên ổ cứng.",
+        "Một chương trình bị lỗi (vòng lặp vô tận) sau khi tắt ngắt sẽ chiếm đoạt CPU vĩnh viễn, làm toàn bộ hệ thống bị đóng băng (treo máy).",
+        "Làm tăng mức tiêu thụ điện năng của CPU lên gấp 10 lần.",
+        "Hệ điều hành sẽ tự động chuyển sang chế độ an toàn (Safe Mode) và tắt máy."
+      ],
+      "correct": [1],
+      "explanation": "Nếu cho phép ứng dụng user mode tắt ngắt, một tiến trình độc hại hoặc bị lỗi logic (ví dụ `while(1);`) sau khi tắt ngắt sẽ chạy mãi mãi mà hệ điều hành không thể can thiệp (vì ngắt timer bị tắt nên không thể chuyển quyền điều khiển). Do đó, tắt ngắt chỉ được cấp cho Kernel Mode."
+    },
+    {
+      "id": 9,
+      "question": "Chỉ thị phần cứng 'TestAndSet' hoạt động nguyên tử như thế nào? (Mô tả hành vi logic)",
+      "type": "single",
+      "options": [
+        "Gán giá trị của biến thành false và trả về giá trị mới đó.",
+        "Đọc giá trị cũ của một biến, gán giá trị mới của biến đó thành true, và trả về giá trị cũ vừa đọc.",
+        "Kiểm tra xem biến có bằng 0 hay không, nếu có thì cộng thêm 1.",
+        "So sánh hai địa chỉ bộ nhớ và tráo đổi giá trị của chúng."
+      ],
+      "correct": [1],
+      "explanation": "Hàm `TestAndSet` hoạt động nguyên tử ở cấp phần cứng: Nó nhận vào một con trỏ boolean, ghi nhận lại giá trị cũ của biến, đặt giá trị biến đó thành `true`, và trả về giá trị cũ. Toàn bộ chu trình này (đọc - sửa - ghi) diễn ra không thể bị ngắt giữa chừng."
+    },
+    {
+      "id": 10,
+      "question": "Giả sử một khóa miền găng `boolean lock = false`. Tiến trình P0 gọi `TestAndSet(&lock)`. Giá trị trả về của hàm và giá trị mới của `lock` là gì?",
+      "type": "single",
+      "options": [
+        "Trả về false, giá trị mới của lock là false.",
+        "Trả về false, giá trị mới của lock là true.",
+        "Trả về true, giá trị mới của lock là false.",
+        "Trả về true, giá trị mới của lock là true."
+      ],
+      "correct": [1],
+      "explanation": "Giá trị cũ của `lock` là `false` nên hàm trả về `false` (nghĩa là P0 thành công có được khóa). Đồng thời, hàm đặt giá trị mới của `lock` thành `true` để các tiến trình gọi sau sẽ nhận về `true` (báo hiệu khóa đang bận) và phải chờ."
+    },
+    {
+      "id": 11,
+      "question": "Khi sử dụng TestAndSet để triển khai loại trừ tương hỗ đơn giản:\n```c\nwhile (TestAndSet(&lock));\n// Critical Section\nlock = false;\n```\nCách làm này có nhược điểm lớn nhất là gì?",
+      "type": "single",
+      "options": [
+        "Vi phạm yêu cầu Loại trừ tương hỗ (Mutual Exclusion).",
+        "Gây ra hiện tượng chờ đợi bận (Busy Waiting) lãng phí chu kỳ CPU.",
+        "Dẫn đến hiện tượng rò rỉ bộ nhớ nghiêm trọng.",
+        "Không thể hoạt động trên hệ thống đơn nhân."
+      ],
+      "correct": [1],
+      "explanation": "Trong khi khóa `lock` đang là `true`, tiến trình chờ sẽ liên tục thực thi vòng lặp `while` với tần suất hàng triệu lần mỗi giây. Điều này gọi là Chờ đợi bận (Busy Waiting) hay Spinlock, gây tiêu tốn năng lượng và chiếm dụng năng lực xử lý của CPU một cách vô ích."
+    },
+    {
+      "id": 12,
+      "question": "Chỉ thị nguyên tử 'CompareAndSwap' (CAS) nhận vào những đối số nào và thực hiện logic gì?",
+      "type": "single",
+      "options": [
+        "Nhận một biến; tăng biến đó lên 1 đơn vị.",
+        "Nhận một địa chỉ biến (val), một giá trị mong đợi (expected) và một giá trị mới (new_value). Nếu *val == expected, nó gán *val = new_value. Luôn trả về giá trị cũ của *val.",
+        "Nhận hai biến con trỏ và hoán đổi giá trị của hai biến đó vô điều kiện.",
+        "Nhận một khóa; khóa nó lại nếu giá trị bằng 1 và mở khóa nếu bằng 0."
+      ],
+      "correct": [1],
+      "explanation": "Logic của `CompareAndSwap(val, expected, new_value)` hoạt động nguyên tử: kiểm tra xem giá trị tại địa chỉ `val` có bằng `expected` không. Nếu đúng, cập nhật `val` thành `new_value`. Trong mọi trường hợp, hàm trả về giá trị gốc của `val` trước khi so sánh."
+    },
+    {
+      "id": 13,
+      "question": "Làm thế nào để triển khai loại trừ tương hỗ bằng CompareAndSwap với biến khóa `lock` (0: tự do, 1: bận)?",
+      "type": "single",
+      "options": [
+        "while (CompareAndSwap(&lock, 1, 0) == 0);",
+        "while (CompareAndSwap(&lock, 0, 1) != 0);",
+        "while (CompareAndSwap(&lock, 0, 1) == 0);",
+        "lock = CompareAndSwap(&lock, 1, 1);"
+      ],
+      "correct": [1],
+      "explanation": "Tiến trình muốn vào miền găng sẽ lặp: `while (CompareAndSwap(&lock, 0, 1) != 0);`. Hàm sẽ cố gắng đổi `lock` từ 0 (tự do) sang 1 (bận). Nếu thành công, giá trị cũ trả về là 0, vòng lặp `while(0 != 0)` kết thúc, tiến trình vào miền găng. Nếu khóa đang bận (lock=1), hàm trả về 1, vòng lặp `while(1 != 0)` tiếp tục quay."
+    },
+    {
+      "id": 14,
+      "question": "Giải pháp sử dụng 'while (TestAndSet(&lock));' đơn giản có thỏa mãn yêu cầu 'Chờ đợi giới hạn' (Bounded Waiting) không?",
+      "type": "single",
+      "options": [
+        "Có, vì CPU lập lịch công bằng cho tất cả các tiến trình.",
+        "Không, vì không có cơ chế nào đảm bảo tiến trình đã chờ lâu sẽ được chọn vào trước; một tiến trình có thể bị bỏ qua vô hạn do sự cạnh tranh ngẫu nhiên.",
+        "Có, nếu có ít hơn 3 tiến trình.",
+        "Không, vì nó vi phạm nghiêm trọng Loại trừ tương hỗ."
+      ],
+      "correct": [1],
+      "explanation": "Mô hình spinlock đơn giản này không thỏa mãn **Bounded Waiting**. Khi khóa được giải phóng (lock = false), tất cả các tiến trình đang chờ trong vòng lặp `while` cùng nhảy vào tranh giành. Một tiến trình kém may mắn có thể liên tục bị các tiến trình khác tranh mất khóa và rơi vào tình trạng đói tài nguyên (starvation) vô hạn."
+    },
+    {
+      "id": 15,
+      "question": "Để giải quyết bài toán miền găng thỏa mãn cả Bounded Waiting bằng TestAndSet, chúng ta cần bổ sung thêm cấu trúc dữ liệu nào?",
+      "type": "single",
+      "options": [
+        "Một mảng boolean waiting[N] để theo dõi tiến trình nào đang xếp hàng chờ.",
+        "Một hàng đợi ưu tiên dựa trên thời gian tạo tiến trình.",
+        "Một biến đếm số lần vào miền găng của mỗi tiến trình.",
+        "Một ngăn xếp LIFO lưu trữ các trạng thái khóa."
+      ],
+      "correct": [0],
+      "explanation": "Thuật toán thỏa mãn Bounded Waiting bằng TestAndSet sử dụng thêm mảng `boolean waiting[N]` (với N là số tiến trình). Khi một tiến trình thoát miền găng, thay vì đơn giản đặt `lock = false`, nó sẽ duyệt vòng tròn tìm tiến trình kế tiếp có `waiting[j] == true` và đặt `waiting[j] = false` để kích hoạt riêng cho tiến trình đó vào."
+    },
+    {
+      "id": 16,
+      "question": "Khi lập trình đa luồng, tại sao các giải pháp đồng bộ hóa dựa trên phần cứng (như TestAndSet, CompareAndSwap) lại được ưa chuộng hơn thuật toán thuần phần mềm (như Peterson) cho nhiều tiến trình?",
+      "type": "single",
+      "options": [
+        "Vì giải pháp phần cứng không tốn bộ nhớ RAM.",
+        "Vì giải pháp phần cứng đơn giản hơn nhiều, dễ mở rộng cho N tiến trình và được tối ưu hóa trực tiếp ở mức vật lý của chip xử lý.",
+        "Vì thuật toán phần mềm không thể viết được bằng ngôn ngữ C.",
+        "Vì hệ điều hành tự động khóa toàn bộ chương trình phần mềm."
+      ],
+      "correct": [1],
+      "explanation": "Các thuật toán thuần phần mềm cho N tiến trình (như Eisenberg-McGuire) vô cùng phức tạp, khó chứng minh tính đúng đắn và hiệu năng cực thấp. Các chỉ thị phần cứng như CAS hay TestAndSet cung cấp công cụ nguyên tử cực mạnh giúp cài đặt các cấu trúc đồng bộ (Mutex, Semaphore) cho vô số luồng một cách đơn giản, hiệu quả."
+    },
+    {
+      "id": 17,
+      "question": "Thuật toán Dekker là gì?",
+      "type": "single",
+      "options": [
+        "Là giải pháp đồng bộ hóa đầu tiên hoàn toàn bằng phần mềm được công bố cho bài toán miền găng của 2 tiến trình.",
+        "Là một chỉ thị phần cứng được Intel thiết kế.",
+        "Là thuật toán lập lịch CPU thời gian thực.",
+        "Là cơ chế quản lý bộ nhớ ảo của Linux."
+      ],
+      "correct": [0],
+      "explanation": "Thuật toán Dekker là giải pháp phần mềm đầu tiên được ghi nhận giúp giải quyết triệt để bài toán loại trừ tương hỗ cho 2 tiến trình mà không bị deadlock (do nhà toán học Hà Lan T. J. Dekker đưa ra và được Dijkstra giới thiệu năm 1965)."
+    },
+    {
+      "id": 18,
+      "question": "Điểm khác biệt chính giữa chỉ thị TestAndSet và CompareAndSwap là gì?",
+      "type": "single",
+      "options": [
+        "TestAndSet hoạt động nguyên tử, còn CompareAndSwap thì không.",
+        "TestAndSet chỉ xử lý giá trị boolean (true/false), trong khi CompareAndSwap làm việc với các giá trị số nguyên lớn, cho phép triển khai các cấu trúc dữ liệu không khóa phức tạp (lock-free).",
+        "TestAndSet chạy nhanh hơn CompareAndSwap gấp 10 lần.",
+        "TestAndSet chỉ chạy được trên CPU Intel, còn CompareAndSwap chỉ chạy trên CPU ARM."
+      ],
+      "correct": [1],
+      "explanation": "CompareAndSwap (CAS) mạnh mẽ hơn nhiều vì nó làm việc với các giá trị số nguyên. CAS là nền tảng của các thuật toán phi khóa (lock-free/wait-free data structures) vì nó cho phép cập nhật giá trị biến một cách có điều kiện (ví dụ: chỉ tăng biến đếm nếu giá trị hiện tại của nó vẫn chưa bị luồng khác sửa đổi)."
+    },
+    {
+      "id": 19,
+      "question": "Trong các giải pháp sau, giải pháp nào KHÔNG sử dụng kỹ thuật 'Chờ đợi bận' (Busy Waiting)?",
+      "type": "single",
+      "options": [
+        "Giải pháp cài đặt spinlock sử dụng chỉ thị TestAndSet.",
+        "Giải pháp đồng bộ hóa sử dụng biến điều kiện của Monitor và đưa tiến trình vào trạng thái ngủ (Sleep/Block) trên hàng đợi.",
+        "Thuật toán Peterson dành cho hai tiến trình.",
+        "Giải pháp cài đặt spinlock sử dụng chỉ thị CompareAndSwap."
+      ],
+      "correct": [1],
+      "explanation": "Monitor (hoặc Semaphore dạng block-wakeup) đưa tiến trình vào trạng thái bị chặn (Waiting/Blocked queue) khi chưa đủ điều kiện và giải phóng CPU cho tiến trình khác chạy. Ngược lại, spinlock hoặc thuật toán Peterson bắt CPU phải liên tục chạy vòng lặp kiểm tra cờ hiệu (Busy Waiting)."
+    },
+    {
+      "id": 20,
+      "question": "Từ khóa 'volatile' trong C/C++ có vai trò gì khi viết mã nguồn cho các thuật toán đồng bộ phần mềm?",
+      "type": "single",
+      "options": [
+        "Nó báo cho trình biên dịch biết biến đó có thể thay đổi bất ngờ bên ngoài chương trình, ép buộc trình biên dịch luôn phải nạp trực tiếp giá trị từ RAM thay vì đọc từ thanh ghi tối ưu hóa.",
+        "Nó làm biến đó trở thành biến nguyên tử (atomic variable).",
+        "Nó ngăn chặn hoàn toàn Race Condition trên biến đó.",
+        "Nó khóa biến đó lại chỉ cho phép luồng chính (main thread) truy cập."
+      ],
+      "correct": [0],
+      "explanation": "Trong lập trình đa luồng, trình biên dịch có thể tối ưu bằng cách giữ giá trị của biến trên thanh ghi thay vì cập nhật về RAM. Từ khóa `volatile` ngăn chặn hành vi tối ưu này, đảm bảo mọi thay đổi trên biến từ luồng A sẽ được cập nhật trực tiếp xuống RAM để luồng B có thể đọc được ngay lập tức (tuy nhiên `volatile` không đảm bảo tính nguyên tử)."
+    }
+  ]
+}

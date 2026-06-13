@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c5-5-semaphore",
+  "title": "Hệ điều hành - Chương 5: Semaphore",
+  "description": "Kiểm tra kiến thức về Semaphore, các hàm wait() (P) và signal() (V), cơ chế xếp hàng block/wakeup, cách tính toán giá trị Semaphore và ứng dụng đồng bộ hóa.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Semaphore là công cụ đồng bộ hóa do ai đề xuất đầu tiên?",
+      "type": "single",
+      "options": [
+        "Edsger Dijkstra",
+        "Dennis Ritchie",
+        "Alan Turing",
+        "John von Neumann"
+      ],
+      "correct": [0],
+      "explanation": "Semaphore (Biến cờ hiệu) được đề xuất bởi nhà khoa học máy tính người Hà Lan Edsger Dijkstra vào năm 1965 như một giải pháp tổng quát cho bài toán đồng bộ hóa tiến trình."
+    },
+    {
+      "id": 2,
+      "question": "Hai thao tác nguyên tử tiêu chuẩn được định nghĩa để thay đổi giá trị của Semaphore S là gì?",
+      "type": "single",
+      "options": [
+        "lock(S) và unlock(S)",
+        "wait(S) và signal(S) (hoặc P(S) và V(S))",
+        "acquire(S) và release(S)",
+        "sleep(S) và wakeup(S)"
+      ],
+      "correct": [1],
+      "explanation": "Semaphore S được thao tác thông qua hai hàm nguyên tử: `wait(S)` (nghĩa là P - Proberen/to test) và `signal(S)` (nghĩa là V - Verhogen/to increment)."
+    },
+    {
+      "id": 3,
+      "question": "Trong định nghĩa cổ điển (sử dụng chờ đợi bận), thao tác 'wait(S)' được thực hiện như thế nào?",
+      "type": "single",
+      "options": [
+        "S++;",
+        "while (S <= 0); S--;",
+        "S--; if (S < 0) block();",
+        "while (S > 0) S++;"
+      ],
+      "correct": [1],
+      "explanation": "Trong cài đặt cổ điển bận đợi (busy waiting): `wait(S) { while (S <= 0); S--; }`. Tiến trình sẽ xoay vòng chờ nếu S <= 0, khi S > 0 nó sẽ giảm S đi 1 đơn vị rồi đi tiếp."
+    },
+    {
+      "id": 4,
+      "question": "Trong định nghĩa cổ điển, thao tác 'signal(S)' được thực hiện như thế nào?",
+      "type": "single",
+      "options": [
+        "S--;",
+        "S++;",
+        "if (S <= 0) wakeup(); S++;",
+        "while (S == 0) S++;"
+      ],
+      "correct": [1],
+      "explanation": "Trong cài đặt cổ điển: `signal(S) { S++; }`. Nó đơn giản là tăng giá trị của Semaphore lên 1 đơn vị một cách nguyên tử."
+    },
+    {
+      "id": 5,
+      "question": "Trong cài đặt Semaphore hiện đại dạng Block-Wakeup (không bận đợi), cấu trúc dữ liệu của một Semaphore gồm những thành phần nào?",
+      "type": "single",
+      "options": [
+        "Một biến boolean lock và một biến int turn.",
+        "Một biến số nguyên (value) và một danh sách hàng đợi các tiến trình đang bị chặn (list).",
+        "Một mảng các tiến trình và một biến chỉ số CPU.",
+        "Một khóa Mutex duy nhất."
+      ],
+      "correct": [1],
+      "explanation": "Để tránh lãng phí CPU do bận đợi, Semaphore hiện đại định nghĩa một cấu trúc chứa: 1) Một giá trị số nguyên (`int value`), 2) Một danh sách liên kết lưu các tiến trình đang bị chặn chờ đợi khóa (`struct process *list`)."
+    },
+    {
+      "id": 6,
+      "question": "Với cài đặt Semaphore hiện đại (Block-Wakeup), khi giá trị của Semaphore S nhận giá trị ÂM (ví dụ: S = -3), giá trị tuyệt đối của S biểu thị điều gì?",
+      "type": "single",
+      "options": [
+        "Số tiến trình tối đa có thể đồng thời vào miền găng.",
+        "Số lượng tiến trình hiện đang bị chặn (blocked) trong hàng đợi chờ của Semaphore S.",
+        "Số lượng lỗi phần cứng đã xảy ra.",
+        "Không có ý nghĩa gì, đây là lỗi tràn số âm."
+      ],
+      "correct": [1],
+      "explanation": "Trong cài đặt dạng Block-Wakeup, phép giảm `S.value--` được thực hiện trước khi kiểm tra điều kiện. Do đó, nếu `S.value < 0`, giá trị tuyệt đối của nó (ví dụ |-3| = 3) chính là số lượng tiến trình đang bị chặn trong hàng đợi `S.list` chờ được đánh thức."
+    },
+    {
+      "id": 7,
+      "question": "Hãy chọn cài đặt chính xác cho hàm 'wait(S)' theo cơ chế Block-Wakeup.",
+      "type": "single",
+      "options": [
+        "wait(S) { S.value--; if (S.value < 0) { add this process to S.list; block(); } }",
+        "wait(S) { if (S.value <= 0) { block(); } S.value--; }",
+        "wait(S) { S.value++; if (S.value > 0) wakeup(); }",
+        "wait(S) { while (S.value <= 0); S.value--; }"
+      ],
+      "correct": [0],
+      "explanation": "Cài đặt đúng của `wait(S)` dạng Block-Wakeup là: Đầu tiên giảm `S.value` xuống 1. Nếu giá trị mới nhỏ hơn 0, có nghĩa là tài nguyên đã hết, tiến trình hiện tại được đưa vào hàng đợi `S.list` và gọi hệ thống `block()` để đưa tiến trình vào trạng thái Waiting (ngủ)."
+    },
+    {
+      "id": 8,
+      "question": "Hãy chọn cài đặt chính xác cho hàm 'signal(S)' theo cơ chế Block-Wakeup.",
+      "type": "single",
+      "options": [
+        "signal(S) { S.value++; if (S.value <= 0) { remove a process P from S.list; wakeup(P); } }",
+        "signal(S) { S.value++; if (S.value > 0) { wakeup(P); } }",
+        "signal(S) { S.value--; if (S.value < 0) block(); }",
+        "signal(S) { S.value = 0; wakeup_all(); }"
+      ],
+      "correct": [0],
+      "explanation": "Cài đặt đúng của `signal(S)` dạng Block-Wakeup: Đầu tiên tăng `S.value` lên 1. Nếu giá trị sau khi tăng vẫn `<= 0` (nghĩa là trước đó giá trị là âm, có ít nhất một tiến trình đang bị chặn ngủ trong hàng đợi), nó sẽ lấy một tiến trình `P` ra khỏi `S.list` và gọi `wakeup(P)` để đánh thức P dậy."
+    },
+    {
+      "id": 9,
+      "question": "Giả sử Semaphore S có giá trị ban đầu là 2. Sau khi thực hiện chuỗi thao tác: 3 lệnh wait(S) và 1 lệnh signal(S), giá trị của S là bao nhiêu?",
+      "type": "single",
+      "options": [
+        "0",
+        "1",
+        "2",
+        "-1"
+      ],
+      "correct": [0],
+      "explanation": "Phép tính giá trị Semaphore: Khởi đầu: S = 2.\n- wait(S) lần 1: S = 1\n- wait(S) lần 2: S = 0\n- wait(S) lần 3: S = -1 (tiến trình thứ 3 bị blocked)\n- signal(S) lần 1: S = 0 (đánh thức tiến trình bị blocked dậy)\nKết quả cuối cùng S = 0."
+    },
+    {
+      "id": 10,
+      "question": "Giả sử Semaphore S có giá trị ban đầu là 1. Thực hiện lần lượt: wait(S), signal(S), signal(S), wait(S), wait(S). Hỏi tại thời điểm cuối cùng, có bao nhiêu tiến trình đang bị chặn trên hàng đợi của S?",
+      "type": "single",
+      "options": [
+        "0 (không có tiến trình nào bị chặn)",
+        "1",
+        "2",
+        "3"
+      ],
+      "correct": [0],
+      "explanation": "Tính toán: Ban đầu S = 1.\n1. wait(S): S = 0\n2. signal(S): S = 1\n3. signal(S): S = 2\n4. wait(S): S = 1\n5. wait(S): S = 0.\nVì giá trị cuối cùng S = 0 (không âm), nên không có tiến trình nào bị chặn trong hàng đợi. Tất cả các yêu cầu wait đều đã thành công vượt qua."
+    },
+    {
+      "id": 11,
+      "question": "Một Semaphore nhị phân (Binary Semaphore) chỉ có thể nhận các giá trị nào?",
+      "type": "single",
+      "options": [
+        "Chỉ 0 hoặc 1",
+        "Chỉ các số nguyên dương",
+        "Chỉ các số nguyên âm",
+        "Bất kỳ giá trị số nguyên nào"
+      ],
+      "correct": [0],
+      "explanation": "Semaphore nhị phân (Binary Semaphore) chỉ có thể nhận giá trị 0 hoặc 1. Nó hoạt động tương tự như một khóa Mutex đơn giản nhưng không có ràng buộc về quyền sở hữu (ownership)."
+    },
+    {
+      "id": 12,
+      "question": "Semaphore đếm (Counting Semaphore) thường được sử dụng để làm gì?",
+      "type": "single",
+      "options": [
+        "Đếm số lượng lõi CPU đang hoạt động.",
+        "Quản lý quyền truy cập vào một tài nguyên có số lượng thực thể (instances) hữu hạn xác định.",
+        "Đếm số lượng câu lệnh trong miền găng.",
+        "Đo lường thời gian thực thi của một luồng."
+      ],
+      "correct": [1],
+      "explanation": "Counting Semaphore được sử dụng để kiểm soát quyền truy cập vào một tập hợp gồm nhiều tài nguyên giống nhau (ví dụ: hồ bơi kết nối cơ sở dữ liệu gồm 10 kết nối, khởi tạo Semaphore bằng 10). Mỗi tiến trình gọi `wait()` để lấy đi 1 tài nguyên, gọi `signal()` để trả lại tài nguyên."
+    },
+    {
+      "id": 13,
+      "question": "Giả sử ta muốn đồng bộ thứ tự thực thi: Luồng B bắt buộc phải thực thi lệnh Sb SAU KHI luồng A thực thi lệnh Sa. Ta khởi tạo một Semaphore 'synch' bằng giá trị bao nhiêu và cài đặt thế nào?",
+      "type": "single",
+      "options": [
+        "synch = 1; Luồng A: wait(synch); Sa; Luồng B: Sb; signal(synch);",
+        "synch = 0; Luồng A: Sa; signal(synch); Luồng B: wait(synch); Sb;",
+        "synch = 0; Luồng A: wait(synch); Sa; Luồng B: Sb; signal(synch);",
+        "synch = 2; Luồng A: Sa; wait(synch); Luồng B: signal(synch); Sb;"
+      ],
+      "correct": [1],
+      "explanation": "Đặt `synch = 0`. Luồng A thực hiện lệnh `Sa` xong gọi `signal(synch)` để tăng `synch` lên 1. Luồng B trước khi gọi `Sb` phải thực hiện `wait(synch)`. Nếu A chưa chạy xong `Sa`, `synch` vẫn bằng 0 nên B sẽ bị chặn tại `wait(synch)` cho đến khi A phát tín hiệu `signal(synch)`."
+    },
+    {
+      "id": 14,
+      "question": "Khái niệm 'Mutex Semaphore' dùng để chỉ loại Semaphore nào?",
+      "type": "single",
+      "options": [
+        "Counting Semaphore khởi tạo bằng 10.",
+        "Binary Semaphore được khởi tạo bằng 1 dùng để đảm bảo Loại trừ tương hỗ.",
+        "Một cấu trúc chứa cả Mutex và Semaphore ghép lại.",
+        "Semaphore hoạt động ở chế độ chờ đợi bận."
+      ],
+      "correct": [1],
+      "explanation": "Một Binary Semaphore được khởi tạo bằng 1 (ban đầu rảnh) dùng để bảo vệ miền găng thường được gọi là Mutex Semaphore. Các tiến trình gọi `wait(mutex)` trước khi vào miền găng và `signal(mutex)` khi thoát ra."
+    },
+    {
+      "id": 15,
+      "question": "Điều gì xảy ra nếu một lập trình viên vô tình gọi 'signal(S)' thay vì 'wait(S)' khi bắt đầu vào miền găng được bảo vệ bởi Semaphore S (khởi tạo S = 1)?",
+      "type": "single",
+      "options": [
+        "Hệ thống sẽ bị khóa cứng (deadlock).",
+        "Quy tắc loại trừ tương hỗ (Mutual Exclusion) bị vi phạm vì giá trị Semaphore tăng lên 2, cho phép thêm tiến trình khác vào miền găng cùng lúc.",
+        "Hệ điều hành sẽ báo lỗi phân đoạn (Segmentation Fault) và hủy tiến trình.",
+        "Không có ảnh hưởng gì vì S sẽ tự động đặt lại về 1."
+      ],
+      "correct": [1],
+      "explanation": "Gọi `signal(S)` thay vì `wait(S)` sẽ làm giá trị Semaphore tăng từ 1 lên 2. Lúc này, tại một thời điểm có thể có tới 2 tiến trình đồng thời thực thi thành công lệnh `wait(S)` để cùng vào miền găng, trực tiếp phá vỡ quy tắc loại trừ tương hỗ."
+    },
+    {
+      "id": 16,
+      "question": "Nếu hai tiến trình cùng thực thi đoạn mã sau trên hai Semaphore S và Q có giá trị ban đầu là 1:\n- Tiến trình P0: `wait(S); wait(Q); ... signal(S); signal(Q);`\n- Tiến trình P1: `wait(Q); wait(S); ... signal(Q); signal(S);`\nHiện tượng gì có thể xảy ra?",
+      "type": "single",
+      "options": [
+        "Hai tiến trình chạy hoàn toàn bình thường và song song.",
+        "Deadlock (Bế tắc) - P0 giữ S và chờ Q, P1 giữ Q và chờ S mãi mãi.",
+        "Race Condition trên biến S và Q.",
+        "Liveness của hệ thống được nâng cao."
+      ],
+      "correct": [1],
+      "explanation": "Đây là trường hợp Deadlock điển hình do tranh chấp tài nguyên chéo. Nếu P0 lấy thành công `S` (`wait(S)`) và đúng lúc đó CPU chuyển sang P1, P1 lấy thành công `Q` (`wait(Q)`). Tiếp tục, P0 sẽ bị chặn ở `wait(Q)` vì P1 đang giữ Q, và P1 bị chặn ở `wait(S)` vì P0 đang giữ S. Hai tiến trình kẹt cứng vô hạn."
+    },
+    {
+      "id": 17,
+      "question": "Trong cơ chế Block-Wakeup, thao tác nào đưa tiến trình vào danh sách chờ và chuyển trạng thái tiến trình sang Waiting?",
+      "type": "single",
+      "options": [
+        "signal()",
+        "block()",
+        "wakeup()",
+        "yield()"
+      ],
+      "correct": [1],
+      "explanation": "Hàm hệ thống `block()` đình chỉ tiến trình gọi nó. Hệ điều hành sẽ chuyển tiến trình từ trạng thái Running sang trạng thái Waiting (hoặc Blocked), đặt nó vào hàng đợi của Semaphore và giải phóng CPU để lập lịch chạy tiến trình khác."
+    },
+    {
+      "id": 18,
+      "question": "Trong cơ chế Block-Wakeup, thao tác nào chuyển trạng thái một tiến trình bị chặn từ Waiting sang Ready?",
+      "type": "single",
+      "options": [
+        "block()",
+        "wakeup()",
+        "sleep()",
+        "suspend()"
+      ],
+      "correct": [1],
+      "explanation": "Hàm hệ thống `wakeup(P)` được gọi bởi `signal()` để đánh thức tiến trình P đang ngủ trong hàng đợi. Hệ điều hành chuyển P từ trạng thái Waiting sang trạng thái Ready (Sẵn sàng) để bộ lập lịch CPU có thể chọn P chạy tiếp."
+    },
+    {
+      "id": 19,
+      "question": "Semaphore đếm S được khởi tạo bằng 5. Có 8 tiến trình lần lượt gọi lệnh wait(S). Hỏi sau khi cả 8 tiến trình đã gọi lệnh wait(S) thì giá trị của S là bao nhiêu và có bao nhiêu tiến trình đang ở trạng thái blocked?",
+      "type": "single",
+      "options": [
+        "S = -3, và có 3 tiến trình bị blocked.",
+        "S = 3, và có 0 tiến trình bị blocked.",
+        "S = 0, và có 3 tiến trình bị blocked.",
+        "S = -3, và có 5 tiến trình bị blocked."
+      ],
+      "correct": [0],
+      "explanation": "Khởi đầu: S = 5.\n- 5 tiến trình đầu tiên gọi `wait(S)` thành công, giá trị S giảm dần về 0. Cả 5 tiến trình đều đi tiếp vào miền găng.\n- 3 tiến trình tiếp theo gọi `wait(S)` làm S giảm xuống thành -1, -2, rồi -3. Cả 3 tiến trình này đều bị đưa vào trạng thái blocked. Vậy giá trị S là -3 và có 3 tiến trình bị blocked."
+    },
+    {
+      "id": 20,
+      "question": "Lỗi lập trình nào sau đây trên Semaphore chắc chắn sẽ dẫn đến hiện tượng đói tài nguyên hoặc bế tắc (Deadlock/Starvation)? (Chọn tất cả các đáp án đúng)",
+      "type": "multiple",
+      "options": [
+        "Quên gọi lệnh 'signal(S)' sau khi kết thúc miền găng.",
+        "Gọi hai lệnh 'wait(S)' liên tiếp trên cùng một Semaphore nhị phân khởi tạo bằng 1 mà không có 'signal(S)' chen giữa.",
+        "Gọi lệnh 'signal(S)' trước khi vào miền găng thay vì 'wait(S)'.",
+        "Thực hiện hoán đổi thứ tự gọi 'wait()' trên nhiều Semaphore khác nhau giữa các tiến trình."
+      ],
+      "correct": [0, 1, 3],
+      "explanation": "1) Quên gọi `signal(S)` làm Semaphore giữ nguyên trạng thái bị chiếm dụng, khiến tất cả những ai chờ sau đều bị chặn vô hạn (Deadlock/Starvation). 2) Gọi `wait(S)` hai lần liên tiếp sẽ làm S thành -1 ở lần thứ 2, tiến trình tự chặn chính nó mãi mãi. 3) Đảo thứ tự `wait()` trên nhiều Semaphore dễ tạo ra chu kỳ chờ đợi vòng tròn dẫn đến Deadlock. Việc gọi `signal(S)` trước miền găng chỉ gây lỗi vi phạm loại trừ tương hỗ chứ không gây deadlock ngay lập tức."
+    }
+  ]
+}

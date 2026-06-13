@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c5-7-liveness",
+  "title": "Hệ điều hành - Chương 5: Đặc tính Liveness (Deadlock, Livelock & Starvation)",
+  "description": "Kiểm tra kiến thức về các sự cố liên quan đến Liveness (Tính sống): Bế tắc (Deadlock), Khóa động (Livelock), Đói tài nguyên (Starvation), Nghịch đảo độ ưu tiên (Priority Inversion) và giao thức Kế thừa độ ưu tiên.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Thuộc tính 'Liveness' (Tính sống) của một hệ thống đa nhiệm đảm bảo điều gì?",
+      "type": "single",
+      "options": [
+        "Hệ thống sẽ chạy cực nhanh và không tốn điện năng.",
+        "Các tiến trình luôn có tiến triển thực thi hữu hạn và không bị kẹt vô hạn trong trạng thái chờ tài nguyên.",
+        "Hệ thống tự động khởi động lại khi gặp lỗi phần cứng.",
+        "Không có tiến trình nào bị kết thúc bởi người dùng."
+      ],
+      "correct": [1],
+      "explanation": "Liveness (Tính sống) đề cập đến tập hợp các thuộc tính mà một hệ thống phải đáp ứng để đảm bảo các tiến trình tiếp tục tiến triển trong quá trình thực thi. Các sự cố vi phạm tính liveness bao gồm Deadlock, Livelock và Starvation."
+    },
+    {
+      "id": 2,
+      "question": "Deadlock (Bế tắc) trong hệ điều hành là gì?",
+      "type": "single",
+      "options": [
+        "Là hiện tượng CPU bị quá nhiệt dẫn đến treo máy.",
+        "Là tình huống một nhóm tiến trình rơi vào trạng thái chờ đợi vô hạn một sự kiện mà sự kiện đó chỉ có thể được kích hoạt bởi một tiến trình khác trong chính nhóm đó.",
+        "Là lỗi cú pháp nghiêm trọng làm chương trình bị dừng biên dịch.",
+        "Là việc tiến trình chạy quá nhanh làm bộ nhớ đệm bị tràn."
+      ],
+      "correct": [1],
+      "explanation": "Deadlock (Bế tắc) xảy ra khi mỗi tiến trình trong một nhóm đang giữ một tài nguyên và chờ đợi để được cấp phát thêm tài nguyên khác đang bị chiếm giữ bởi một tiến trình khác cũng nằm trong nhóm đó. Kết quả là tất cả các tiến trình trong nhóm đều bị chặn (sleep/block) vô hạn."
+    },
+    {
+      "id": 3,
+      "question": "Bốn điều kiện cần để xảy ra Deadlock (Coffman conditions) là những điều kiện nào?",
+      "type": "single",
+      "options": [
+        "Atomicity, Consistency, Isolation, Durability.",
+        "Mutual Exclusion (Loại trừ tương hỗ), Hold and Wait (Giữ và Chờ), No Preemption (Không tước đoạt), Circular Wait (Chờ đợi vòng tròn).",
+        "Progress, Bounded Waiting, Mutual Exclusion, Preemption.",
+        "SJF scheduling, Priority scheduling, Round Robin, FCFS."
+      ],
+      "correct": [1],
+      "explanation": "Để Deadlock có thể xảy ra, bắt buộc phải đồng thời thỏa mãn cả 4 điều kiện Coffman: 1) Mutual Exclusion (tài nguyên không thể chia sẻ), 2) Hold and Wait (tiến trình giữ tài nguyên này và chờ tài nguyên khác), 3) No Preemption (không thể tước đoạt tài nguyên khi tiến trình chưa tự giải phóng), 4) Circular Wait (tồn tại chu kỳ chờ đợi vòng tròn giữa các tiến trình)."
+    },
+    {
+      "id": 4,
+      "question": "Livelock (Khóa động) là gì?",
+      "type": "single",
+      "options": [
+        "Là tình trạng deadlock xảy ra trên các đĩa cứng thể rắn (SSD).",
+        "Là tình huống các tiến trình liên tục thay đổi trạng thái phản hồi lẫn nhau nhưng không có tiến trình nào tiến triển được công việc thực tế.",
+        "Là lỗi làm chương trình bị crash ngay lập tức khi khởi động.",
+        "Là hiện tượng một luồng chiếm dụng CPU và không bao giờ nhường lượt."
+      ],
+      "correct": [1],
+      "explanation": "Livelock (Khóa động) tương tự như Deadlock ở chỗ các tiến trình không thể tiến triển, nhưng điểm khác là chúng không bị chặn (blocked). Thay vào đó, các luồng liên tục đổi trạng thái phản ứng lại nhau (ví dụ: hai luồng liên tục giải phóng và cố lấy lại khóa trong một vòng lặp vô hạn), khiến CPU hoạt động 100% nhưng không làm được việc gì hữu ích."
+    },
+    {
+      "id": 5,
+      "question": "Sự khác biệt rõ ràng nhất giữa Deadlock và Livelock về mặt sử dụng tài nguyên CPU là gì?",
+      "type": "single",
+      "options": [
+        "Deadlock tiêu tốn 100% CPU, còn Livelock không tốn CPU.",
+        "Trong Deadlock, các tiến trình ở trạng thái Blocked (ngủ) nên không tốn CPU. Trong Livelock, các tiến trình ở trạng thái Active (chạy vòng lặp phản hồi liên tục) nên tiêu tốn rất nhiều năng lực CPU.",
+        "Deadlock chỉ xảy ra ở phần mềm, Livelock chỉ xảy ra ở phần cứng.",
+        "Không có sự khác biệt nào về CPU."
+      ],
+      "correct": [1],
+      "explanation": "Các tiến trình bị Deadlock sẽ đi ngủ (blocked queue) và hoàn toàn giải phóng CPU cho luồng khác. Trái lại, các tiến trình bị Livelock vẫn ở trạng thái chạy (running/ready), chúng liên tục thực hiện các phép so sánh và đổi trạng thái trong vòng lặp nên sẽ vắt kiệt CPU."
+    },
+    {
+      "id": 6,
+      "question": "Hiện tượng 'Starvation' (Đói tài nguyên) là gì?",
+      "type": "single",
+      "options": [
+        "Là tình trạng một tiến trình bị thiếu bộ nhớ RAM dẫn đến bị sập.",
+        "Là tình huống một tiến trình bị chặn vô hạn trong hàng đợi và không bao giờ được cấp phát tài nguyên do các tiến trình khác liên tục được hệ thống ưu tiên lựa chọn trước.",
+        "Là lỗi xảy ra khi tiến trình không có kết nối mạng Internet.",
+        "Là việc máy tính tự tắt nguồn để tiết kiệm năng lượng."
+      ],
+      "correct": [1],
+      "explanation": "Starvation (Đói tài nguyên) xảy ra khi một tiến trình sẵn sàng chạy nhưng liên tục bị bộ lập lịch bỏ qua (ví dụ: thuật toán lập lịch theo độ ưu tiên tĩnh làm các tiến trình độ ưu tiên thấp bị đói CPU vô hạn do luồng độ ưu tiên cao liên tục xuất hiện)."
+    },
+    {
+      "id": 7,
+      "question": "Sự khác biệt chính giữa Starvation và Deadlock là gì?",
+      "type": "single",
+      "options": [
+        "Starvation chỉ xảy ra với tiến trình hệ thống, Deadlock chỉ xảy ra với tiến trình người dùng.",
+        "Deadlock là sự khóa lẫn nhau không thể tự thoát ra của một nhóm tiến trình. Starvation là một tiến trình đơn lẻ phải chờ đợi vô hạn nhưng vẫn có cơ hội chạy nếu thuật toán lập lịch công bằng hơn hoặc lượng công việc giảm đi.",
+        "Deadlock luôn xảy ra nhanh hơn Starvation.",
+        "Starvation phá hủy phần cứng máy tính, còn Deadlock thì không."
+      ],
+      "correct": [1],
+      "explanation": "Deadlock là trạng thái kẹt cứng tuyệt đối (các tiến trình tự khóa chéo nhau, không ai có thể tự giải thoát). Starvation là sự chờ đợi lâu bất thường của một tiến trình do cơ chế lập lịch thiếu công bằng; tiến trình đó vẫn sống và sẵn sàng chạy, chỉ là chưa được chọn."
+    },
+    {
+      "id": 8,
+      "question": "Kỹ thuật 'Lão hóa' (Aging) được sử dụng để giải quyết vấn đề gì trong hệ điều hành?",
+      "type": "single",
+      "options": [
+        "Giải quyết hiện tượng phân mảnh bộ nhớ RAM.",
+        "Giải quyết hiện tượng đói tài nguyên (Starvation) bằng cách tăng dần độ ưu tiên của các tiến trình đã chờ đợi trong hệ thống một thời gian dài.",
+        "Tự động xóa các file tạm trên đĩa cứng.",
+        "Tăng tốc độ xung nhịp của CPU theo tuổi thọ máy tính."
+      ],
+      "correct": [1],
+      "explanation": "Kỹ thuật Aging (Lão hóa) là giải pháp kinh điển chống Starvation: Cứ sau một khoảng thời gian chờ đợi nhất định (ví dụ: mỗi 5 phút trong hàng đợi), độ ưu tiên của tiến trình sẽ được tăng lên 1 mức. Nhờ đó, ngay cả tiến trình độ ưu tiên thấp nhất cuối cùng cũng sẽ đạt độ ưu tiên đủ cao để được thực thi."
+    },
+    {
+      "id": 9,
+      "question": "Hiện tượng 'Nghịch đảo độ ưu tiên' (Priority Inversion) là gì?",
+      "type": "single",
+      "options": [
+        "Là việc hệ điều hành tự động đảo ngược độ ưu tiên của tất cả các tiến trình khi bộ nhớ RAM bị đầy.",
+        "Là tình huống một tiến trình có độ ưu tiên thấp gián tiếp chặn tiến trình có độ ưu tiên cao thông qua việc chiếm giữ tài nguyên khóa, và bị chen ngang bởi một tiến trình độ ưu tiên trung bình.",
+        "Là lỗi thiết kế làm cho các luồng độ ưu tiên cao chạy chậm hơn luồng độ ưu tiên thấp.",
+        "Là cơ chế bảo mật ngăn chặn luồng admin chạy trước luồng user."
+      ],
+      "correct": [1],
+      "explanation": "Priority Inversion xảy ra khi: Luồng cao (H) muốn lấy khóa đang giữ bởi luồng thấp (L) nên H bị chặn. Đúng lúc đó, luồng trung bình (M) xuất hiện và không cần khóa. Vì M có độ ưu tiên cao hơn L nên M cướp CPU của L. Kết quả là L không thể chạy tiếp để giải phóng khóa, làm luồng cao H phải chờ đợi vô hạn sau cả luồng trung bình M."
+    },
+    {
+      "id": 10,
+      "question": "Giao thức 'Kế thừa độ ưu tiên' (Priority Inheritance Protocol) giải quyết hiện tượng Nghịch đảo độ ưu tiên như thế nào?",
+      "type": "single",
+      "options": [
+        "Bằng cách giảm độ ưu tiên của tiến trình trung bình xuống mức thấp nhất.",
+        "Bằng cách tạm thời tăng độ ưu tiên của tiến trình độ ưu tiên thấp (đang giữ khóa) lên bằng độ ưu tiên của tiến trình cao nhất đang xếp hàng chờ khóa đó.",
+        "Bằng cách cho phép tiến trình độ ưu tiên cao tước đoạt khóa từ tiến trình độ ưu tiên thấp một cách vô điều kiện.",
+        "Bằng cách khởi động lại toàn bộ các tiến trình đang tranh chấp."
+      ],
+      "correct": [1],
+      "explanation": "Priority Inheritance yêu cầu: Khi luồng H (độ ưu tiên cao) bị chặn do chờ khóa của luồng L (độ ưu tiên thấp), luồng L sẽ tạm thời thừa hưởng độ ưu tiên của H. Lúc này L có độ ưu tiên bằng H, nên luồng trung bình M không thể cướp CPU của L. Luồng L chạy xong miền găng, giải phóng khóa và trả lại độ ưu tiên cũ của mình. Luồng H lập tức có khóa để chạy."
+    },
+    {
+      "id": 11,
+      "question": "Sự kiện lịch sử nổi tiếng nào sau đây liên quan đến sự cố hệ thống nghiêm trọng do hiện tượng Nghịch đảo độ ưu tiên (Priority Inversion) gây ra?",
+      "type": "single",
+      "options": [
+        "Sự cố sập mạng Internet toàn cầu năm 2000 (Y2K).",
+        "Tàu thăm dò sao Hỏa Mars Pathfinder của NASA bị reset hệ thống liên tục vào năm 1997.",
+        "Sự cố nổ lò phản ứng hạt nhân Chernobyl năm 1986.",
+        "Lỗi phần mềm điều khiển tên lửa Patriot năm 1991."
+      ],
+      "correct": [1],
+      "explanation": "Tàu Mars Pathfinder (1997) bị lỗi reset liên tục do lỗi Priority Inversion trên hệ điều hành VxWorks: luồng thu thập dữ liệu thời tiết (độ ưu tiên thấp) giữ khóa bus dữ liệu, luồng truyền tin thông tin thông tin (độ ưu tiên cao) chờ khóa này, và bị luồng xử lý thông tin liên lạc (độ ưu tiên trung bình) chen ngang liên tục. watchdog timer phát hiện hệ thống ngưng trệ quá lâu nên đã kích hoạt reset khẩn cấp."
+    },
+    {
+      "id": 12,
+      "question": "Để ngăn ngừa điều kiện 'Chờ đợi vòng tròn' (Circular Wait) của Deadlock, chúng ta có thể áp dụng giải pháp nào sau đây?",
+      "type": "single",
+      "options": [
+        "Cấm các tiến trình giữ tài nguyên khi đang yêu cầu tài nguyên mới.",
+        "Đánh số thứ tự toàn cục cho tất cả các tài nguyên và bắt buộc mọi tiến trình chỉ được yêu cầu cấp phát tài nguyên theo thứ tự tăng dần.",
+        "Cho phép hệ điều hành tự ý tước đoạt tài nguyên của các tiến trình đang chạy.",
+        "Chuyển toàn bộ tài nguyên sang dạng chia sẻ được (Shared resources)."
+      ],
+      "correct": [1],
+      "explanation": "Ngăn ngừa Circular Wait bằng cách định nghĩa một hàm ánh xạ F: R -> N gán cho mỗi tài nguyên một số nguyên độc nhất. Một tiến trình đã giữ tài nguyên Ri chỉ được phép yêu cầu thêm tài nguyên Rj nếu F(Rj) > F(Ri). Quy tắc này toán học chứng minh sẽ loại bỏ hoàn toàn khả năng hình thành chu kỳ chờ đợi vòng tròn."
+    },
+    {
+      "id": 13,
+      "question": "Điều kiện 'Giữ và Chờ' (Hold and Wait) trong các điều kiện gây Deadlock có nghĩa là gì?",
+      "type": "single",
+      "options": [
+        "Tiến trình phải giữ tài nguyên trong ít nhất 10 giây trước khi được chờ.",
+        "Một tiến trình đang giữ ít nhất một tài nguyên và đang chờ đợi để được cấp phát thêm tài nguyên mới từ các tiến trình khác.",
+        "Hệ điều hành giữ tài nguyên và bắt tiến trình chờ đợi vô điều kiện.",
+        "Tiến trình giải phóng toàn bộ tài nguyên cũ trước khi đi ngủ."
+      ],
+      "correct": [1],
+      "explanation": "Hold and Wait mô tả trạng thái tham lam của tiến trình: nó không chịu nhả tài nguyên mình đang có (Hold) mà vẫn xếp hàng đòi thêm tài nguyên khác (Wait)."
+    },
+    {
+      "id": 14,
+      "question": "Điều kiện 'Không tước đoạt' (No Preemption) có nghĩa là gì trong ngữ cảnh Deadlock?",
+      "type": "single",
+      "options": [
+        "Tiến trình không được phép tự động thoát khỏi hệ thống.",
+        "Tài nguyên không thể bị thu hồi từ tiến trình đang giữ nó; tài nguyên chỉ được giải phóng tự nguyện bởi chính tiến trình đó sau khi hoàn thành nhiệm vụ.",
+        "Hệ điều hành không được quyền lập lịch cho các tiến trình khác.",
+        "Tiến trình có độ ưu tiên thấp không bao giờ bị ngắt CPU."
+      ],
+      "correct": [1],
+      "explanation": "No Preemption nghĩa là tài nguyên là bất khả xâm phạm. Nếu tiến trình A đang chiếm giữ tài nguyên R, hệ điều hành không được phép dùng vũ lực thu hồi R để đưa cho tiến trình B, trừ khi A tự nguyện trả lại."
+    },
+    {
+      "id": 15,
+      "question": "Trong các giải pháp sau, giải pháp nào phá vỡ điều kiện 'Giữ và Chờ' (Hold and Wait) để phòng ngừa Deadlock?",
+      "type": "single",
+      "options": [
+        "Yêu cầu tiến trình chỉ được đăng ký tài nguyên theo thứ tự tăng dần của chỉ số.",
+        "Yêu cầu một tiến trình phải xin cấp phát và được cấp đầy đủ tất cả các tài nguyên cần thiết trước khi bắt đầu thực thi; hoặc giải phóng hết tài nguyên đang giữ trước khi xin tài nguyên mới.",
+        "Tự động giải phóng tài nguyên sau 5 phút sử dụng.",
+        "Cấm tiến trình sử dụng biến toàn cục."
+      ],
+      "correct": [1],
+      "explanation": "Để phá vỡ Hold and Wait, ta áp dụng quy tắc: tiến trình chỉ được giữ tài nguyên khi không chờ tài nguyên khác, hoặc chỉ được chờ khi không giữ gì cả. Cách làm là yêu cầu tiến trình xin tất cả tài nguyên ngay từ đầu (hoặc nếu muốn xin thêm thì phải trả hết các tài nguyên hiện có rồi mới xin một lượt mới)."
+    },
+    {
+      "id": 16,
+      "question": "Đồ thị cấp phát tài nguyên (Resource Allocation Graph - RAG) có chu kỳ (cycle) có ý nghĩa gì đối với việc phát hiện Deadlock?",
+      "type": "single",
+      "options": [
+        "Nếu đồ thị có chu kỳ thì chắc chắn hệ thống đang bị Deadlock trong mọi trường hợp.",
+        "Nếu đồ thị có chu kỳ và mỗi loại tài nguyên chỉ có đúng 1 thực thể (single instance), hệ thống chắc chắn bị Deadlock. Nếu tài nguyên có nhiều thực thể (multiple instances), chu kỳ chỉ là điều kiện cần (có thể có deadlock hoặc không).",
+        "Đồ thị có chu kỳ nghĩa là hệ thống đang hoạt động với hiệu suất tối đa.",
+        "Chu kỳ trên đồ thị cho thấy tài nguyên đang bị phân mảnh bộ nhớ."
+      ],
+      "correct": [1],
+      "explanation": "Đối với tài nguyên đơn thực thể (Single-instance): Sự tồn tại của chu kỳ (cycle) trên RAG đồng nghĩa với việc tồn tại Circular Wait, nên chắc chắn xảy ra Deadlock. Đối với tài nguyên đa thực thể: chu kỳ chưa chắc gây deadlock vì một tiến trình ngoài chu kỳ có thể giải phóng một thực thể của tài nguyên giúp phá vỡ chu kỳ."
+    },
+    {
+      "id": 17,
+      "question": "Kịch bản hai người đi bộ đi đối diện nhau trong một hành lang hẹp. Cả hai cùng bước sang trái để nhường đường, rồi cùng bước sang phải, liên tục lặp lại và vẫn bị cản đường nhau. Đây là ví dụ trực quan của hiện tượng nào?",
+      "type": "single",
+      "options": [
+        "Deadlock",
+        "Livelock",
+        "Starvation",
+        "Priority Inversion"
+      ],
+      "correct": [1],
+      "explanation": "Đây là ví dụ kinh điển về Livelock. Cả hai người đều tích cực chuyển động (không bị blocked) để giải quyết xung đột, nhưng do hành động của họ đối xứng và đồng bộ hóa sai cách, họ liên tục cản đường nhau và không ai có thể tiến về phía trước."
+    },
+    {
+      "id": 18,
+      "question": "Trong các phát biểu sau, phát biểu nào là ĐÚNG về sự khác biệt giữa 'Ngăn ngừa Deadlock' (Deadlock Prevention) và 'Tránh Deadlock' (Deadlock Avoidance)?",
+      "type": "single",
+      "options": [
+        "Ngăn ngừa Deadlock chạy chậm hơn Tránh Deadlock.",
+        "Ngăn ngừa Deadlock thiết lập các ràng buộc tĩnh để đảm bảo ít nhất 1 trong 4 điều kiện cần của deadlock không thể xảy ra. Tránh Deadlock sử dụng thông tin động (như thuật toán Banker) để kiểm tra xem việc cấp phát tài nguyên có đưa hệ thống vào trạng thái không an toàn (unsafe state) hay không.",
+        "Tránh Deadlock tắt nguồn máy tính khi phát hiện nguy cơ, còn Ngăn ngừa Deadlock thì không.",
+        "Hai khái niệm này hoàn toàn giống nhau."
+      ],
+      "correct": [1],
+      "explanation": "Deadlock Prevention (Ngăn ngừa) tác động trực tiếp vào thiết kế hệ thống bằng cách phá vỡ 1 trong 4 điều kiện Coffman (tĩnh). Deadlock Avoidance (Tránh) kiểm tra động mọi yêu cầu cấp phát tài nguyên dựa trên trạng thái hiện thời để đảm bảo hệ thống luôn nằm trong vùng an toàn (Safe State) (ví dụ: thuật toán Banker)."
+    },
+    {
+      "id": 19,
+      "question": "Một trạng thái của hệ thống được gọi là 'Không an toàn' (Unsafe State) trong lý thuyết tránh Deadlock có nghĩa là gì?",
+      "type": "single",
+      "options": [
+        "Hệ thống bị nhiễm virus độc hại từ bên ngoài.",
+        "Hệ thống đang bị Deadlock ngay lập tức.",
+        "Hệ thống hiện chưa bị deadlock nhưng không thể đảm bảo ngăn chặn các tiến trình yêu cầu tài nguyên tối đa trong tương lai mà không dẫn đến bế tắc.",
+        "Hệ thống có nguy cơ bị mất điện đột ngột."
+      ],
+      "correct": [2],
+      "explanation": "Unsafe State không đồng nghĩa với Deadlock. Unsafe State chỉ có nghĩa là hệ thống không thể tìm thấy một chuỗi an toàn (Safe Sequence) để đảm bảo cấp phát tài nguyên tối đa cho tất cả các tiến trình. Từ trạng thái Unsafe, nếu các tiến trình đòi hỏi tài nguyên tối đa của chúng, hệ thống sẽ rơi vào Deadlock."
+    },
+    {
+      "id": 20,
+      "question": "Thuật toán Banker được sử dụng cho mục đích nào sau đây?",
+      "type": "single",
+      "options": [
+        "Ngăn ngừa bế tắc bằng cách phá vỡ điều kiện No Preemption.",
+        "Tránh bế tắc (Deadlock Avoidance) bằng cách giả lập cấp phát tài nguyên và kiểm tra tính an toàn trước khi thực sự cấp phát.",
+        "Phát hiện và phục hồi bế tắc sau khi nó đã xảy ra.",
+        "Lập lịch CPU cho các tiến trình ngân hàng."
+      ],
+      "correct": [1],
+      "explanation": "Thuật toán Banker của Dijkstra là thuật toán tránh bế tắc (Deadlock Avoidance) nổi tiếng dành cho hệ thống có tài nguyên đa thực thể. Nó kiểm tra xem việc chấp nhận một yêu cầu cấp phát có đưa hệ thống vào trạng thái Unsafe hay không. Nếu có, yêu cầu sẽ bị trì hoãn."
+    }
+  ]
+}

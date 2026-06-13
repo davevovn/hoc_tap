@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c5-2-critical-section",
+  "title": "Hệ điều hành - Chương 5: Vùng tranh chấp (Critical Section)",
+  "description": "Kiểm tra kiến thức về bài toán Miền găng/Vùng tranh chấp (Critical Section Problem), cấu trúc tiến trình đồng bộ và 3 yêu cầu bắt buộc của giải pháp đồng bộ.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Miền găng (Critical Section) của một tiến trình là gì?",
+      "type": "single",
+      "options": [
+        "Là đoạn mã nguồn dài nhất và tốn nhiều CPU nhất của tiến trình đó.",
+        "Là một đoạn mã mà trong đó tiến trình truy cập và thay đổi dữ liệu/tài nguyên chia sẻ chung với tiến trình khác.",
+        "Là vùng bộ nhớ Stack chứa các biến cục bộ của luồng.",
+        "Là đoạn mã chịu trách nhiệm tải tiến trình vào bộ nhớ RAM."
+      ],
+      "correct": [1],
+      "explanation": "Miền găng (Critical Section) là phần mã nguồn chứa các thao tác cập nhật dữ liệu chia sẻ (như ghi file, thay đổi biến chung, cập nhật DB). Để tránh lỗi, ta phải đảm bảo tại một thời điểm chỉ có tối đa một tiến trình được thực thi đoạn mã găng này."
+    },
+    {
+      "id": 2,
+      "question": "Cấu trúc tổng quát của một tiến trình tham gia giải quyết bài toán miền găng gồm những phần nào theo thứ tự?",
+      "type": "single",
+      "options": [
+        "Remainder Section -> Critical Section -> Entry Section -> Exit Section",
+        "Entry Section -> Critical Section -> Exit Section -> Remainder Section",
+        "Critical Section -> Entry Section -> Exit Section -> Remainder Section",
+        "Entry Section -> Exit Section -> Critical Section -> Remainder Section"
+      ],
+      "correct": [1],
+      "explanation": "Cấu trúc chuẩn của một tiến trình đồng bộ bao gồm:\n1. Entry Section: Đoạn mã xin phép vào miền găng.\n2. Critical Section: Đoạn mã găng thực sự thao tác dữ liệu chung.\n3. Exit Section: Đoạn mã báo hiệu đã thoát khỏi miền găng.\n4. Remainder Section: Đoạn mã còn lại, không liên quan dữ liệu chung."
+    },
+    {
+      "id": 3,
+      "question": "Ba yêu cầu bắt buộc phải thỏa mãn của một giải pháp cho bài toán miền găng là gì?",
+      "type": "single",
+      "options": [
+        "Mutual Exclusion (Loại trừ tương hỗ), Progress (Tiến triển), Bounded Waiting (Chờ đợi giới hạn).",
+        "Atomicity (Tính nguyên tử), Consistency (Tính nhất quán), Isolation (Tính cô lập).",
+        "Deadlock Avoidance (Tránh bế tắc), Starvation Prevention (Chống đói), Liveness (Tính sống).",
+        "First-Come First-Served, Round Robin, Shortest Job First."
+      ],
+      "correct": [0],
+      "explanation": "Ba yêu cầu kinh điển để giải quyết bài toán miền găng được đặt ra bởi Dijkstra là: Loại trừ tương hỗ (Mutual Exclusion), Tiến triển (Progress) và Chờ đợi giới hạn (Bounded Waiting)."
+    },
+    {
+      "id": 4,
+      "question": "Yêu cầu 'Loại trừ tương hỗ' (Mutual Exclusion) trong bài toán miền găng phát biểu như thế nào?",
+      "type": "single",
+      "options": [
+        "Nếu tiến trình P đang thực thi trong miền găng của nó, thì không có tiến trình nào khác được phép thực thi trong miền găng của chúng.",
+        "Mọi tiến trình đều có thời gian thực thi trong miền găng bằng nhau.",
+        "Nếu một tiến trình bị lỗi trong miền găng, hệ thống phải tự động phục hồi.",
+        "Các tiến trình không được phép chia sẻ bất kỳ biến toàn cục nào."
+      ],
+      "correct": [0],
+      "explanation": "Mutual Exclusion (Loại trừ tương hỗ) yêu cầu rằng tại một thời điểm, chỉ có nhiều nhất một tiến trình được phép thực thi bên trong miền găng. Đây là yêu cầu cơ bản nhất để ngăn chặn Race Condition."
+    },
+    {
+      "id": 5,
+      "question": "Yêu cầu 'Tiến triển' (Progress) trong bài toán miền găng nhằm mục đích giải quyết vấn đề gì?",
+      "type": "single",
+      "options": [
+        "Đảm bảo tốc độ chạy của mọi tiến trình là nhanh nhất có thể.",
+        "Đảm bảo nếu miền găng đang trống và có một số tiến trình muốn vào, thì việc quyết định chọn tiến trình tiếp theo vào miền găng không bị trì hoãn vô hạn.",
+        "Đảm bảo tiến trình có độ ưu tiên cao luôn được chạy trước.",
+        "Đảm bảo dữ liệu chia sẻ liên tục được cập nhật tiến trình mới."
+      ],
+      "correct": [1],
+      "explanation": "Progress (Tiến triển) yêu cầu: nếu không có tiến trình nào đang chạy trong miền găng và có tiến trình muốn vào, thì chỉ những tiến trình đang không chạy trong miền dư (Remainder Section) mới được tham gia quyết định tiến trình nào sẽ được vào miền găng tiếp theo, và quyết định này phải được đưa ra trong thời gian hữu hạn (không bị trì hoãn vô hạn)."
+    },
+    {
+      "id": 6,
+      "question": "Yêu cầu 'Chờ đợi giới hạn' (Bounded Waiting) có ý nghĩa như thế nào?",
+      "type": "single",
+      "options": [
+        "Mỗi tiến trình chỉ được phép chờ tối đa 10 giây trước khi bị hệ điều hành hủy bỏ (kill).",
+        "Có một giới hạn về số lần các tiến trình khác được phép vào miền găng của chúng sau khi một tiến trình đã đưa ra yêu cầu vào miền găng và trước khi yêu cầu đó được chấp nhận.",
+        "Tiến trình chỉ được chạy trong miền găng với một khoảng thời gian giới hạn định trước.",
+        "Số lượng luồng tối đa chờ đợi ngoài miền găng không được vượt quá số lõi CPU."
+      ],
+      "correct": [1],
+      "explanation": "Bounded Waiting (Chờ đợi giới hạn) ngăn ngừa tình trạng một tiến trình bị 'đói tài nguyên' (starvation) vô hạn. Nó đảm bảo rằng sau khi tiến trình P xin vào miền găng, các tiến trình khác chỉ được phép 'vượt mặt' P để vào miền găng một số lần có hạn. Sau đó, chắc chắn P phải được vào."
+    },
+    {
+      "id": 7,
+      "question": "Đoạn mã nào của tiến trình đóng vai trò xin phép truy cập tài nguyên chia sẻ trước khi bắt đầu sửa đổi nó?",
+      "type": "single",
+      "options": [
+        "Remainder Section",
+        "Entry Section",
+        "Exit Section",
+        "Critical Section"
+      ],
+      "correct": [1],
+      "explanation": "Entry section là đoạn mã thực hiện kiểm tra các điều kiện đồng bộ hóa (ví dụ: kiểm tra cờ hiệu, giảm semaphore, hoặc khóa mutex). Nếu điều kiện an toàn thỏa mãn, tiến trình mới được đi tiếp vào miền găng."
+    },
+    {
+      "id": 8,
+      "question": "Khi một tiến trình P1 thoát khỏi miền găng của mình, đoạn mã nào của nó sẽ thực hiện việc thông báo giải phóng tài nguyên cho các tiến trình khác đang chờ?",
+      "type": "single",
+      "options": [
+        "Entry Section",
+        "Exit Section",
+        "Remainder Section",
+        "Critical Section"
+      ],
+      "correct": [1],
+      "explanation": "Exit Section chứa mã nguồn giải phóng trạng thái khóa (ví dụ: mở khóa mutex, tăng semaphore). Việc này báo hiệu cho hệ thống và các tiến trình khác biết rằng tài nguyên chia sẻ hiện đã sẵn sàng."
+    },
+    {
+      "id": 9,
+      "question": "Giả sử một giải pháp đồng bộ hóa áp dụng cơ chế 'Luân phiên nghiêm ngặt' (Strict Alternation) cho 2 tiến trình P0 và P1 thông qua biến toàn cục `turn` (turn = 0 nghĩa là P0 được vào, turn = 1 nghĩa là P1 được vào):\n```c\n// Tiến trình P0\nwhile (turn != 0); // chờ\n// Critical Section\nturn = 1;\n// Remainder Section\n```\nGiải pháp này vi phạm yêu cầu nào trong 3 yêu cầu của bài toán miền găng?",
+      "type": "single",
+      "options": [
+        "Mutual Exclusion (Loại trừ tương hỗ)",
+        "Progress (Tiến triển)",
+        "Bounded Waiting (Chờ đợi giới hạn)",
+        "Không vi phạm yêu cầu nào."
+      ],
+      "correct": [1],
+      "explanation": "Giải pháp này vi phạm yêu cầu **Progress**. Giả sử `turn = 0`, P0 vào miền găng, thoát ra và gán `turn = 1`, sau đó P0 thực hiện phần còn lại (Remainder Section) rất lâu. Lúc này P1 vào miền găng, thoát ra gán `turn = 0`. Bây giờ P1 muốn vào miền găng lần nữa, nhưng `turn = 0` và P0 đang ở Remainder Section (không có nhu cầu vào miền găng). P1 sẽ bị chặn vô hạn bởi vòng lặp `while(turn != 0)` mặc dù miền găng đang trống. Như vậy, tiến trình đang ở Remainder Section đã ngăn cản tiến trình khác vào miền găng."
+    },
+    {
+      "id": 10,
+      "question": "Giả thiết cơ bản về phần cứng khi phân tích bài toán miền găng là gì?",
+      "type": "single",
+      "options": [
+        "Mọi tiến trình đều chạy với tốc độ đồng nhất và không bao giờ bị ngắt.",
+        "Các tiến trình có tốc độ thực thi khác nhau (khác 0) và không được đưa ra giả thiết nào về tốc độ tương đối giữa chúng.",
+        "Hệ thống bắt buộc phải có kiến trúc đa xử lý đối xứng (SMP).",
+        "Bộ nhớ RAM phải luôn lớn hơn tổng kích thước các tiến trình."
+      ],
+      "correct": [1],
+      "explanation": "Khi thiết kế thuật toán đồng bộ, ta không được giả định về tốc độ thực thi của các tiến trình hay số lượng CPU (trừ việc tốc độ phải lớn hơn 0). Giải pháp đúng đắn phải hoạt động chính xác trong mọi kịch bản lập lịch của hệ điều hành."
+    },
+    {
+      "id": 11,
+      "question": "Đoạn mã nào của một tiến trình KHÔNG được chứa các hoạt động liên quan đến tài nguyên chia sẻ?",
+      "type": "single",
+      "options": [
+        "Entry Section",
+        "Exit Section",
+        "Remainder Section",
+        "Critical Section"
+      ],
+      "correct": [2],
+      "explanation": "Remainder Section (miền dư/miền còn lại) là nơi tiến trình thực hiện các công việc nội bộ riêng biệt của nó (ví dụ: tính toán cục bộ, xử lý giao diện người dùng) và hoàn toàn không đụng chạm đến bất kỳ biến dùng chung nào."
+    },
+    {
+      "id": 12,
+      "question": "Nếu một tiến trình bị chặn (block/sleep) vô hạn ở Entry Section của nó, hiện tượng này có thể là biểu hiện của điều gì?",
+      "type": "multiple",
+      "options": [
+        "Deadlock (Bế tắc) giữa các tiến trình.",
+        "Starvation (Đói tài nguyên) của tiến trình đó.",
+        "Sự vi phạm yêu cầu Progress của giải pháp đồng bộ.",
+        "Sự vi phạm yêu cầu Mutual Exclusion."
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Tiến trình bị chặn vô hạn ở Entry Section có thể do: 1) Hệ thống bị Deadlock (các tiến trình khóa lẫn nhau). 2) Tiến trình bị Starvation (các tiến trình khác liên tục vượt mặt vào miền găng, vi phạm Bounded Waiting). 3) Giải pháp thiết kế lỗi vi phạm Progress khiến không ai vào được dù miền găng trống. Nó không vi phạm Mutual Exclusion vì Mutual Exclusion chỉ đảm bảo không có 2 tiến trình vào cùng lúc."
+    },
+    {
+      "id": 13,
+      "question": "Phát biểu nào sau đây mô tả đúng nhất về sự khác biệt giữa 'Critical Section' (Miền găng) và 'Critical Resource' (Tài nguyên găng)?",
+      "type": "single",
+      "options": [
+        "Critical Section là một thực thể phần cứng, còn Critical Resource là phần mềm.",
+        "Critical Section là đoạn mã nguồn truy cập tài nguyên chia sẻ, còn Critical Resource chính là tài nguyên chia sẻ đó (biến, file, thiết bị).",
+        "Không có sự khác biệt, hai thuật ngữ này hoàn toàn đồng nghĩa.",
+        "Critical Section chỉ tồn tại trong User Mode, còn Critical Resource chỉ tồn tại trong Kernel Mode."
+      ],
+      "correct": [1],
+      "explanation": "Critical Resource (Tài nguyên găng) là đối tượng vật lý hoặc logic dùng chung (ví dụ: máy in, bảng cơ sở dữ liệu, biến đếm). Critical Section (Miền găng) là đoạn mã (code) trong chương trình thực hiện thao tác trên Critical Resource đó."
+    },
+    {
+      "id": 14,
+      "question": "Tại sao yêu cầu 'Loại trừ tương hỗ' (Mutual Exclusion) là quan trọng nhất trong 3 yêu cầu?",
+      "type": "single",
+      "options": [
+        "Vì nếu không thỏa mãn, dữ liệu chia sẻ có thể bị hỏng (corruption) và mất tính nhất quán ngay lập tức.",
+        "Vì nó đảm bảo chương trình không bao giờ bị tràn bộ nhớ.",
+        "Vì nó giúp tăng tốc độ xử lý của CPU lên gấp đôi.",
+        "Vì nó bắt buộc mọi tiến trình phải chạy tuần tự từ đầu đến cuối."
+      ],
+      "correct": [0],
+      "explanation": "Mutual Exclusion đảm bảo tính toàn vẹn của dữ liệu chia sẻ. Nếu vi phạm yêu cầu này (2 tiến trình cùng ghi vào 1 biến cùng lúc), Race Condition sẽ xảy ra, làm cho dữ liệu bị hỗn loạn và chương trình chạy sai logic."
+    },
+    {
+      "id": 15,
+      "question": "Trong các kịch bản sau, kịch bản nào vi phạm yêu cầu 'Chờ đợi giới hạn' (Bounded Waiting)?",
+      "type": "single",
+      "options": [
+        "Tiến trình A vào miền găng, thoát ra, rồi tiến trình B vào ngay lập tức.",
+        "Tiến trình A liên tục yêu cầu và được chấp nhận vào miền găng vô số lần, trong khi tiến trình B cũng đang yêu cầu vào nhưng bị bỏ qua mãi mãi.",
+        "Tiến trình A và B cùng bị kẹt ngoài miền găng và không ai vào được.",
+        "Tiến trình A bị kết thúc bởi hệ điều hành khi đang chạy trong miền găng."
+      ],
+      "correct": [1],
+      "explanation": "Khi tiến trình B đã đưa ra yêu cầu vào miền găng, nhưng tiến trình A cứ liên tục ra vào miền găng mà không nhường cho B, khiến B phải chờ đợi vô hạn (bị đói tài nguyên - starvation). Điều này trực tiếp vi phạm yêu cầu Bounded Waiting."
+    },
+    {
+      "id": 16,
+      "question": "Một giải pháp cho bài toán miền găng được coi là 'liveness-safe' nếu nó thỏa mãn những yêu cầu nào?",
+      "type": "single",
+      "options": [
+        "Chỉ cần thỏa mãn Mutual Exclusion.",
+        "Thỏa mãn cả Progress và Bounded Waiting.",
+        "Chỉ cần thỏa mãn Bounded Waiting.",
+        "Không cần thỏa mãn yêu cầu nào trong 3 yêu cầu."
+      ],
+      "correct": [1],
+      "explanation": "Trong khoa học máy tính, 'Liveness' liên quan đến việc hệ thống đảm bảo sẽ có tiến triển (không bị dừng vô hạn). Progress (tránh hoãn vô hạn) và Bounded Waiting (tránh đói vô hạn) chính là hai yêu cầu đảm bảo tính liveness cho giải pháp đồng bộ."
+    },
+    {
+      "id": 17,
+      "question": "Giả sử một hệ thống chạy 3 tiến trình P0, P1, P2. Giải pháp đồng bộ hóa đảm bảo rằng P0 và P1 không bao giờ ở trong miền găng cùng lúc, P1 và P2 không bao giờ ở trong miền găng cùng lúc. Tuy nhiên, P0 và P2 có thể ở trong miền găng cùng lúc. Giải pháp này có thỏa mãn Mutual Exclusion không?",
+      "type": "single",
+      "options": [
+        "Có, vì P1 không bao giờ ở chung với ai.",
+        "Không, vì P0 và P2 vẫn có thể ở trong miền găng cùng lúc (nếu miền găng của chúng truy cập cùng một dữ liệu chia sẻ).",
+        "Có, nếu P0 và P2 chạy trên hai CPU khác nhau.",
+        "Không thể xác định nếu chưa biết ngôn ngữ lập trình."
+      ],
+      "correct": [1],
+      "explanation": "Nếu miền găng của P0 và P2 cùng thao tác trên một dữ liệu chia sẻ chung, việc chúng ở trong miền găng cùng lúc sẽ phá vỡ nguyên tắc Loại trừ tương hỗ (Mutual Exclusion). Quy tắc loại trừ tương hỗ yêu cầu KHÔNG CÓ BẤT KỲ hai tiến trình nào được ở trong miền găng (của cùng một tài nguyên chia sẻ) tại cùng một thời điểm."
+    },
+    {
+      "id": 18,
+      "question": "Khi một tiến trình đang thực thi trong miền găng (Critical Section), hành động nào sau đây là NGUY HIỂM nhất đối với sự ổn định của hệ thống đồng bộ?",
+      "type": "single",
+      "options": [
+        "Thực hiện phép tính toán số học phức tạp.",
+        "Tiến trình bị rơi vào vòng lặp vô tận hoặc bị treo (hang) mà không giải phóng khóa.",
+        "Gọi hàm đọc dữ liệu từ một biến cục bộ trên stack.",
+        "Sử dụng quá nhiều thanh ghi CPU."
+      ],
+      "correct": [1],
+      "explanation": "Nếu một tiến trình đang giữ khóa miền găng mà bị treo hoặc lặp vô hạn, nó sẽ không bao giờ thực thi đoạn Exit Section để mở khóa. Hậu quả là tất cả các tiến trình khác muốn vào miền găng sẽ bị chặn vô hạn ở Entry Section (gây nghẽn hệ thống)."
+    },
+    {
+      "id": 19,
+      "question": "Điều nào sau đây là đúng khi nói về thiết kế miền găng hiệu quả?",
+      "type": "single",
+      "options": [
+        "Miền găng nên được thiết kế càng lớn càng tốt để gộp nhiều tác vụ lại.",
+        "Miền găng nên được thiết kế càng nhỏ (ngắn) càng tốt, chỉ chứa các dòng lệnh thực sự cần truy cập dữ liệu chia sẻ để giảm thời gian chờ đợi của các tiến trình khác.",
+        "Nên đặt toàn bộ mã nguồn chương trình vào trong miền găng.",
+        "Không cần quan tâm đến kích thước của miền găng."
+      ],
+      "correct": [1],
+      "explanation": "Miền găng càng ngắn thì thời gian một tiến trình chiếm giữ khóa càng ít, giúp giảm thiểu tranh chấp khóa (lock contention), tăng hiệu năng song song và giảm thời gian chờ của các tiến trình khác."
+    },
+    {
+      "id": 20,
+      "question": "Yêu cầu nào trong 3 yêu cầu của miền găng ngăn cản việc một tiến trình KHÔNG có nhu cầu vào miền găng nhưng lại chặn tiến trình khác?",
+      "type": "single",
+      "options": [
+        "Mutual Exclusion",
+        "Progress",
+        "Bounded Waiting",
+        "Không có yêu cầu nào."
+      ],
+      "correct": [1],
+      "explanation": "Yêu cầu **Progress** nêu rõ: chỉ những tiến trình đang không chạy trong Remainder Section (miền còn lại - không có nhu cầu vào miền găng) mới được tham gia quyết định tiến trình nào tiếp theo được vào miền găng. Điều này ngăn chặn việc một tiến trình lười/không có nhu cầu nhưng lại chặn đường tiến trình khác."
+    }
+  ]
+}

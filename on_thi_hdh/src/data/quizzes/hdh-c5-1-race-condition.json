@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c5-1-race-condition",
+  "title": "Hệ điều hành - Chương 5: Race Condition",
+  "description": "Kiểm tra và củng cố kiến thức về Race Condition (Tình trạng tranh giành dữ liệu), nguyên nhân, cơ chế phát sinh và hậu quả trong đồng bộ tiến trình.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Tình trạng tranh giành dữ liệu (Race Condition) là gì?",
+      "type": "single",
+      "options": [
+        "Là tình huống nhiều tiến trình chạy song song và cạnh tranh tài nguyên CPU làm hệ thống bị chậm đi.",
+        "Là tình huống nhiều tiến trình truy cập và thao tác đồng thời trên dữ liệu chia sẻ, và kết quả cuối cùng phụ thuộc vào thứ tự thực thi của chúng.",
+        "Là hiện tượng một tiến trình chiếm giữ CPU quá lâu và không giải phóng cho các tiến trình khác.",
+        "Là lỗi phần cứng xảy ra khi hai thiết bị ngoại vi truyền dữ liệu trên cùng một bus hệ thống."
+      ],
+      "correct": [1],
+      "explanation": "Race Condition xảy ra khi nhiều luồng hoặc tiến trình cùng truy cập và thay đổi một vùng dữ liệu chung. Do việc lập lịch của CPU, thứ tự thực thi các dòng lệnh của các tiến trình có thể đan xen nhau, dẫn đến kết quả cuối cùng không nhất quán và phụ thuộc hoàn toàn vào thứ tự thực thi này."
+    },
+    {
+      "id": 2,
+      "question": "Điều kiện cần thiết nào sau đây để xảy ra Race Condition? (Chọn tất cả các đáp án đúng)",
+      "type": "multiple",
+      "options": [
+        "Có nhiều tiến trình/luồng cùng truy cập vào một vùng tài nguyên/dữ liệu dùng chung.",
+        "Có ít nhất một tiến trình thực hiện thao tác ghi (write) hoặc cập nhật dữ liệu.",
+        "Các tiến trình thực hiện các thao tác một cách bất đồng bộ (asynchronous) hoặc song song.",
+        "Hệ thống phải là hệ thống đa nhân (Multi-core) thực sự."
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Để xảy ra Race Condition, hệ thống phải có tài nguyên chia sẻ, có ít nhất một tiến trình sửa đổi dữ liệu (nếu tất cả chỉ đọc thì kết quả luôn đồng nhất), và thực hiện bất đồng bộ. Race Condition hoàn toàn có thể xảy ra trên hệ thống đơn nhân (Single-core) do cơ chế chia sẻ thời gian (time-sharing) và tiền định thời (preemption)."
+    },
+    {
+      "id": 3,
+      "question": "Tại sao việc gán biến đơn giản ở ngôn ngữ bậc cao (như 'count++') vẫn có nguy cơ gây ra Race Condition?",
+      "type": "single",
+      "options": [
+        "Vì trình biên dịch luôn tối ưu hóa mã nguồn thành các vòng lặp vô tận.",
+        "Vì lệnh gán này khi dịch ra mã máy (Assembly) sẽ gồm nhiều chỉ thị không nguyên tử (non-atomic).",
+        "Vì biến 'count' luôn được lưu trữ trên đĩa cứng thay vì RAM.",
+        "Vì hệ điều hành tự động nhân bản biến này cho mỗi tiến trình."
+      ],
+      "correct": [1],
+      "explanation": "Lệnh `count++` ở ngôn ngữ bậc cao khi biên dịch ra mã máy thường gồm 3 chỉ thị: 1) Nạp giá trị từ bộ nhớ vào thanh ghi (register = count), 2) Tăng giá trị thanh ghi (register = register + 1), 3) Ghi ngược giá trị từ thanh ghi vào bộ nhớ (count = register). Nếu tiến trình bị ngắt giữa các chỉ thị này, Race Condition sẽ xảy ra."
+    },
+    {
+      "id": 4,
+      "question": "Giả sử biến chia sẻ 'count' có giá trị ban đầu là 5. Tiến trình P1 thực thi 'count++' và tiến trình P2 thực thi 'count--' đồng thời không được đồng bộ hóa. Những giá trị nào sau đây có thể là kết quả cuối cùng của 'count'?",
+      "type": "multiple",
+      "options": [
+        "4",
+        "5",
+        "6",
+        "3"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Nếu P1 và P2 chạy xen kẽ ở mức mã máy, kết quả có thể là: 1) P1 hoàn thành trước rồi đến P2 -> count = 5. 2) P2 nạp giá trị 5 trước khi P1 ghi đè giá trị 6, dẫn đến P2 ghi đè giá trị 4 cuối cùng -> count = 4. 3) P1 nạp giá trị 5 trước khi P2 ghi đè giá trị 4, dẫn đến P1 ghi đè giá trị 6 cuối cùng -> count = 6. Giá trị 3 không thể xảy ra vì mỗi tiến trình chỉ tăng hoặc giảm 1 đơn vị."
+    },
+    {
+      "id": 5,
+      "question": "Tính chất 'nguyên tử' (atomic) của một thao tác trong hệ điều hành có nghĩa là gì?",
+      "type": "single",
+      "options": [
+        "Thao tác đó chỉ có thể được thực hiện bởi hạt nhân hệ điều hành.",
+        "Thao tác đó được thực thi liên tục mà không thể bị ngắt quãng giữa chừng; hoặc là thực tất cả hoặc không thực hiện gì.",
+        "Thao tác đó chỉ tốn đúng 1 chu kỳ xung nhịp của CPU.",
+        "Thao tác đó chỉ tác động lên các biến có kiểu dữ liệu nguyên thủy (primitive types)."
+      ],
+      "correct": [1],
+      "explanation": "Một thao tác nguyên tử (atomic operation) đảm bảo tính toàn vẹn: khi đã bắt đầu chạy thì không một tiến trình nào khác có thể chen ngang hoặc nhìn thấy trạng thái trung gian của nó. Nếu thao tác gặp sự cố, nó phải quay về trạng thái ban đầu (rollback)."
+    },
+    {
+      "id": 6,
+      "question": "Race Condition có thể xảy ra trên hệ điều hành đơn nhân (Single-core, Single-processor) hay không?",
+      "type": "single",
+      "options": [
+        "Không, vì tại một thời điểm chỉ có duy nhất một tiến trình thực thi trên CPU nên không thể có sự đan xen mã máy.",
+        "Có, do cơ chế ngắt thời gian (timer interrupt) và cơ chế tiền định thời (preemption) của hệ điều hành làm các tiến trình bị tạm dừng luân phiên.",
+        "Không, hệ điều hành đơn nhân tự động đồng bộ hóa tất cả các biến chia sẻ.",
+        "Có, nhưng chỉ khi hệ thống sử dụng cơ chế lập lịch hợp tác (cooperative scheduling)."
+      ],
+      "correct": [1],
+      "explanation": "Trên hệ thống đơn nhân, mặc dù chỉ có 1 CPU thực thi tại một thời điểm, hệ điều hành đa nhiệm tiền định thời (preemptive multitasking) vẫn dùng ngắt clock để luân chuyển giữa các tiến trình. Nếu tiến trình bị ngắt đúng lúc đang thực hiện dở dang một chuỗi thao tác trên dữ liệu dùng chung, race condition vẫn xảy ra bình thường."
+    },
+    {
+      "id": 7,
+      "question": "Khái niệm 'Heisenbug' thường được dùng để chỉ loại lỗi nào, liên quan mật thiết đến Race Condition?",
+      "type": "single",
+      "options": [
+        "Là lỗi cú pháp làm chương trình không thể biên dịch.",
+        "Là loại lỗi biến mất hoặc thay đổi hành vi khi người lập trình cố gắng quan sát hoặc debug nó.",
+        "Là lỗi tràn bộ đệm làm sập hệ điều hành ngay lập tức.",
+        "Là lỗi do phần cứng quá nhiệt gây ra."
+      ],
+      "correct": [1],
+      "explanation": "Lỗi Race Condition là một ví dụ điển hình của Heisenbug. Khi ta thêm các câu lệnh in log (printf) hoặc chạy bằng công cụ debug (gdb) để kiểm tra, thời gian thực thi (timing) của luồng bị thay đổi, khiến lỗi không xuất hiện nữa. Khi bỏ debug ra thì lỗi lại xuất hiện."
+    },
+    {
+      "id": 8,
+      "question": "Trong nhân hệ điều hành (Kernel space), cấu trúc dữ liệu nào sau đây dễ gặp nguy cơ Race Condition nếu không được đồng bộ?",
+      "type": "multiple",
+      "options": [
+        "Bảng mô tả tiến trình (Process table/PCB table).",
+        "Danh sách các khối bộ nhớ tự do (Free memory blocks list).",
+        "Bảng danh sách các tập tin đang mở (Open file table).",
+        "Bộ nhớ đăng ký thanh ghi cục bộ của một luồng cá biệt."
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Tất cả các cấu trúc dữ liệu dùng chung của hệ thống trong nhân hệ điều hành (như Process Table, Open File Table, Free Memory List) đều được truy cập và chỉnh sửa bởi nhiều tiến trình hoặc luồng nhân khác nhau nên rất dễ bị Race Condition. Thanh ghi cục bộ của một luồng thì chỉ luồng đó truy cập nên không bị ảnh hưởng."
+    },
+    {
+      "id": 9,
+      "question": "Hệ điều hành sử dụng mô hình 'Kernel không tiền định thời' (Non-preemptive kernel) để tránh Race Condition trong kernel mode như thế nào?",
+      "type": "single",
+      "options": [
+        "Bằng cách cấm hoàn toàn tiến trình người dùng gọi hệ thống (system call).",
+        "Bằng cách không cho phép chuyển ngữ cảnh (context switch) khi một tiến trình đang chạy ở chế độ kernel, trừ khi tiến trình đó tự nguyện nhường CPU hoặc bị chặn do I/O.",
+        "Bằng cách chạy toàn bộ kernel trên một CPU riêng biệt tách rời.",
+        "Bằng cách tự động khóa tất cả bộ nhớ RAM khi tiến trình vào kernel."
+      ],
+      "correct": [1],
+      "explanation": "Trong Non-preemptive kernel, một tiến trình đang chạy ở Kernel Mode sẽ không bị hệ điều hành tước quyền điều khiển CPU giữa chừng để cấp cho tiến trình khác. Nhờ vậy, cấu trúc dữ liệu của kernel không bị sửa đổi ngoài ý muốn bởi tiến trình khác, giúp loại bỏ hầu hết race condition trong nhân (nhưng hiệu năng đáp ứng thời gian thực sẽ kém)."
+    },
+    {
+      "id": 10,
+      "question": "Mô hình 'Kernel tiền định thời' (Preemptive kernel) có đặc điểm gì liên quan đến Race Condition so với 'Kernel không tiền định thời'?",
+      "type": "single",
+      "options": [
+        "An toàn hơn và không cần cơ chế đồng bộ vì tiến trình bị ép buộc nhường CPU.",
+        "Phức tạp hơn và đòi hỏi thiết kế đồng bộ cực kỳ chặt chẽ vì một tiến trình ở Kernel Mode có thể bị ngắt bất kỳ lúc nào để nhường cho tiến trình khác.",
+        "Chỉ chạy được trên các CPU thế hệ cũ không hỗ trợ ảo hóa.",
+        "Không hỗ trợ xử lý đa nhiệm (multitasking)."
+      ],
+      "correct": [1],
+      "explanation": "Preemptive kernel cho phép một tiến trình đang thực thi mã nguồn kernel bị ngắt (preempted) để chạy tiến trình có độ ưu tiên cao hơn. Thiết kế này tăng tính phản hồi nhanh của hệ thống nhưng lại tạo ra rủi ro Race Condition cao trong kernel space, đòi hỏi phải sử dụng các cơ chế đồng bộ như mutexes, spinlocks."
+    },
+    {
+      "id": 11,
+      "question": "Kỹ thuật tấn công bảo mật nào sau đây lợi dụng lỗ hổng Race Condition để thay đổi đặc quyền hệ thống?",
+      "type": "single",
+      "options": [
+        "SQL Injection",
+        "TOCTOU (Time-of-Check to Time-of-Use)",
+        "XSS (Cross-Site Scripting)",
+        "Buffer Overflow"
+      ],
+      "correct": [1],
+      "explanation": "TOCTOU (Time-of-Check to Time-of-Use) là một dạng tấn công race condition điển hình. Kẻ tấn công can thiệp vào khoảng thời gian giữa lúc hệ thống kiểm tra điều kiện bảo mật (Check) và lúc hệ thống thực hiện thao tác (Use) để thay đổi tài nguyên (ví dụ: đổi đích liên kết file - symlink), qua đó chiếm đặc quyền truy cập file hệ thống."
+    },
+    {
+      "id": 12,
+      "question": "Thao tác đọc dữ liệu dùng chung (Read-only) của nhiều tiến trình cùng một lúc có thể gây ra Race Condition hay không?",
+      "type": "single",
+      "options": [
+        "Có, vì số lần đọc tăng lên làm thay đổi trạng thái vật lý của ô nhớ.",
+        "Không, vì thao tác đọc không làm thay đổi giá trị của dữ liệu dùng chung.",
+        "Có, nếu các tiến trình đọc ở các tốc độ khác nhau.",
+        "Không, trừ khi các tiến trình đọc dữ liệu từ hai CPU khác nhau."
+      ],
+      "correct": [1],
+      "explanation": "Thao tác chỉ đọc (Read-only) hoàn toàn an toàn và không gây ra Race Condition. Race Condition chỉ phát sinh khi có ít nhất một tiến trình thực hiện thao tác thay đổi/ghi dữ liệu (Write) lên vùng nhớ dùng chung."
+    },
+    {
+      "id": 13,
+      "question": "Hãy chọn phương án thể hiện đúng các bước thực hiện lệnh máy của tiến trình P1 khi chạy lệnh 'count++' trong một Race Condition điển hình.",
+      "type": "single",
+      "options": [
+        "1. Tăng thanh ghi; 2. Nạp giá trị; 3. Lưu giá trị.",
+        "1. Nạp giá trị 'count' vào thanh ghi; 2. Cộng thanh ghi thêm 1; 3. Lưu giá trị từ thanh ghi về lại 'count'.",
+        "1. Lưu giá trị vào RAM; 2. Nạp giá trị vào Cache; 3. Ghi đè bộ nhớ.",
+        "1. Khóa tài nguyên; 2. Tăng biến count; 3. Mở khóa tài nguyên."
+      ],
+      "correct": [1],
+      "explanation": "Lệnh `count++` ở mức hợp ngữ được phân rã thành: `LDR R0, [count]` (Nạp giá trị), `ADD R0, R0, #1` (Tăng thanh ghi), và `STR R0, [count]` (Lưu giá trị). Sự chen ngang của tiến trình khác giữa các bước này là nguồn gốc gây ra Race Condition."
+    },
+    {
+      "id": 14,
+      "question": "Trong các ví dụ sau, ví dụ nào là biểu hiện của Race Condition trong thực tế lập trình?",
+      "type": "single",
+      "options": [
+        "Hai tiến trình cùng in ra màn hình console và các dòng chữ bị xen kẽ nhau.",
+        "Hai luồng cùng thêm một phần tử vào một danh sách liên kết đơn (Linked List) dùng chung dẫn đến việc mất mát phần tử hoặc lỗi con trỏ null.",
+        "Một luồng bị rơi vào vòng lặp vô tận và làm CPU chạy 100%.",
+        "Tiến trình bị kết thúc đột ngột do lỗi phân đoạn bộ nhớ (Segmentation Fault)."
+      ],
+      "correct": [1],
+      "explanation": "Khi hai luồng đồng thời thêm phần tử vào Linked List không đồng bộ: luồng A và B cùng đọc con trỏ tail hiện tại, cả hai cùng gán con trỏ tiếp theo của tail về phần tử của mình. Kết quả là chỉ có một phần tử được liên kết thành công, phần tử còn lại bị rò rỉ bộ nhớ (memory leak) hoặc cấu trúc Linked List bị hỏng."
+    },
+    {
+      "id": 15,
+      "question": "Khi thiết kế một hệ thống đa luồng (Multithreaded), làm thế nào để đảm bảo KHÔNG xảy ra Race Condition?",
+      "type": "single",
+      "options": [
+        "Tăng tốc độ xung nhịp CPU lên cao nhất có thể.",
+        "Sử dụng các cơ chế loại trừ tương hỗ (Mutual Exclusion) như khóa Mutex hoặc Semaphore khi truy cập dữ liệu dùng chung.",
+        "Sử dụng lập lịch Round-robin với lát cắt thời gian (time quantum) cực nhỏ.",
+        "Chỉ sử dụng biến cục bộ trong toàn bộ chương trình."
+      ],
+      "correct": [1],
+      "explanation": "Để loại bỏ Race Condition, chúng ta phải áp dụng cơ chế Loại trừ tương hỗ (Mutual Exclusion). Tại một thời điểm, chỉ cho phép tối đa một luồng thực thi trong đoạn mã truy cập dữ liệu chia sẻ (Critical Section) bằng các công cụ đồng bộ như Mutex, Semaphore, hoặc Monitor."
+    },
+    {
+      "id": 16,
+      "question": "Tại sao các biến khai báo tĩnh cục bộ (local static variables) trong C/C++ có nguy cơ gây ra Race Condition trong chương trình đa luồng?",
+      "type": "single",
+      "options": [
+        "Vì chúng nằm trong vùng nhớ Stack của mỗi luồng.",
+        "Vì chúng được lưu trữ ở vùng nhớ toàn cục dùng chung (Data/BSS segment) của chương trình và tồn tại suốt vòng đời ứng dụng.",
+        "Vì chúng tự động bị giải phóng khi hàm kết thúc thực thi.",
+        "Vì hệ điều hành tự động đồng bộ hóa chúng thông qua ngắt phần cứng."
+      ],
+      "correct": [1],
+      "explanation": "Khác với biến cục bộ thông thường (nằm ở Stack riêng của mỗi luồng), biến cục bộ tĩnh (static) chỉ được khởi tạo một lần duy nhất và nằm ở phân vùng dữ liệu dùng chung cho toàn bộ chương trình. Do đó, các luồng khác nhau khi gọi hàm chứa biến static này sẽ cùng truy cập và sửa đổi một ô nhớ chung, tạo ra nguy cơ Race Condition."
+    },
+    {
+      "id": 17,
+      "question": "Phát biểu nào sau đây về Race Condition là SAI?",
+      "type": "single",
+      "options": [
+        "Race condition có thể được giải quyết hoàn toàn bằng cách sử dụng các chỉ thị nguyên tử (Atomic instructions) do phần cứng hỗ trợ.",
+        "Race condition chỉ xảy ra khi lập trình với các hệ điều hành mã nguồn mở như Linux.",
+        "Race condition có thể dẫn đến hiện tượng dữ liệu bị hư hỏng (data corruption) không thể khôi phục.",
+        "Race condition có thể khó phát hiện thông qua các bài kiểm thử phần mềm (unit test) thông thường."
+      ],
+      "correct": [1],
+      "explanation": "Race Condition là vấn đề logic đồng bộ hóa tiến trình, xảy ra trên mọi hệ điều hành (Windows, macOS, Linux, v.v.) và mọi ngôn ngữ lập trình hỗ trợ đa luồng chứ không riêng gì hệ điều hành mã nguồn mở."
+    },
+    {
+      "id": 18,
+      "question": "Thuật ngữ 'Thread-safe' trong phát triển phần mềm có nghĩa là gì?",
+      "type": "single",
+      "options": [
+        "Chương trình chạy cực nhanh và không tốn bộ nhớ RAM.",
+        "Đoạn mã hoặc thư viện được thiết kế để hoạt động chính xác khi có nhiều luồng gọi đồng thời mà không xảy ra Race Condition.",
+        "Chương trình được bảo vệ chống lại các cuộc tấn công mạng từ bên ngoài.",
+        "Chương trình chỉ chạy trên một luồng duy nhất để đảm bảo an toàn."
+      ],
+      "correct": [1],
+      "explanation": "Một đoạn mã hoặc lớp đối tượng được gọi là Thread-safe nếu nó đảm bảo hoạt động đúng đắn, giữ nguyên tính nhất quán của dữ liệu ngay cả khi được gọi đồng thời bởi nhiều luồng mà không cần lập trình viên bên ngoài phải thêm các cơ chế khóa bổ sung."
+    },
+    {
+      "id": 19,
+      "question": "Giả sử hai tiến trình cùng chạy đoạn mã sau trên một biến toàn cục chung `value = 100`:\n- Tiến trình A: `value = value * 2`\n- Tiến trình B: `value = value + 10`\nNếu xảy ra Race Condition, những kết quả nào sau đây có thể xảy ra với `value`? (Chọn tất cả các đáp án đúng)",
+      "type": "multiple",
+      "options": [
+        "210",
+        "220",
+        "110",
+        "200"
+      ],
+      "correct": [0, 1, 2, 3],
+      "explanation": "Phân tích các trường hợp:\n1. A chạy trước hoàn toàn rồi tới B: `100 * 2 = 200` -> `200 + 10 = 210`.\n2. B chạy trước hoàn toàn rồi tới A: `100 + 10 = 110` -> `110 * 2 = 220`.\n3. A nạp 100, B nạp 100. B thực hiện xong và ghi 110. A thực hiện xong nhân 2 (từ giá trị 100 đã nạp) thành 200 và ghi đè cuối cùng -> `200`.\n4. A nạp 100, B nạp 100. A thực hiện xong nhân 2 thành 200 và ghi đè. B thực hiện xong cộng 10 (từ giá trị 100 đã nạp) thành 110 và ghi đè cuối cùng -> `110`."
+    },
+    {
+      "id": 20,
+      "question": "Trong các phát biểu sau, phát biểu nào mô tả đúng nhất về nguồn gốc sâu xa của Race Condition?",
+      "type": "single",
+      "options": [
+        "Sự không đồng nhất về tốc độ của CPU và RAM.",
+        "Sự thiếu khả năng điều khiển tuyệt đối thứ tự luân chuyển luồng của lập trình viên trong môi trường đa nhiệm chia sẻ thời gian.",
+        "Lỗi thiết kế trong kiến trúc tập lệnh x86 của Intel.",
+        "Việc sử dụng quá nhiều biến toàn cục trong chương trình."
+      ],
+      "correct": [1],
+      "explanation": "Nguyên nhân sâu xa là bộ lập lịch (scheduler) của hệ điều hành quyết định thời điểm tạm dừng luồng này để chạy luồng kia dựa trên các thuật toán tối ưu hệ thống (hoặc ngắt phần cứng bất kỳ). Lập trình viên không thể biết trước hay kiểm soát chính xác thứ tự xen kẽ này, vì vậy nếu không sử dụng các lệnh đồng bộ để khóa dữ liệu dùng chung, race condition chắc chắn sẽ xảy ra."
+    }
+  ]
+}

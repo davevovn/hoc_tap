@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c5-10-dining-philosophers",
+  "title": "Hệ điều hành - Chương 5: Bài toán Triết gia ăn tối (Dining Philosophers)",
+  "description": "Kiểm tra kiến thức về bài toán đồng bộ Triết gia ăn tối (Dining Philosophers), kịch bản gây ra deadlock, các phương án phòng tránh bế tắc và cấu trúc giải pháp bằng Monitor.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Bài toán Triết gia ăn tối (Dining Philosophers) mô tả kịch bản đồng bộ nào sau đây?",
+      "type": "single",
+      "options": [
+        "Nhiều tiến trình cùng gửi thư điện tử qua lại trên mạng.",
+        "Năm triết gia ngồi quanh một bàn tròn, luân phiên suy nghĩ và ăn tối. Có 5 chiếc đũa đặt xen kẽ giữa họ; để ăn, mỗi người cần lấy được cả hai chiếc đũa bên cạnh mình.",
+        "Tiến trình lập lịch phân bổ thời gian chạy của CPU cho các luồng.",
+        "Các tiến trình tranh giành dung lượng đĩa cứng để ghi log file."
+      ],
+      "correct": [1],
+      "explanation": "Dining Philosophers là bài toán đồng bộ kinh điển do Dijkstra đề xuất. Nó đại diện cho vấn đề cấp phát nhiều tài nguyên hạn chế (đũa) cho các tiến trình đang cạnh tranh (triết gia) mà không gây ra bế tắc (deadlock) hay đói tài nguyên (starvation)."
+    },
+    {
+      "id": 2,
+      "question": "Trong giải pháp sử dụng Semaphore đơn giản (mỗi chiếc đũa là một Semaphore nhị phân khởi tạo bằng 1), đoạn mã giả của triết gia thứ i là:\n```c\nwait(chopstick[i]); // lấy đũa trái\nwait(chopstick[(i+1)%5]); // lấy đũa phải\n// ăn tối\nsignal(chopstick[i]);\nsignal(chopstick[(i+1)%5]);\n```\nKịch bản nào sau đây chắc chắn dẫn đến bế tắc (Deadlock) trong hệ thống?",
+      "type": "single",
+      "options": [
+        "Có 1 triết gia đói bụng và lấy đũa ăn bình thường.",
+        "Tất cả 5 triết gia đồng thời đói bụng, cùng ngồi vào bàn và mỗi người đều cầm chiếc đũa bên trái của mình lên thành công cùng một lúc.",
+        "Hai triết gia ngồi cạnh nhau cùng đói và tranh nhau chiếc đũa ở giữa.",
+        "Hai triết gia ăn tối xong và đặt đũa xuống bàn."
+      ],
+      "correct": [1],
+      "explanation": "Nếu cả 5 triết gia đồng thời đói và cùng nhặt đũa bên trái, mảng `chopstick` đều giảm về 0. Khi mỗi người cố gắng thực hiện `wait(chopstick[(i+1)%5])` để lấy đũa bên phải, họ sẽ bị chặn ngủ vô hạn vì chiếc đũa bên phải hiện đã bị người ngồi bên phải cầm mất. Hệ thống rơi vào deadlock hoàn toàn."
+    },
+    {
+      "id": 3,
+      "question": "Để giải quyết hiện tượng Deadlock trong bài toán Triết gia ăn tối, giải pháp nào sau đây là KHẢ THI? (Chọn tất cả các đáp án đúng)",
+      "type": "multiple",
+      "options": [
+        "Chỉ cho phép tối đa 4 triết gia cùng ngồi vào bàn ăn tại một thời điểm (khi bàn có 5 đũa).",
+        "Chỉ cho phép triết gia nhặt đũa khi cả hai chiếc đũa bên trái và phải đều rảnh.",
+        "Sử dụng giải pháp bất đối xứng: triết gia ở vị trí lẻ lấy đũa trái trước rồi tới đũa phải; triết gia ở vị trí chẵn lấy đũa phải trước rồi tới đũa trái.",
+        "Cho phép các triết gia sử dụng đũa chung qua mạng Internet."
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Cả 3 giải pháp đầu đều khả thi và triệt tiêu deadlock:\n1. Giới hạn N-1 triết gia ngồi bàn (phá vỡ deadlock vì luôn có ít nhất 1 người ăn được).\n2. Lấy đũa nguyên tử (chỉ lấy khi có đủ 2 đũa rảnh).\n3. Bất đối xứng chẵn lẻ (phá vỡ Circular Wait)."
+    },
+    {
+      "id": 4,
+      "question": "Tại sao giải pháp giới hạn tối đa 4 triết gia ngồi vào bàn ăn (cho bàn 5 người) lại loại bỏ được Deadlock?",
+      "type": "single",
+      "options": [
+        "Vì có ít người hơn thì họ sẽ ăn nhanh hơn.",
+        "Vì theo nguyên lý ngăn kéo Dirichlet, khi có tối đa 4 người tranh giành 5 chiếc đũa, luôn đảm bảo có ít nhất một triết gia lấy được cả hai đũa (trái và phải) để ăn và sau đó giải phóng đũa.",
+        "Vì hệ điều hành tự động khóa đũa thứ 5.",
+        "Vì triết gia thứ 5 sẽ đi ngủ ở Remainder Section."
+      ],
+      "correct": [1],
+      "explanation": "Khi giới hạn còn 4 triết gia, ta có 5 đũa. Nếu mỗi người giữ 1 đũa (tổng cộng giữ 4 đũa), vẫn còn dư lại 1 đũa trên bàn. Người ngồi cạnh chiếc đũa dư này sẽ lấy được chiếc đũa thứ 2, ăn xong rồi đặt đũa xuống giải phóng cho người khác, giúp phá vỡ chuỗi bế tắc."
+    },
+    {
+      "id": 5,
+      "question": "Giải pháp bất đối xứng (triết gia lẻ lấy đũa trái trước, chẵn lấy đũa phải trước) phá vỡ điều kiện cần nào của Deadlock?",
+      "type": "single",
+      "options": [
+        "Mutual Exclusion (Loại trừ tương hỗ)",
+        "Hold and Wait (Giữ và Chờ)",
+        "No Preemption (Không tước đoạt)",
+        "Circular Wait (Chờ đợi vòng tròn)"
+      ],
+      "correct": [3],
+      "explanation": "Bằng cách bắt triết gia chẵn và lẻ lấy đũa theo thứ tự khác nhau, ta loại bỏ hoàn toàn khả năng hình thành một vòng tròn khép kín các tiến trình chờ đợi nhau (Circular Wait). Không có vòng tròn chờ đợi thì không thể có deadlock."
+    },
+    {
+      "id": 6,
+      "question": "Một giải pháp giải quyết thành công Deadlock cho bài toán Triết gia ăn tối có đồng nghĩa với việc đảm bảo KHÔNG xảy ra Starvation (Đói tài nguyên) hay không?",
+      "type": "single",
+      "options": [
+        "Có, nếu không có deadlock thì chắc chắn mọi triết gia đều được ăn đều đặn.",
+        "Không, vì một triết gia vẫn có thể bị đói vô hạn nếu hai triết gia bên cạnh liên tục luân phiên ăn tối xen kẽ nhau, làm hai chiếc đũa bên cạnh không bao giờ rảnh cùng một lúc.",
+        "Có, vì hệ điều hành tự động chia thời gian ăn cho các triết gia.",
+        "Không, trừ khi bàn ăn chỉ có 2 triết gia."
+      ],
+      "correct": [1],
+      "explanation": "Ngăn ngừa deadlock không đồng nghĩa với chống starvation. Ví dụ: Triết gia A ngồi giữa B và C. B ăn, giải phóng đũa, A chuẩn bị ăn thì C lại nhặt đũa ăn. C ăn xong giải phóng đũa, B lại nhặt đũa ăn. B và C luân phiên ăn liên tục khiến hai chiếc đũa cạnh A không bao giờ cùng rảnh, làm A bị đói vô hạn (Starvation)."
+    },
+    {
+      "id": 7,
+      "question": "Trong giải pháp sử dụng Monitor cho bài toán Triết gia ăn tối, các triết gia có thể ở những trạng thái nào?",
+      "type": "single",
+      "options": [
+        "RUNNING, WAITING, READY",
+        "THINKING, HUNGRY, EATING",
+        "ACQUIRE, RELEASE, MONITOR",
+        "SLEEPING, WAKING, DINING"
+      ],
+      "correct": [1],
+      "explanation": "Trong giải pháp Monitor chuẩn, trạng thái của triết gia được biểu diễn bằng mảng `state[5]` với 3 giá trị: THINKING (đang suy nghĩ), HUNGRY (đang đói và muốn lấy đũa), và EATING (đang ăn tối)."
+    },
+    {
+      "id": 8,
+      "question": "Trong giải pháp Monitor, điều kiện để triết gia thứ i có thể chuyển sang trạng thái EATING (đang ăn) là gì? (state[i] = EATING)",
+      "type": "single",
+      "options": [
+        "state[i] == HUNGRY và hai triết gia bên cạnh không ở trạng thái EATING.",
+        "Chỉ cần hai chiếc đũa bên cạnh rảnh.",
+        "state[i] == THINKING và tất cả triết gia khác đang ngủ.",
+        "state[i] == HUNGRY và ít nhất một triết gia bên cạnh đang suy nghĩ."
+      ],
+      "correct": [0],
+      "explanation": "Triết gia `i` chỉ được phép ăn khi: 1) Bản thân đang đói (`state[i] == HUNGRY`), 2) Triết gia bên trái không ăn (`state[(i+4)%5] != EATING`), 3) Triết gia bên phải không ăn (`state[(i+1)%5] != EATING`)."
+    },
+    {
+      "id": 9,
+      "question": "Trong giải pháp Monitor, mảng biến điều kiện 'condition self[5]' được sử dụng để làm gì?",
+      "type": "single",
+      "options": [
+        "Để đếm số lần ăn của mỗi triết gia.",
+        "Để hoãn (chặn) triết gia thứ i khi anh ta đói (HUNGRY) nhưng không thể lấy được cả hai đũa do hàng xóm đang ăn.",
+        "Để lưu trữ dữ liệu suy nghĩ của triết gia.",
+        "Để khóa hoàn toàn bàn ăn khi có deadlock."
+      ],
+      "correct": [1],
+      "explanation": "Khi triết gia `i` đói nhưng kiểm tra thấy hàng xóm đang ăn, anh ta phải tạm dừng bằng lệnh `self[i].wait()`. Khi hàng xóm ăn xong đặt đũa xuống, họ sẽ gọi `self[i].signal()` để đánh thức triết gia `i` dậy ăn."
+    },
+    {
+      "id": 10,
+      "question": "Trong giải pháp Monitor, khi triết gia i ăn xong và thực hiện đặt đũa xuống bàn (hàm putdown(i)), anh ta có nghĩa vụ gì đối với các triết gia bên cạnh?",
+      "type": "single",
+      "options": [
+        "Yêu cầu họ phải suy nghĩ ngay lập tức.",
+        "Kiểm tra xem triết gia bên trái (i-1) và bên phải (i+1) có đang đói và có đủ điều kiện ăn hay không; nếu có thì gọi signal đánh thức họ dậy.",
+        "Khóa đũa của họ lại để tránh họ ăn quá nhiều.",
+        "Không có nghĩa vụ gì, đặt đũa xuống và đi suy nghĩ."
+      ],
+      "correct": [1],
+      "explanation": "Khi đặt đũa xuống, triết gia `i` chuyển trạng thái về `THINKING` và gọi hàm `test((i+4)%5)` và `test((i+1)%5)` để kiểm tra hai người bên cạnh. Nếu họ đang đói (`HUNGRY`) và có đủ đũa rảnh, hàm `test` sẽ đánh thức họ (`self[neighbor].signal()`)."
+    },
+    {
+      "id": 11,
+      "question": "Giả sử bàn ăn có 5 triết gia (được đánh số từ 0 đến 4). Triết gia số 1 và triết gia số 3 đang ở trạng thái EATING. Hỏi triết gia số 2 có thể chuyển sang trạng thái EATING được không?",
+      "type": "single",
+      "options": [
+        "Có, vì triết gia 2 ngồi giữa 1 và 3.",
+        "Không, vì triết gia 2 dùng chung đũa với cả triết gia 1 và triết gia 3; do cả hai người bên cạnh đều đang ăn nên triết gia 2 không có đũa nào để dùng.",
+        "Có, nếu triết gia 2 có độ ưu tiên cao hơn.",
+        "Không thể xác định nếu chưa biết loại đũa sử dụng."
+      ],
+      "correct": [1],
+      "explanation": "Triết gia 2 dùng chung chiếc đũa bên trái với triết gia 1 và chiếc đũa bên phải với triết gia 3. Khi cả 1 và 3 đang ăn, hai chiếc đũa này đều bị giữ, do đó triết gia 2 chắc chắn không thể ăn và phải đợi."
+    },
+    {
+      "id": 12,
+      "question": "Trong bàn ăn gồm 5 triết gia, số lượng triết gia tối đa có thể đồng thời ăn tối tại cùng một thời điểm mà không vi phạm quy tắc đồng bộ là bao nhiêu?",
+      "type": "single",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "correct": [1],
+      "explanation": "Số triết gia ăn đồng thời tối đa là 2 người ngồi xen kẽ nhau (ví dụ: triết gia 0 và 2, hoặc 1 and 3, hoặc 2 and 4). Không thể là 3 người vì 3 người ngồi quanh bàn 5 ghế chắc chắn sẽ có ít nhất 2 người ngồi cạnh nhau, vi phạm loại trừ tương hỗ đũa."
+    },
+    {
+      "id": 13,
+      "question": "Giả sử bàn ăn có 6 triết gia (đánh số từ 0 đến 5). Số lượng triết gia tối đa có thể ăn đồng thời là bao nhiêu?",
+      "type": "single",
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "correct": [1],
+      "explanation": "Với 6 ghế xếp tròn, ta có thể cho 3 triết gia ngồi xen kẽ ăn cùng lúc (ví dụ các triết gia vị trí chẵn: 0, 2, 4 hoặc vị trí lẻ: 1, 3, 5) mà không ai ngồi cạnh nhau."
+    },
+    {
+      "id": 14,
+      "question": "Trong giải pháp Monitor, phương thức 'pickup(i)' thực hiện nhiệm vụ gì?",
+      "type": "single",
+      "options": [
+        "Giải phóng đũa và đi suy nghĩ.",
+        "Đổi trạng thái thành HUNGRY, kiểm tra xem có đủ đũa để ăn không thông qua hàm test(i); nếu không được ăn thì luồng gọi tự chặn bằng lệnh self[i].wait().",
+        "Tăng giá trị đếm của semaphore lên 1.",
+        "Tự động chọn một triết gia ngẫu nhiên để ăn chung."
+      ],
+      "correct": [1],
+      "explanation": "Phương thức `pickup(i)` được gọi khi triết gia `i` muốn ăn. Nó đặt `state[i] = HUNGRY`, gọi `test(i)` để kiểm tra đũa. Nếu điều kiện ăn không thỏa mãn, nó gọi `self[i].wait()` để đi ngủ chờ tín hiệu."
+    },
+    {
+      "id": 15,
+      "question": "Tại sao giải pháp Monitor cho bài toán Triết gia ăn tối lại tự động đảm bảo không xảy ra Deadlock?",
+      "type": "single",
+      "options": [
+        "Vì Monitor không sử dụng biến điều kiện.",
+        "Vì cấu trúc của Monitor đảm bảo việc kiểm tra trạng thái và nhặt đũa của triết gia được thực hiện nguyên tử (chỉ lấy đũa khi có đủ cả 2 đũa rảnh), loại bỏ điều kiện Hold and Wait ở mức trung gian.",
+        "Vì Monitor tự động tăng số lượng đũa lên gấp đôi.",
+        "Vì Monitor chạy trên hệ thống không tiền định thời."
+      ],
+      "correct": [1],
+      "explanation": "Monitor đảm bảo Loại trừ tương hỗ cho các hàm thành viên. Hàm `pickup(i)` thực hiện việc kiểm tra và chuyển trạng thái ăn một cách nguyên tử. Triết gia chỉ thực sự cầm đũa khi cả hai đũa đều rảnh, tránh được kịch bản mỗi người cầm 1 chiếc đũa và chờ chiếc còn lại (triệt tiêu Hold and Wait đối với tài nguyên lẻ)."
+    },
+    {
+      "id": 16,
+      "question": "Trong giải pháp Semaphore bất đối xứng cho bàn ăn 5 người, triết gia số 4 (vị trí chẵn) sẽ thực hiện nhặt đũa theo thứ tự nào?",
+      "type": "single",
+      "options": [
+        "Nhặt đũa trái (chopstick[4]) trước, rồi nhặt đũa phải (chopstick[0]) sau.",
+        "Nhặt đũa phải (chopstick[0]) trước, rồi nhặt đũa trái (chopstick[4]) sau.",
+        "Nhặt cả hai đũa cùng lúc nguyên tử.",
+        "Chỉ cần nhặt một đũa bất kỳ."
+      ],
+      "correct": [1],
+      "explanation": "Theo quy tắc bất đối xứng: Triết gia chẵn (ở đây là số 4) lấy đũa phải trước (`chopstick[(i+1)%5] = chopstick[0]`) rồi mới lấy đũa trái (`chopstick[i] = chopstick[4]`). Triết gia lẻ (ví dụ số 3) lấy đũa trái trước (`chopstick[3]`) rồi mới lấy đũa phải (`chopstick[4]`)."
+    },
+    {
+      "id": 17,
+      "question": "Công thức xác định chỉ số của chiếc đũa bên trái và bên phải của triết gia thứ i trong bàn ăn 5 người là gì?",
+      "type": "single",
+      "options": [
+        "Đũa trái: chopstick[i]; Đũa phải: chopstick[(i+1)%5]",
+        "Đũa trái: chopstick[(i-1)%5]; Đũa phải: chopstick[i]",
+        "Đũa trái: chopstick[i]; Đũa phải: chopstick[i+1]",
+        "Đũa trái: chopstick[(i+4)%5]; Đũa phải: chopstick[(i+1)%5]"
+      ],
+      "correct": [0],
+      "explanation": "Theo sơ đồ chuẩn đặt đũa quanh bàn tròn cho 5 triết gia (từ 0 đến 4): Triết gia thứ `i` có chiếc đũa bên tay trái là `chopstick[i]` và chiếc đũa bên tay phải là `chopstick[(i+1)%5]`."
+    },
+    {
+      "id": 18,
+      "question": "Giả sử bàn ăn có 5 triết gia. Triết gia số 0 đang EATING. Triết gia số 1 chuyển sang trạng thái HUNGRY và gọi pickup(1). Chuyện gì xảy ra với triết gia số 1?",
+      "type": "single",
+      "options": [
+        "Triết gia 1 cướp đũa của triết gia 0 để ăn.",
+        "Triết gia 1 bị chặn lại và đi ngủ trong hàng đợi self[1] vì triết gia 0 bên cạnh đang ăn chiếm mất đũa chung.",
+        "Triết gia 1 tự động chuyển sang trạng thái THINKING.",
+        "Hệ thống báo lỗi deadlock và reset."
+      ],
+      "correct": [1],
+      "explanation": "Vì triết gia 0 đang ăn (`EATING`), chiếc đũa bên phải của triết gia 0 cũng chính là đũa bên trái của triết gia 1 (`chopstick[0]`) đang bị chiếm dụng. Hàm `test(1)` kiểm tra thấy hàng xóm `state[0] == EATING` nên không cho phép triết gia 1 ăn. Triết gia 1 gọi `self[1].wait()` và đi ngủ."
+    },
+    {
+      "id": 19,
+      "question": "Trong giải pháp Monitor, nếu triết gia 1 đang ngủ chờ đũa, khi triết gia 0 (đang ăn) gọi putdown(0), điều gì xảy ra tiếp theo?",
+      "type": "single",
+      "options": [
+        "Triết gia 0 ép buộc triết gia 1 phải tiếp tục suy nghĩ.",
+        "Hàm putdown(0) của triết gia 0 sẽ chuyển trạng thái của mình về THINKING và tự động gọi test(1). Hàm test(1) thấy cả triết gia 0 và 2 đều không ăn, nên chuyển state[1] sang EATING và gọi self[1].signal() để đánh thức triết gia 1 dậy ăn.",
+        "Triết gia 1 tự động thức dậy và phải tự kiểm tra lại đũa.",
+        "Không có chuyện gì xảy ra cho đến khi triết gia 2 cũng đặt đũa xuống."
+      ],
+      "correct": [1],
+      "explanation": "Khi triết gia 0 gọi `putdown(0)`, nó đặt `state[0] = THINKING` và gọi `test(1)` để kiểm tra giúp hàng xóm bên phải. Hàm `test(1)` thấy triết gia 1 đang đói (`HUNGRY`), đồng thời hàng xóm của 1 là 0 và 2 đều không ăn (`!= EATING`). Nên `test(1)` chuyển `state[1] = EATING` và phát `self[1].signal()` đánh thức luồng 1 dậy đi thẳng vào ăn tối."
+    },
+    {
+      "id": 20,
+      "question": "Sự thiếu hụt tài nguyên đũa trong bài toán Triết gia ăn tối tương đương với vấn đề gì trong lập trình hệ thống thực tế?",
+      "type": "single",
+      "options": [
+        "Hiện tượng rò rỉ bộ nhớ khi không giải phóng con trỏ.",
+        "Sự tranh chấp các khóa độc quyền (như các Mutex/Lock) bảo vệ các tài nguyên hệ thống dùng chung giữa các luồng/tiến trình đang chạy song song.",
+        "Việc CPU bị quá tải do chạy quá nhiều tiến trình ứng dụng nặng.",
+        "Sự phân mảnh của ổ đĩa cứng."
+      ],
+      "correct": [1],
+      "explanation": "Mỗi chiếc đũa trong bài toán đại diện cho một khóa loại trừ tương hỗ (Mutex lock) của một tài nguyên dùng chung. Các triết gia là các luồng. Việc triết gia muốn ăn cần 2 chiếc đũa tương ứng với việc một luồng cần chiếm giữ đồng thời 2 khóa Mutex để thực thi tác vụ. Nếu không thiết kế tốt thứ tự khóa, deadlock chắc chắn xảy ra."
+    }
+  ]
+}
