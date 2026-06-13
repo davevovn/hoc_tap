@@ -1,0 +1,163 @@
+{
+  "id": "hdh-c8-3-cac-giai-thuat-thay-the-trang",
+  "title": "Hệ điều hành - Chương 8.3: Các giải thuật thay thế trang",
+  "description": "Câu hỏi trắc nghiệm về lý thuyết thay thế trang, thuật toán FIFO, OPT, LRU, LFU, MFU và bài toán đánh giá hiệu năng thay thế trang.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Mục tiêu chính yếu nhất của tất cả các thuật toán thay thế trang (Page Replacement Algorithms) là gì?",
+      "type": "single",
+      "options": [
+        "Tối đa hóa mức độ đa lập trình.",
+        "Tối thiểu hóa tỷ lệ lỗi trang (Page Fault rate) để đảm bảo hiệu suất.",
+        "Phân phối bộ nhớ công bằng cho mọi tiến trình.",
+        "Giảm kích thước của bảng trang."
+      ],
+      "correct": [1],
+      "explanation": "Mục tiêu hàng đầu của mọi giải thuật thay thế trang là lựa chọn trang Victim sao cho trong tương lai số lần xảy ra Page Fault (lỗi trang cần nạp lại) là ít nhất có thể."
+    },
+    {
+      "id": 2,
+      "question": "Khi thực hiện thay thế trang, bit nào giúp hệ điều hành biết một trang nạn nhân (victim page) có cần phải 'ghi ngược' (write-back) ra đĩa cứng hay không?",
+      "type": "single",
+      "options": [
+        "Valid/Invalid bit.",
+        "Reference bit (Bit tham chiếu).",
+        "Modify bit (còn gọi là Dirty bit).",
+        "Read-only bit."
+      ],
+      "correct": [2],
+      "explanation": "Mỗi trang có một Modify bit do phần cứng đánh dấu mỗi khi trang đó bị ghi/chỉnh sửa nội dung. Nếu trang được chọn thay thế có Dirty bit = 1, OS phải ghi nó ra đĩa để lưu thay đổi. Nếu bit = 0 (trang chỉ đọc), OS chỉ việc vứt bỏ trang đó vì nội dung trên đĩa vẫn còn nguyên bản, giúp tiết kiệm 1 nửa thời gian xử lý I/O."
+    },
+    {
+      "id": 3,
+      "question": "Thuật toán thay thế trang FIFO (First-In, First-Out) lựa chọn trang nào để thay thế?",
+      "type": "single",
+      "options": [
+        "Trang đã ở trong bộ nhớ (RAM) lâu nhất tính theo thời điểm được nạp vào.",
+        "Trang không được sử dụng trong khoảng thời gian dài nhất vừa qua.",
+        "Trang sẽ không được sử dụng trong khoảng thời gian dài nhất trong tương lai.",
+        "Trang có số lần truy cập ít nhất."
+      ],
+      "correct": [0],
+      "explanation": "Thuật toán FIFO gắn với mỗi trang một thời điểm nạp vào bộ nhớ. Trang nào nạp vào đầu tiên (cũ nhất) sẽ bị đẩy ra đầu tiên."
+    },
+    {
+      "id": 4,
+      "question": "Nghịch lý Belady (Belady's Anomaly) phát biểu điều gì đối với các thuật toán thay thế trang?",
+      "type": "single",
+      "options": [
+        "Càng ít RAM thì máy chạy càng nhanh.",
+        "Tăng số lượng khung trang (frames) vật lý có thể dẫn đến TĂNG số lượng lỗi trang (page faults) thay vì giảm.",
+        "Trang nào vừa bị đẩy ra ngoài sẽ lập tức được gọi lại.",
+        "Không thể xác định được tỷ lệ lỗi trang."
+      ],
+      "correct": [1],
+      "explanation": "Thông thường, khi cung cấp nhiều bộ nhớ (frame) hơn thì lỗi trang sẽ giảm. Tuy nhiên với thuật toán FIFO, có những chuỗi tham chiếu mà việc tăng số lượng frame lại khiến số lần lỗi trang tăng lên. Đó là nghịch lý Belady."
+    },
+    {
+      "id": 5,
+      "question": "Thuật toán thay thế trang Tối ưu (OPT - Optimal) lựa chọn trang nạn nhân dựa trên tiêu chí nào?",
+      "type": "single",
+      "options": [
+        "Trang không được sử dụng trong khoảng thời gian dài nhất vừa qua.",
+        "Trang có thời điểm nạp vào bộ nhớ cũ nhất.",
+        "Trang sẽ KHÔNG ĐƯỢC sử dụng trong khoảng thời gian dài nhất TRONG TƯƠNG LAI.",
+        "Trang có tần suất tham chiếu nhỏ nhất."
+      ],
+      "correct": [2],
+      "explanation": "Thuật toán OPT nhìn vào chuỗi tham chiếu trong tương lai và chọn thay thế trang mà rất lâu sau mới cần dùng tới. Thuật toán này có tỷ lệ lỗi trang thấp nhất có thể."
+    },
+    {
+      "id": 6,
+      "question": "Tại sao thuật toán Tối ưu (OPT) không thể được triển khai thực tế trên các hệ điều hành thương mại?",
+      "type": "single",
+      "options": [
+        "Vì nó gây ra nghịch lý Belady.",
+        "Vì nó làm hỏng dữ liệu trong RAM.",
+        "Vì không thể dự đoán chính xác chuỗi tham chiếu trang trong tương lai của một chương trình.",
+        "Vì nó tốn quá nhiều dung lượng đĩa."
+      ],
+      "correct": [2],
+      "explanation": "OPT đòi hỏi phải biết trước tương lai (tiến trình sẽ chạy các lệnh gì, truy xuất dữ liệu ở trang nào). Điều này là bất khả thi trong hệ thống thực tế. OPT chỉ dùng làm thước đo lý thuyết để đánh giá các thuật toán khác."
+    },
+    {
+      "id": 7,
+      "question": "Thuật toán thay thế trang LRU (Least Recently Used) hoạt động dựa trên nguyên lý nào?",
+      "type": "single",
+      "options": [
+        "Thay thế trang có thời gian nạp lâu nhất.",
+        "Thay thế trang ít được sử dụng nhất (tần suất thấp nhất).",
+        "Thay thế trang không được sử dụng trong khoảng thời gian DÀI NHẤT TRONG QUÁ KHỨ.",
+        "Thay thế ngẫu nhiên một trang."
+      ],
+      "correct": [2],
+      "explanation": "LRU sử dụng quá khứ gần để dự đoán tương lai (Temporal Locality). Trang nào lâu nhất không được truy cập (least recently used) thì có khả năng tương lai cũng không cần, nên được chọn làm victim."
+    },
+    {
+      "id": 8,
+      "question": "Thuật toán LRU có gặp phải Nghịch lý Belady không?",
+      "type": "single",
+      "options": [
+        "Có, nhưng hiếm khi xảy ra.",
+        "Luôn luôn xảy ra.",
+        "Không bao giờ xảy ra, vì LRU thuộc lớp thuật toán Stack (Stack algorithms).",
+        "Có, nếu số khung trang là số lẻ."
+      ],
+      "correct": [2],
+      "explanation": "LRU (và cả OPT) là các thuật toán ngăn xếp (stack algorithms). Đặc điểm của các thuật toán này là tập hợp các trang trong bộ nhớ khi có n frame luôn là tập con của tập trang khi có n+1 frame. Do đó chúng không bao giờ mắc nghịch lý Belady."
+    },
+    {
+      "id": 9,
+      "question": "Khó khăn chính trong việc cài đặt thuật toán LRU chuẩn là gì?",
+      "type": "single",
+      "options": [
+        "Nó có quá nhiều lỗi trang.",
+        "Nó đòi hỏi hỗ trợ phần cứng phức tạp (như quầy đếm thời gian hoặc stack) cập nhật liên tục cho mỗi lần truy cập nhớ, gây quá tải chi phí overhead.",
+        "Không thể thực thi trong chế độ Kernel.",
+        "MMU không có bộ định thời gian."
+      ],
+      "correct": [1],
+      "explanation": "Để biết chính xác thời điểm truy cập cuối cùng của mọi trang, LRU cần một đồng hồ (counter) hoặc ngăn xếp (stack) được cập nhật phần cứng ở mọi chu kỳ truy cập RAM. Điều này quá đắt đỏ và làm chậm bộ nhớ."
+    },
+    {
+      "id": 10,
+      "question": "Để khắc phục chi phí của LRU chuẩn, các hệ điều hành thường dùng Thuật toán xấp xỉ LRU (LRU Approximation). Thành phần phần cứng nào là bắt buộc cho thuật toán này?",
+      "type": "single",
+      "options": [
+        "Modify bit.",
+        "Bit tham chiếu (Reference bit).",
+        "Valid bit.",
+        "CPU Cache L3."
+      ],
+      "correct": [1],
+      "explanation": "Reference bit được phần cứng đặt lên 1 (set) mỗi khi một trang được truy cập (đọc/ghi). Bằng cách định kỳ xóa các bit này về 0, hệ điều hành có thể phân biệt được trang nào MỚI ĐƯỢC sử dụng (bit=1) và trang nào CHƯA DÙNG gần đây (bit=0)."
+    },
+    {
+      "id": 11,
+      "question": "Thuật toán Đồng hồ (Clock algorithm) hay còn gọi là thuật toán Second-chance (Cơ hội thứ hai) hoạt động dựa trên cấu trúc dữ liệu nào?",
+      "type": "single",
+      "options": [
+        "Danh sách liên kết vòng (Circular queue) quét các trang theo thứ tự giống kim đồng hồ.",
+        "Ngăn xếp LIFO.",
+        "Cây nhị phân tìm kiếm.",
+        "Bảng băm."
+      ],
+      "correct": [0],
+      "explanation": "Thuật toán Second-chance dùng một con trỏ quét vòng quanh danh sách các trang. Nếu trang có reference bit = 1, nó được cho cơ hội thứ hai (set bit = 0 và con trỏ đi tiếp). Nếu trang có bit = 0, nó bị chọn làm nạn nhân."
+    },
+    {
+      "id": 12,
+      "question": "Thuật toán LFU (Least Frequently Used) có tiêu chí thay thế trang như thế nào?",
+      "type": "single",
+      "options": [
+        "Thay thế trang có bộ đếm truy cập nhỏ nhất (ít được dùng nhất tính theo tần suất).",
+        "Thay thế trang lâu nhất chưa dùng.",
+        "Thay thế trang mới được nạp vào.",
+        "Thay thế trang có bộ đếm truy cập lớn nhất."
+      ],
+      "correct": [0],
+      "explanation": "LFU đếm số lần một trang được tham chiếu. Trang có số lần tham chiếu thấp nhất bị thay. Vấn đề của LFU là một trang được dùng nhiều ở giai đoạn đầu nhưng sau đó không dùng nữa vẫn có số đếm rất cao, không bị đẩy ra."
+    }
+  ]
+}

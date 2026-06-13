@@ -1,0 +1,163 @@
+{
+  "id": "hdh-c8-1-tong-quan-bo-nho-ao",
+  "title": "Hệ điều hành - Chương 8.1: Tổng quan về bộ nhớ ảo",
+  "description": "Câu hỏi trắc nghiệm kiểm tra kiến thức về khái niệm bộ nhớ ảo, mục tiêu và những lợi ích quan trọng mà bộ nhớ ảo mang lại cho hệ thống máy tính.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Bộ nhớ ảo (Virtual Memory) trong hệ điều hành là kỹ thuật nhằm mục đích gì?",
+      "type": "single",
+      "options": [
+        "Tăng tốc độ truy xuất RAM của CPU.",
+        "Cho phép thực thi một tiến trình mà không cần nạp toàn bộ không gian địa chỉ của nó vào bộ nhớ vật lý.",
+        "Ngăn chặn hoàn toàn hiện tượng phân mảnh bộ nhớ ngoài.",
+        "Mở rộng dung lượng của đĩa cứng từ tính."
+      ],
+      "correct": [1],
+      "explanation": "Bộ nhớ ảo là một kỹ thuật tách biệt bộ nhớ logic của người dùng khỏi bộ nhớ vật lý, cho phép một chương trình có kích thước lớn hơn dung lượng bộ nhớ vật lý vẫn có thể thực thi được bằng cách chỉ nạp vào RAM những phần đang cần thiết."
+    },
+    {
+      "id": 2,
+      "question": "Lợi ích nào sau đây là kết quả của việc sử dụng bộ nhớ ảo? (Chọn tất cả các đáp án đúng)",
+      "type": "multiple",
+      "options": [
+        "Lập trình viên không bị giới hạn bởi kích thước bộ nhớ vật lý khi viết chương trình.",
+        "Mức độ đa lập trình (degree of multiprogramming) tăng lên.",
+        "Tốn ít thao tác I/O hơn để nạp hoặc hoán đổi từng chương trình của người dùng vào bộ nhớ.",
+        "Tốc độ thực thi của mỗi lệnh CPU tăng lên đáng kể."
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Bộ nhớ ảo mang lại không gian nhớ logic rộng lớn, cho phép nạp nhiều tiến trình hơn (tăng multiprogramming), và giảm thời gian I/O do không cần nạp toàn bộ chương trình ngay lập tức. Tuy nhiên, nó không làm tăng tốc độ xử lý lệnh của CPU, thậm chí có thể làm chậm nếu xảy ra lỗi trang."
+    },
+    {
+      "id": 3,
+      "question": "Không gian địa chỉ ảo (Virtual Address Space) của một tiến trình thường có cấu trúc như thế nào?",
+      "type": "single",
+      "options": [
+        "Là một không gian rời rạc, được phân bố ngẫu nhiên không có thứ tự.",
+        "Bắt đầu từ địa chỉ 0, và là một không gian liên tục (contiguous) chứa code, data, heap và stack.",
+        "Chỉ chứa các biến cục bộ và con trỏ, mã nguồn (code) phải nằm ở vùng nhớ khác.",
+        "Giới hạn bắt buộc bằng dung lượng RAM vật lý đang có."
+      ],
+      "correct": [1],
+      "explanation": "Dưới góc nhìn của tiến trình, không gian địa chỉ ảo là một vùng nhớ liên tục bắt đầu từ địa chỉ 0. Dù thực tế các trang nhớ có thể nằm rải rác trên RAM vật lý hoặc đĩa, hệ điều hành và MMU sẽ tạo ảo giác về một bộ nhớ liên tục cho tiến trình."
+    },
+    {
+      "id": 4,
+      "question": "Khoảng trống không gian địa chỉ (hole) thường nằm giữa hai vùng nhớ nào trong bộ nhớ ảo của một tiến trình?",
+      "type": "single",
+      "options": [
+        "Giữa Code và Data.",
+        "Giữa vùng nhớ Stack và vùng nhớ Heap.",
+        "Giữa vùng nhớ dùng chung và vùng chứa Mã nguồn.",
+        "Giữa Data và Bảng trang."
+      ],
+      "correct": [1],
+      "explanation": "Trong không gian địa chỉ ảo, Heap phát triển hướng lên trên (đến các địa chỉ cao hơn) và Stack phát triển hướng xuống dưới (đến các địa chỉ thấp hơn). Khoảng trống ở giữa cho phép Heap và Stack có thể linh hoạt mở rộng khi cần thiết mà không ngay lập tức tốn bộ nhớ vật lý."
+    },
+    {
+      "id": 5,
+      "question": "Bộ nhớ ảo có hỗ trợ việc chia sẻ bộ nhớ (Shared Memory) giữa các tiến trình không?",
+      "type": "single",
+      "options": [
+        "Không, bộ nhớ ảo luôn cách ly tuyệt đối mọi tiến trình.",
+        "Có, bằng cách ánh xạ các trang ảo của các tiến trình khác nhau vào cùng một trang vật lý.",
+        "Chỉ hỗ trợ chia sẻ nếu các tiến trình có cùng kích thước.",
+        "Chỉ chia sẻ được vùng nhớ trên đĩa cứng (disk), không chia sẻ trên RAM."
+      ],
+      "correct": [1],
+      "explanation": "Bộ nhớ ảo cho phép chia sẻ file và bộ nhớ bằng cách trỏ bảng trang của các tiến trình khác nhau vào cùng một vùng không gian vật lý, điển hình là chia sẻ các thư viện hệ thống (Shared Libraries) hoặc dùng cho cơ chế giao tiếp liên tiến trình (IPC)."
+    },
+    {
+      "id": 6,
+      "question": "Ứng dụng nào sau đây KHÔNG PHẢI là một tính năng trực tiếp sinh ra từ việc sử dụng hệ thống bộ nhớ ảo?",
+      "type": "single",
+      "options": [
+        "Shared libraries (Chia sẻ thư viện động).",
+        "Tạo tiến trình mới sử dụng kỹ thuật Copy-on-Write.",
+        "Lưu trữ dữ liệu vĩnh viễn sau khi cúp điện.",
+        "Memory-mapped files (Ánh xạ tập tin vào bộ nhớ)."
+      ],
+      "correct": [2],
+      "explanation": "Lưu trữ dữ liệu vĩnh viễn là chức năng của các thiết bị lưu trữ thứ cấp (Non-volatile storage) như đĩa cứng. Bộ nhớ ảo liên quan đến quản lý không gian địa chỉ khi thực thi, chia sẻ trang vật lý, memory-mapped I/O, và cấp phát linh hoạt."
+    },
+    {
+      "id": 7,
+      "question": "Việc nạp một chương trình không cần toàn bộ mã và dữ liệu có tác dụng tốt nhất trong trường hợp nào sau đây?",
+      "type": "single",
+      "options": [
+        "Chương trình rất nhỏ và thực thi tuần tự từ đầu đến cuối.",
+        "Chương trình có nhiều mã xử lý lỗi hiếm khi xảy ra, các hàm ít được gọi, và các mảng dữ liệu lớn nhưng chỉ dùng một phần.",
+        "Chương trình tính toán khoa học cần truy cập toàn bộ mảng dữ liệu liên tục.",
+        "Hệ thống không hỗ trợ đĩa cứng."
+      ],
+      "correct": [1],
+      "explanation": "Rất nhiều mã trong một chương trình hiếm khi được thực thi (ví dụ: code xử lý lỗi, menu ít dùng, mảng cấp phát thừa kích thước). Việc chỉ nạp những phần mã/dữ liệu thực sự đang sử dụng (demand paging) giúp tiết kiệm lượng lớn bộ nhớ."
+    },
+    {
+      "id": 8,
+      "question": "So với giới hạn vật lý của máy tính (ví dụ RAM 8GB), không gian địa chỉ ảo tối đa của một tiến trình trên hệ điều hành 64-bit là bao nhiêu?",
+      "type": "single",
+      "options": [
+        "Chỉ giới hạn ở mức 8GB để không bị tràn bộ nhớ.",
+        "Tối đa là 16GB, gấp đôi RAM vật lý.",
+        "Rất lớn, có thể lên tới hàng Terabyte hoặc Exabyte, không bị phụ thuộc vào lượng RAM vật lý hiện có.",
+        "Chỉ bằng dung lượng trống còn lại của ổ đĩa C."
+      ],
+      "correct": [2],
+      "explanation": "Kiến trúc 64-bit cho phép không gian địa chỉ ảo khổng lồ (thường được hệ điều hành giới hạn ở mức 48-bit, tức là 256 Terabyte). Tiến trình có thể yêu cầu không gian ảo rộng lớn hơn rất nhiều so với RAM vật lý có sẵn."
+    },
+    {
+      "id": 9,
+      "question": "Trong bộ nhớ ảo, 'Sparse Address Space' (không gian địa chỉ thưa thớt) ám chỉ điều gì?",
+      "type": "single",
+      "options": [
+        "Không gian địa chỉ có số lượng trang vật lý lớn hơn trang ảo.",
+        "Không gian địa chỉ ảo chứa các khoảng trống lớn (chưa được cấp phát) ở giữa.",
+        "Bộ nhớ bị phân mảnh ngoại nặng nề.",
+        "Là không gian địa chỉ không sử dụng RAM."
+      ],
+      "correct": [1],
+      "explanation": "Sparse Address Space là không gian bộ nhớ ảo với khoảng trống lớn (như giữa heap và stack). Các trang trong khoảng trống này không tốn bộ nhớ vật lý cho đến khi tiến trình thực sự cần sử dụng."
+    },
+    {
+      "id": 10,
+      "question": "Thành phần phần cứng nào đóng vai trò chuyển đổi các địa chỉ ảo này thành địa chỉ vật lý trong thực tế?",
+      "type": "single",
+      "options": [
+        "CPU Arithmetic Logic Unit (ALU).",
+        "Trình liên kết (Linker) và Trình nạp (Loader).",
+        "Đĩa cứng từ tính.",
+        "Đơn vị quản lý bộ nhớ (MMU - Memory Management Unit)."
+      ],
+      "correct": [3],
+      "explanation": "Memory Management Unit (MMU) là phần cứng tích hợp trong bộ vi xử lý, nhận vào địa chỉ ảo do CPU sinh ra và tra bảng trang (có thể dùng TLB) để dịch nó thành địa chỉ vật lý trên RAM."
+    },
+    {
+      "id": 11,
+      "question": "Bộ nhớ ảo thường được cài đặt trong hệ điều hành thông qua hai phương pháp phổ biến nào?",
+      "type": "multiple",
+      "options": [
+        "Demand Paging (Phân trang theo yêu cầu)",
+        "Contiguous Memory Allocation (Cấp phát liên tục)",
+        "Demand Segmentation (Phân đoạn theo yêu cầu)",
+        "Direct Memory Access (Truy cập bộ nhớ trực tiếp)"
+      ],
+      "correct": [0, 2],
+      "explanation": "Bộ nhớ ảo thường được thiết kế dưới dạng Phân trang theo yêu cầu (Demand Paging) - phổ biến nhất, hoặc Phân đoạn theo yêu cầu (Demand Segmentation)."
+    },
+    {
+      "id": 12,
+      "question": "Cơ chế nào cho phép chia sẻ các trang nhớ của thư viện C chuẩn (như libc) giữa tất cả các tiến trình đang chạy trong hệ thống?",
+      "type": "single",
+      "options": [
+        "Mỗi tiến trình tự copy một bản sao của libc vào bộ nhớ vật lý của mình.",
+        "Bảng trang của các tiến trình cùng ánh xạ địa chỉ ảo của thư viện đến một khung trang (frame) vật lý duy nhất chứa mã thư viện đó.",
+        "Gửi dữ liệu thư viện qua kết nối mạng (Socket).",
+        "Sử dụng kỹ thuật swapping toàn bộ thư viện ra đĩa."
+      ],
+      "correct": [1],
+      "explanation": "Trong bộ nhớ ảo, các shared library được nạp vào một vùng bộ nhớ vật lý chung. Sau đó, bảng trang của từng tiến trình sẽ được cập nhật để ánh xạ không gian địa chỉ ảo của chúng vào cùng các khung trang vật lý dùng chung này, giúp tiết kiệm dung lượng lớn RAM."
+    }
+  ]
+}

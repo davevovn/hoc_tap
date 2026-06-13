@@ -1,0 +1,163 @@
+{
+  "id": "hdh-c8-5-van-de-thrashing",
+  "title": "Hệ điều hành - Chương 8.5: Vấn đề thrashing",
+  "description": "Kiểm tra kiến thức về hiện tượng Thrashing, mô hình Working-Set và giải pháp Page-Fault Frequency.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Hiện tượng Thrashing (Đập trang) trong hệ điều hành mô tả tình trạng gì?",
+      "type": "single",
+      "options": [
+        "CPU chạy quá nhanh đến mức RAM không theo kịp.",
+        "Hệ thống bị tấn công từ chối dịch vụ (DDoS).",
+        "Hệ thống dành nhiều thời gian để hoán đổi (swap in/out) các trang nhớ giữa RAM và đĩa hơn là thời gian thực thi lệnh CPU.",
+        "Ổ đĩa cứng bị hỏng và tạo ra tiếng ồn (thrash)."
+      ],
+      "correct": [2],
+      "explanation": "Thrashing xảy ra khi bộ nhớ vật lý quá đầy, hệ thống liên tục bị lỗi trang, dẫn đến phải liên tục đưa trang ra và nạp trang vào. CPU nhàn rỗi chờ I/O, hệ thống trở nên cực kỳ chậm chạp."
+    },
+    {
+      "id": 2,
+      "question": "Dấu hiệu điển hình nhất của hệ thống đang bị Thrashing là gì?",
+      "type": "single",
+      "options": [
+        "Hiệu suất sử dụng CPU (CPU utilization) rất cao, I/O đĩa thấp.",
+        "Mức độ sử dụng mạng (Network bandwidth) đạt tối đa.",
+        "Hiệu suất sử dụng CPU rớt xuống rất thấp trong khi tần suất truy cập ổ đĩa (Paging disk I/O) cực kỳ cao.",
+        "Nhiệt độ CPU giảm mạnh."
+      ],
+      "correct": [2],
+      "explanation": "Do mọi tiến trình đều đang chờ hệ điều hành xử lý page fault từ đĩa chậm chạp, CPU không có lệnh nào để chạy nên Utilization rất thấp, trong khi ổ đĩa Swap bị truy xuất liên tục 100% công suất."
+    },
+    {
+      "id": 3,
+      "question": "Hành động sai lầm nào của Bộ lập lịch dài hạn (Long-term scheduler) góp phần gây ra hoặc làm trầm trọng thêm hiện tượng Thrashing?",
+      "type": "single",
+      "options": [
+        "Giảm bớt số lượng tiến trình.",
+        "Khi thấy CPU Utilization giảm, nó phản ứng bằng cách đưa THÊM các tiến trình mới vào bộ nhớ (tăng mức độ đa lập trình) để tăng tải CPU.",
+        "Tắt bộ nhớ đệm Cache.",
+        "Tăng tốc độ quay của ổ cứng."
+      ],
+      "correct": [1],
+      "explanation": "Bộ lập lịch thấy CPU rảnh (do các tiến trình đang block chờ I/O page fault) nên lầm tưởng hệ thống chưa đủ tải, bèn nạp thêm tiến trình mới. Tiến trình mới lại cần frame, lại cướp frame của tiến trình cũ, làm lỗi trang tăng vọt, gây ra vòng lặp chết người (Thrashing)."
+    },
+    {
+      "id": 4,
+      "question": "Nguyên nhân gốc rễ (nguyên nhân sâu xa) của Thrashing liên quan đến khái niệm nào?",
+      "type": "single",
+      "options": [
+        "Tính bảo mật dữ liệu.",
+        "Tính đồng bộ.",
+        "Kích thước tổng số Locality (tính cục bộ) của các tiến trình lớn hơn tổng kích thước bộ nhớ vật lý.",
+        "Tốc độ đồng hồ CPU."
+      ],
+      "correct": [2],
+      "explanation": "Mỗi tiến trình cần một tập hợp các trang thường xuyên truy cập (Locality). Khi tổng kích thước các Locality của TẤT CẢ các tiến trình đang chạy lớn hơn dung lượng RAM vật lý có sẵn, các tiến trình sẽ tranh giành và liên tục đá trang của nhau ra ngoài đĩa."
+    },
+    {
+      "id": 5,
+      "question": "Biện pháp tức thời đơn giản nhất để ngăn chặn hiệu ứng Thrashing lan rộng sang TẤT CẢ các tiến trình khác là gì?",
+      "type": "single",
+      "options": [
+        "Cài đặt thuật toán Thay thế toàn cục (Global Replacement).",
+        "Sử dụng thuật toán Thay thế cục bộ (Local / Priority Replacement) thay cho Toàn cục.",
+        "Nén toàn bộ RAM.",
+        "Gửi tín hiệu cảnh báo mạng."
+      ],
+      "correct": [1],
+      "explanation": "Nếu dùng Global Replacement, một tiến trình bị thiếu trang sẽ cướp trang của tiến trình khác, gây phản ứng dây chuyền. Nếu dùng Local Replacement, tiến trình bị thiếu trang sẽ chỉ thrash các trang của chính nó, các tiến trình khác không bị ảnh hưởng (dù I/O đĩa tổng thể vẫn tốn)."
+    },
+    {
+      "id": 6,
+      "question": "Mô hình Tập làm việc (Working-Set Model) được hệ điều hành sử dụng để làm gì?",
+      "type": "single",
+      "options": [
+        "Tính toán số tiền điện tiêu thụ.",
+        "Giám sát và ước lượng kích thước tính cục bộ (Locality) của từng tiến trình để phòng chống Thrashing.",
+        "Đo lường thời gian sử dụng bàn phím của người dùng.",
+        "Quản lý mạng nội bộ."
+      ],
+      "correct": [1],
+      "explanation": "Working-set là tập hợp các trang mà một tiến trình đang sử dụng tích cực (active) trong thời gian gần nhất (một cửa sổ Δ tham chiếu). Cấp đủ frame bằng kích thước working-set sẽ giúp tiến trình chạy mượt mà không bị page fault nhiều."
+    },
+    {
+      "id": 7,
+      "question": "Trong mô hình Working-Set, tham số Δ (Delta - cửa sổ tập làm việc) đại diện cho điều gì?",
+      "type": "single",
+      "options": [
+        "Số lượng frame vật lý có trong máy.",
+        "Số lượng lỗi trang tối đa cho phép.",
+        "Số lượng các tham chiếu trang trong khoảng thời gian quan sát gần nhất (ví dụ: 10,000 tham chiếu bộ nhớ vừa qua).",
+        "Số tiền mua RAM."
+      ],
+      "correct": [2],
+      "explanation": "Cửa sổ Δ xác định 'quá khứ gần'. Tập làm việc (Working-Set) chính là danh sách tất cả CÁC TRANG DUY NHẤT được truy cập trong Δ lần tham chiếu bộ nhớ cuối cùng."
+    },
+    {
+      "id": 8,
+      "question": "Trong mô hình Working-Set, nếu tổng số khung trang yêu cầu của tất cả các Tập làm việc (gọi là D) LỚN HƠN tổng số khung trang vật lý hiện có của hệ thống (m), hệ điều hành phải làm gì?",
+      "type": "single",
+      "options": [
+        "Đình chỉ (Suspend/Swap out) một hoặc nhiều tiến trình để giảm D xuống thấp hơn m.",
+        "Ép các tiến trình chạy nhanh hơn.",
+        "Tiếp tục nạp thêm tiến trình mới.",
+        "Hiển thị màn hình xanh (BSOD) và tắt máy."
+      ],
+      "correct": [0],
+      "explanation": "Khi D > m, hệ thống chắc chắn sẽ rơi vào Thrashing. Biện pháp duy nhất của HĐH là chọn tạm dừng một tiến trình, thu hồi toàn bộ frame của nó để chia cho các tiến trình khác, khi nào RAM rộng rải thì khôi phục lại nó."
+    },
+    {
+      "id": 9,
+      "question": "Mô hình Tần suất lỗi trang (Page-Fault Frequency - PFF) là một chiến lược khác để quản lý Thrashing. Theo PFF, hệ điều hành giám sát điều gì?",
+      "type": "single",
+      "options": [
+        "Số lượng ký tự gõ trên bàn phím.",
+        "Tỷ lệ xảy ra lỗi trang của từng tiến trình, so sánh nó với giới hạn trên (Upper bound) và giới hạn dưới (Lower bound).",
+        "Điện áp của CPU.",
+        "Số vòng quay của quạt tản nhiệt."
+      ],
+      "correct": [1],
+      "explanation": "Thay vì đếm số trang tham chiếu phức tạp như Working-set, PFF trực tiếp đếm số lần Page fault xảy ra theo thời gian. Nếu lỗi trang quá nhiều (vượt giới hạn trên), có nghĩa tiến trình đang thiếu frame. Nếu quá ít (dưới giới hạn dưới), tiến trình đang có thừa frame."
+    },
+    {
+      "id": 10,
+      "question": "Trong chiến lược Tần suất lỗi trang (PFF), nếu tỷ lệ lỗi trang của một tiến trình VƯỢT QUÁ giới hạn trên (Upper bound), hệ điều hành sẽ làm gì?",
+      "type": "single",
+      "options": [
+        "Thu hồi các frame của tiến trình đó.",
+        "Tắt tiến trình đó ngay lập tức.",
+        "Cấp phát thêm một khung trang (frame) mới cho tiến trình đó nếu có.",
+        "Giảm độ ưu tiên CPU của tiến trình."
+      ],
+      "correct": [2],
+      "explanation": "Lỗi trang cao (vượt upper bound) báo hiệu tiến trình đang thiếu RAM trầm trọng. Hệ điều hành phải cấp phát thêm frame trống cho nó để giảm lỗi trang. Nếu không có frame trống, nó phải Suspend một tiến trình khác."
+    },
+    {
+      "id": 11,
+      "question": "Trong chiến lược Tần suất lỗi trang (PFF), nếu tỷ lệ lỗi trang của một tiến trình RỚT XUỐNG DƯỚI giới hạn dưới (Lower bound), hệ điều hành sẽ làm gì?",
+      "type": "single",
+      "options": [
+        "Cấp phát thêm frame.",
+        "Thu hồi lại một số khung trang (frame) từ tiến trình đó để chia sẻ cho các tiến trình khác.",
+        "Không làm gì cả.",
+        "Tắt máy."
+      ],
+      "correct": [1],
+      "explanation": "Tỷ lệ lỗi trang cực kỳ thấp (dưới lower bound) có nghĩa tiến trình đang dư thừa lượng frame không thực sự cần thiết (nhiều hơn so với Locality của nó). Hệ điều hành sẽ mạnh dạn lấy bớt các frame đó đi."
+    },
+    {
+      "id": 12,
+      "question": "Lý do vì sao Thrashing làm giảm mạnh thông lượng (throughput) tổng thể của hệ thống?",
+      "type": "single",
+      "options": [
+        "Vì RAM bị nóng lên và tự hạ xung nhịp.",
+        "Do các lệnh bị tính toán sai.",
+        "Vì hầu như toàn bộ thời gian của CPU bị lãng phí vào việc chờ thiết bị I/O (đĩa cứng) chép trang vào/ra, không có tiến trình nào tiến triển thực sự.",
+        "Vì tốc độ ánh sáng."
+      ],
+      "correct": [2],
+      "explanation": "Băng thông ổ đĩa quá chậm so với RAM và CPU. Khi mọi tiến trình đều tranh giành nhau đọc đĩa, hàng đợi I/O quá tải, hệ thống tê liệt do không thể thực hiện xong bất cứ tác vụ nào."
+    }
+  ]
+}

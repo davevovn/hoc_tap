@@ -1,0 +1,163 @@
+{
+  "id": "hdh-c8-2-demand-paging",
+  "title": "Hệ điều hành - Chương 8.2: Cài đặt bộ nhớ ảo - Demand Paging",
+  "description": "Câu hỏi trắc nghiệm về kỹ thuật phân trang theo yêu cầu (Demand Paging), quá trình xử lý Page Fault và kỹ thuật Copy-on-Write.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Ý tưởng cốt lõi của kỹ thuật phân trang theo yêu cầu (Demand Paging) là gì?",
+      "type": "single",
+      "options": [
+        "Nạp toàn bộ trang của tiến trình vào RAM trước khi tiến trình chạy.",
+        "Chỉ nạp một trang vào bộ nhớ vật lý khi nó thực sự cần thiết trong quá trình thực thi.",
+        "Liên tục hoán đổi tất cả các trang ra đĩa sau mỗi chu kỳ CPU.",
+        "Sử dụng kỹ thuật phân đoạn thay vì phân trang."
+      ],
+      "correct": [1],
+      "explanation": "Trong Demand Paging, hệ điều hành không nạp toàn bộ chương trình ngay từ đầu. Thay vào đó, trang nhớ chỉ được đọc từ đĩa cứng (swap space hoặc file thực thi) vào RAM khi CPU cố gắng truy cập đến mã lệnh hoặc dữ liệu trên trang đó."
+    },
+    {
+      "id": 2,
+      "question": "Thuật ngữ 'Pager' trong kỹ thuật demand paging ám chỉ điều gì?",
+      "type": "single",
+      "options": [
+        "Một thiết bị phần cứng để lưu trữ trang.",
+        "Một chương trình hoán đổi toàn bộ tiến trình (Swapper).",
+        "Chức năng hoán đổi chỉ các trang riêng lẻ của tiến trình (Lazy swapper).",
+        "Bộ đệm lưu trữ địa chỉ trang (TLB)."
+      ],
+      "correct": [2],
+      "explanation": "Khác với Swapper (hoán đổi toàn bộ tiến trình ra/vào bộ nhớ), Pager là trình quản lý phân trang theo yêu cầu, chỉ nạp (swap in) hoặc ghi ra (swap out) từng trang riêng lẻ (pages) của một tiến trình khi cần."
+    },
+    {
+      "id": 3,
+      "question": "Trong bảng trang (Page Table), phần cứng sử dụng bit nào để biết một trang đã có trong bộ nhớ vật lý hay chưa?",
+      "type": "single",
+      "options": [
+        "Modify bit (Bit thay đổi).",
+        "Reference bit (Bit tham chiếu).",
+        "Valid-Invalid bit (Bit hợp lệ/không hợp lệ).",
+        "Protection bit (Bit bảo vệ)."
+      ],
+      "correct": [2],
+      "explanation": "Mỗi mục trong bảng trang có một bit valid-invalid. Nếu bit là 'valid' (v), trang đó hợp lệ và đang nằm trong bộ nhớ vật lý. Nếu bit là 'invalid' (i), trang đó hoặc không hợp lệ (lỗi địa chỉ) hoặc đang nằm trên đĩa cứng (chưa nạp)."
+    },
+    {
+      "id": 4,
+      "question": "Sự kiện Lỗi trang (Page Fault) xảy ra khi nào?",
+      "type": "single",
+      "options": [
+        "Khi hệ điều hành chia cho rẽ nhánh tiến trình (fork).",
+        "Khi tiến trình cố gắng truy cập vào một địa chỉ trang có bit đánh dấu là 'invalid' (trang chưa có trong bộ nhớ chính).",
+        "Khi bộ nhớ RAM bị hỏng vật lý.",
+        "Khi bộ nhớ cache bị tràn dữ liệu."
+      ],
+      "correct": [1],
+      "explanation": "Page fault xảy ra khi CPU yêu cầu một địa chỉ ảo thuộc một trang mà MMU tra bảng thấy có bit là 'invalid'. Lúc này MMU phát ra một trap (ngắt mềm) báo cho hệ điều hành biết để tiến hành nạp trang đó từ đĩa."
+    },
+    {
+      "id": 5,
+      "question": "Thứ tự xử lý Lỗi trang (Page Fault) của hệ điều hành là gì?\n1. Cập nhật bảng trang (set valid bit).\n2. Khởi động thao tác đĩa để đọc trang vào khung trang trống.\n3. Khởi động lại lệnh vừa bị ngắt bởi page fault.\n4. Tìm một khung trang vật lý trống (free frame).\n5. Kiểm tra bảng nhớ tham chiếu nội bộ để xác định địa chỉ truy cập hợp lệ hay không hợp lệ.",
+      "type": "single",
+      "options": [
+        "5 -> 4 -> 2 -> 1 -> 3",
+        "1 -> 2 -> 3 -> 4 -> 5",
+        "4 -> 5 -> 2 -> 1 -> 3",
+        "5 -> 2 -> 4 -> 1 -> 3"
+      ],
+      "correct": [0],
+      "explanation": "Quy trình xử lý page fault: Kiểm tra tính hợp lệ -> Tìm frame trống -> Đọc dữ liệu từ đĩa vào frame -> Cập nhật bảng trang (đánh dấu Valid) -> Khởi động lại lệnh CPU."
+    },
+    {
+      "id": 6,
+      "question": "Kỹ thuật 'Pure Demand Paging' (Phân trang thuần theo yêu cầu) là trạng thái khởi động tiến trình như thế nào?",
+      "type": "single",
+      "options": [
+        "Tiến trình bắt đầu thực thi với 0 trang trong bộ nhớ vật lý, ngay lệnh đầu tiên sẽ sinh ra page fault.",
+        "Tiến trình bắt đầu thực thi với toàn bộ trang được nạp sẵn vào bộ nhớ.",
+        "Chỉ cấp phát chính xác 1 frame cho mọi tiến trình.",
+        "Chỉ sử dụng RAM, không sử dụng đĩa cứng."
+      ],
+      "correct": [0],
+      "explanation": "Trong pure demand paging, hệ điều hành không nạp bất kỳ trang nào vào RAM lúc ban đầu (bảng trang toàn là invalid). Khi PC trỏ đến lệnh đầu tiên, ngay lập tức gây ra page fault để nạp trang chứa lệnh đó vào."
+    },
+    {
+      "id": 7,
+      "question": "Tính chất nào của chương trình giúp cho hệ thống phân trang theo yêu cầu (demand paging) đạt hiệu suất chấp nhận được mà không bị quá tải page fault liên tục?",
+      "type": "single",
+      "options": [
+        "Tính bảo mật dữ liệu.",
+        "Tính đồng bộ hóa tiến trình (Synchronization).",
+        "Tính cục bộ của tham chiếu (Locality of Reference).",
+        "Khả năng đa nhiệm (Multitasking)."
+      ],
+      "correct": [2],
+      "explanation": "Chương trình thường có tính cục bộ tham chiếu cao (truy cập lặp lại các lệnh trong vòng lặp, mảng liên tiếp). Nhờ đó, sau khi một vài trang của 'cục bộ' hiện tại được nạp, tiến trình sẽ thực thi mượt mà trong thời gian dài mà không gây ra thêm page fault."
+    },
+    {
+      "id": 8,
+      "question": "Thành phần phần cứng cốt lõi nào cần thiết để hỗ trợ Demand Paging? (Chọn tất cả các đáp án đúng)",
+      "type": "multiple",
+      "options": [
+        "Bảng trang (Page table) với các bit valid/invalid.",
+        "Thiết bị lưu trữ thứ cấp (như đĩa cứng) để lưu giữ các trang không nằm trong bộ nhớ chính.",
+        "Bộ vi xử lý đa nhân (Multi-core CPU).",
+        "Card đồ họa chuyên dụng (GPU)."
+      ],
+      "correct": [0, 1],
+      "explanation": "Demand paging yêu cầu phần cứng phải hỗ trợ Bảng trang có cờ Valid/Invalid để phát hiện lỗi trang, và đĩa lưu trữ phụ (Swap space) tốc độ cao để cất giữ/hoán đổi các trang."
+    },
+    {
+      "id": 9,
+      "question": "Thời gian truy cập bộ nhớ hiệu dụng (Effective Access Time - EAT) trong hệ thống Demand Paging bị suy giảm nhiều nhất bởi yếu tố nào?",
+      "type": "single",
+      "options": [
+        "Tốc độ truy cập của bộ nhớ RAM vật lý.",
+        "Thời gian phục vụ xử lý Lỗi trang (Page Fault Service Time), do liên quan đến I/O đọc đĩa.",
+        "Kích thước của bảng trang nằm trên RAM.",
+        "Tốc độ kiểm tra bit Valid/Invalid của MMU."
+      ],
+      "correct": [1],
+      "explanation": "Xử lý Page Fault liên quan đến thao tác I/O đọc đĩa cứng, có thể mất hàng mili-giây (chậm hơn hàng trăm nghìn lần so với đọc RAM). Do đó, tỷ lệ lỗi trang (page fault rate) dù rất nhỏ cũng làm tăng EAT cực kỳ đáng kể."
+    },
+    {
+      "id": 10,
+      "question": "Kỹ thuật Copy-on-Write (COW) cho phép hệ điều hành làm gì khi tiến trình cha gọi hàm fork() để tạo tiến trình con?",
+      "type": "single",
+      "options": [
+        "Tạo ngay lập tức bản sao vật lý của toàn bộ bộ nhớ của tiến trình cha.",
+        "Tạm dừng cả tiến trình cha và con.",
+        "Cho phép tiến trình cha và con chia sẻ cùng các trang bộ nhớ vật lý lúc ban đầu, chỉ cấp phát trang mới khi một trong hai tiến trình thay đổi dữ liệu trên trang đó.",
+        "Tiến trình con không được phép ghi bộ nhớ."
+      ],
+      "correct": [2],
+      "explanation": "COW tối ưu hiệu suất tạo tiến trình bằng cách cho con và cha dùng chung (share) bộ nhớ vật lý. Các trang chia sẻ này được đánh dấu read-only. Chỉ khi một tiến trình cố gắng ghi (write) vào trang, một bản sao độc lập (copy) của trang đó mới được tạo ra."
+    },
+    {
+      "id": 11,
+      "question": "Lợi ích lớn nhất của kỹ thuật Copy-on-Write (COW) trong hệ điều hành Unix/Linux là gì?",
+      "type": "single",
+      "options": [
+        "Ngăn chặn virus ghi đè mã độc.",
+        "Tăng tốc độ khởi động của hệ điều hành.",
+        "Làm cho việc tạo tiến trình bằng lệnh fork() diễn ra rất nhanh và tiết kiệm tài nguyên bộ nhớ.",
+        "Giúp CPU không bao giờ gặp page fault."
+      ],
+      "correct": [2],
+      "explanation": "Sau lệnh fork(), tiến trình con thường gọi exec() ngay lập tức để nạp chương trình khác. Nếu không có COW, hệ điều hành sẽ lãng phí việc sao chép toàn bộ bộ nhớ cha sang con rồi ngay lập tức xóa đi."
+    },
+    {
+      "id": 12,
+      "question": "Trong Demand Paging, nếu trong quá trình xử lý Page Fault mà hệ thống nhận thấy không còn khung trang (frame) vật lý nào trống trên RAM, hệ thống sẽ phải làm gì?",
+      "type": "single",
+      "options": [
+        "Ngừng hoàn toàn tiến trình vừa gây ra page fault (kill process).",
+        "Gửi thông báo 'Out of memory' và tắt máy tính.",
+        "Tiến hành thay thế trang (Page Replacement): chọn một trang đang nằm trong RAM để đẩy ra đĩa (swap out) để nhường chỗ.",
+        "Mở rộng dung lượng RAM bằng cách nén bảng trang."
+      ],
+      "correct": [2],
+      "explanation": "Khi RAM đầy (over-allocation), hệ điều hành phải thực hiện thuật toán thay thế trang để chọn một trang nạn nhân (victim page), ghi nó ra đĩa, giải phóng frame đó và nạp trang mới đang cần vào."
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "id": "hdh-c8-4-cap-phat-frames",
+  "title": "Hệ điều hành - Chương 8.4: Vấn đề cấp phát frames",
+  "description": "Kiểm tra kiến thức về các chiến lược cấp phát khung trang (frames allocation), cấp phát công bằng, cấp phát theo tỷ lệ và thay thế trang toàn cục/cục bộ.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Bài toán cấp phát khung trang (Frame Allocation) trong hệ điều hành giải quyết vấn đề gì?",
+      "type": "single",
+      "options": [
+        "Quyết định xem ổ đĩa cứng nên được phân vùng như thế nào.",
+        "Quyết định thuật toán định tuyến mạng cho các tiến trình.",
+        "Quyết định chia sẻ bộ nhớ đệm L3 của CPU.",
+        "Quyết định chia bao nhiêu khung trang vật lý trống cho mỗi tiến trình đang chạy trong hệ thống."
+      ],
+      "correct": [3],
+      "explanation": "Khi có nhiều tiến trình cùng chạy, hệ điều hành phải có thuật toán phân bổ tổng số frame vật lý giới hạn của RAM cho các tiến trình sao cho hiệu suất tổng thể là cao nhất."
+    },
+    {
+      "id": 2,
+      "question": "Số lượng khung trang tối thiểu (Minimum Number of Frames) mà hệ điều hành phải cấp phát cho một tiến trình được quyết định bởi yếu tố nào?",
+      "type": "single",
+      "options": [
+        "Sở thích của người dùng hệ thống.",
+        "Dung lượng ổ đĩa cứng còn trống.",
+        "Kiến trúc tập lệnh (Instruction Set Architecture) của CPU.",
+        "Tốc độ mạng."
+      ],
+      "correct": [2],
+      "explanation": "Kiến trúc máy tính quy định số lượng frame tối thiểu. Ví dụ: một lệnh có thể yêu cầu 1 frame cho mã lệnh, 1 frame cho toán hạng thứ nhất, 1 frame cho toán hạng thứ hai. Nếu cấp phát ít hơn số này, lệnh không bao giờ thực thi được vì luôn bị page fault dang dở."
+    },
+    {
+      "id": 3,
+      "question": "Trong chiến lược Cấp phát bằng nhau (Equal Allocation), hệ điều hành sẽ phân bổ frame như thế nào?",
+      "type": "single",
+      "options": [
+        "Tiến trình nào cần bao nhiêu thì lấy bấy nhiêu.",
+        "Lấy tổng số frame trống chia đều cho tổng số tiến trình đang chạy, phần dư dùng làm frame đệm dự phòng.",
+        "Chỉ cấp cho tiến trình có quyền quản trị viên.",
+        "Tiến trình chạy trước được nhận toàn bộ."
+      ],
+      "correct": [1],
+      "explanation": "Equal Allocation chia đều lượng frame vật lý cho mọi tiến trình (ví dụ: có 100 frames và 5 tiến trình, mỗi tiến trình được 20 frames). Phương pháp này đơn giản nhưng lãng phí với tiến trình nhỏ và thiếu hụt với tiến trình lớn."
+    },
+    {
+      "id": 4,
+      "question": "Để khắc phục nhược điểm của Cấp phát bằng nhau, hệ điều hành thường dùng Cấp phát theo tỷ lệ (Proportional Allocation). Tiêu chí chính để tỷ lệ hóa là gì?",
+      "type": "single",
+      "options": [
+        "Dựa trên số lượng 쓰레드 (threads) của tiến trình.",
+        "Dựa trên kích thước bộ nhớ ảo (Virtual Memory size) của từng tiến trình.",
+        "Dựa trên thời gian tạo tiến trình.",
+        "Dựa trên độ phân giải màn hình của ứng dụng."
+      ],
+      "correct": [1],
+      "explanation": "Proportional Allocation chia số lượng frames theo tỷ lệ kích thước bộ nhớ ảo của tiến trình đó so với tổng kích thước bộ nhớ ảo của tất cả các tiến trình."
+    },
+    {
+      "id": 5,
+      "question": "Ngoài kích thước, Cấp phát theo tỷ lệ có thể được tính toán dựa trên tiêu chí nào khác để tăng hiệu năng cho các tác vụ quan trọng?",
+      "type": "single",
+      "options": [
+        "Màu sắc của giao diện.",
+        "Độ ưu tiên (Priority) của tiến trình.",
+        "Dung lượng file log.",
+        "Số lượng cổng mạng mở."
+      ],
+      "correct": [1],
+      "explanation": "Hệ điều hành có thể cấp phát số lượng frames nhiều hơn cho các tiến trình có mức độ ưu tiên cao (Priority Allocation) để đảm bảo chúng chạy mượt mà và ít bị lỗi trang hơn."
+    },
+    {
+      "id": 6,
+      "question": "Trong chiến lược Thay thế toàn cục (Global Replacement), khi xảy ra lỗi trang, tiến trình được phép lấy khung trang từ đâu?",
+      "type": "single",
+      "options": [
+        "Chỉ từ bộ nhớ cache của CPU.",
+        "Từ tập hợp TẤT CẢ các khung trang trên toàn hệ thống, kể cả khung trang đang bị chiếm giữ bởi tiến trình khác.",
+        "Chỉ từ tập hợp khung trang riêng đang được cấp phát cho chính nó.",
+        "Từ một máy tính khác thông qua mạng."
+      ],
+      "correct": [1],
+      "explanation": "Global Replacement cho phép một tiến trình lấy (cướp) frame từ một tiến trình khác. Điều này giúp tối ưu hóa hiệu năng chung, vì tiến trình cần nhiều bộ nhớ có thể mở rộng không gian frame."
+    },
+    {
+      "id": 7,
+      "question": "Trong chiến lược Thay thế cục bộ (Local Replacement), khi cần một frame mới, tiến trình phải làm gì?",
+      "type": "single",
+      "options": [
+        "Chỉ được phép chọn thay thế một trong số CÁC TRANG CỦA CHÍNH NÓ đang nằm trên RAM.",
+        "Được phép lấy trang của bất kỳ tiến trình nào.",
+        "Bắt buộc phải tắt hệ điều hành.",
+        "Yêu cầu RAM cấp thêm bộ nhớ từ ROM."
+      ],
+      "correct": [0],
+      "explanation": "Local Replacement ép buộc mỗi tiến trình tự quản lý trong tập hợp frames đã được cấp cho nó. Nó không thể lấy frame của tiến trình khác."
+    },
+    {
+      "id": 8,
+      "question": "Một nhược điểm lớn của chiến lược Thay thế toàn cục (Global Replacement) đối với một tiến trình là gì?",
+      "type": "single",
+      "options": [
+        "Làm tăng kích thước file thực thi.",
+        "Thời gian thực thi của tiến trình rất khó dự đoán và có thể biến động lớn.",
+        "Ngăn chặn tiến trình in dữ liệu ra màn hình.",
+        "Làm hỏng hệ thống tệp tin."
+      ],
+      "correct": [1],
+      "explanation": "Vì tiến trình có thể bị mất trang bất cứ lúc nào do tiến trình khác cướp mất (page fault rate phụ thuộc vào hành vi của TẤT CẢ tiến trình khác), nên thời gian chạy của nó biến động mạnh. Dù vậy, Global Replacement lại cho thông lượng (throughput) tổng thể cao nên vẫn là phổ biến nhất."
+    },
+    {
+      "id": 9,
+      "question": "Hệ thống Non-Uniform Memory Access (NUMA) ảnh hưởng đến việc cấp phát frame như thế nào?",
+      "type": "single",
+      "options": [
+        "NUMA cấm hoàn toàn phân trang.",
+        "Tốc độ truy cập đến tất cả frame trên RAM là như nhau bất kể CPU nào truy cập.",
+        "Hệ điều hành cố gắng cấp phát các frame vật lý nằm CÙNG MỘT NODE phần cứng với CPU đang thực thi tiến trình để giảm độ trễ (latency).",
+        "Tiến trình chỉ được cấp phát frame ở ổ đĩa cứng."
+      ],
+      "correct": [2],
+      "explanation": "Trong kiến trúc NUMA đa nhân đa socket, RAM được chia thành nhiều node gắn với từng socket CPU. Truy cập RAM ở node cục bộ nhanh hơn nhiều so với RAM ở node khác, do đó OS phải cố gắng cấp phát 'local frames'."
+    },
+    {
+      "id": 10,
+      "question": "Sự kết hợp giữa Thay thế toàn cục (Global Replacement) và Cấp phát ưu tiên (Priority Allocation) sẽ gây ra hiện tượng gì?",
+      "type": "single",
+      "options": [
+        "Tất cả các tiến trình đều chạy với tốc độ bằng nhau.",
+        "Tiến trình ưu tiên thấp bị lỗi trang liên tục do tiến trình ưu tiên cao cướp hết khung trang của chúng.",
+        "Tất cả các lỗi trang đều bị triệt tiêu.",
+        "Hệ điều hành bị treo (deadlock) ngay lập tức."
+      ],
+      "correct": [1],
+      "explanation": "Tiến trình có ưu tiên cao sẽ liên tục giành lấy các frame từ các tiến trình ưu tiên thấp khi cần. Kết quả là tiến trình ưu tiên thấp có thể bị thiếu đói frame, không thực thi nổi."
+    }
+  ]
+}
