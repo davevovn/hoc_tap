@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c7-6-co-che-hoan-vi",
+  "title": "Hệ điều hành - Chương 7.6: Cơ chế hoán vị",
+  "description": "Kiểm tra kiến thức về Swapping, kỹ thuật hoán vị bộ nhớ và thời gian Context Switch liên quan đến Swapping.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Cơ chế Hoán vị (Swapping) trong hệ điều hành có ý nghĩa gì?",
+      "type": "single",
+      "options": [
+        "Đổi chỗ 2 thanh RAM với nhau.",
+        "Một tiến trình có thể được chuyển tạm thời từ bộ nhớ chính (RAM) ra một thiết bị lưu trữ ngoài (Backing store), sau đó được nạp trở lại bộ nhớ để tiếp tục thực thi.",
+        "Hoán đổi thứ tự thực thi của hai tiến trình trên CPU.",
+        "Sử dụng mạng internet làm bộ nhớ đệm."
+      ],
+      "correct": [1],
+      "explanation": "Swapping giúp hệ thống thực thi được tổng số tiến trình có không gian bộ nhớ vật lý vượt quá dung lượng RAM thực sự, bằng cách đẩy bớt các tiến trình đang rảnh rỗi ra đĩa cứng."
+    },
+    {
+      "id": 2,
+      "question": "Thiết bị 'Backing store' trong cơ chế hoán vị thường là thiết bị nào?",
+      "type": "single",
+      "options": [
+        "Bộ nhớ Cache L3.",
+        "Bộ nhớ ROM.",
+        "Ổ đĩa lưu trữ (HDD, SSD) tốc độ nhanh, có đủ dung lượng để lưu các bản sao bộ nhớ của tiến trình.",
+        "Một máy chủ từ xa."
+      ],
+      "correct": [2],
+      "explanation": "Backing store thường là đĩa cứng nội bộ (thường có một phân vùng riêng gọi là Swap Partition hoặc file Swapfile) chuyên dụng để ghi/đọc dữ liệu nhanh chóng từ RAM."
+    },
+    {
+      "id": 3,
+      "question": "Theo Swapping chuẩn (Standard Swapping), khi hệ điều hành muốn đưa một tiến trình ra ngoài đĩa, tiến trình đó phải như thế nào?",
+      "type": "single",
+      "options": [
+        "Hệ điều hành sao chép toàn bộ không gian bộ nhớ của tiến trình đó ra đĩa (Swap out).",
+        "Hệ điều hành chỉ sao chép một dòng lệnh duy nhất.",
+        "Hệ điều hành nén tiến trình thành file zip.",
+        "Hệ điều hành gửi tiến trình đó cho CPU thứ 2."
+      ],
+      "correct": [0],
+      "explanation": "Trong Standard Swapping cổ điển (như UNIX đời đầu), nguyên một tiến trình (với toàn bộ không gian nhớ liên tục của nó) bị swap out ra đĩa, và sau đó được swap in vào lại RAM khi đến lượt."
+    },
+    {
+      "id": 4,
+      "question": "Hạn chế lớn nhất của Standard Swapping (Hoán vị toàn bộ tiến trình) là gì?",
+      "type": "single",
+      "options": [
+        "Nó làm RAM đầy nhanh hơn.",
+        "Nó tiêu tốn thời gian Context Switch (Chuyển ngữ cảnh) cực kỳ lớn do tốc độ đọc/ghi của ổ đĩa rất chậm so với tốc độ CPU và RAM.",
+        "Nó không hỗ trợ đa nhiệm.",
+        "Ổ đĩa nhanh bị hỏng."
+      ],
+      "correct": [1],
+      "explanation": "Nếu swap out và swap in một tiến trình có dung lượng 100MB với HDD tốc độ 50MB/s, thời gian swap mất tới vài giây, làm hệ thống treo nghiêm trọng trong mắt người dùng."
+    },
+    {
+      "id": 5,
+      "question": "Khi một tiến trình được Swap In trở lại vào RAM, nó có nhất thiết phải được đặt ở đúng vị trí vật lý ban đầu của nó không?",
+      "type": "single",
+      "options": [
+        "Bắt buộc phải nằm đúng vị trí ban đầu.",
+        "Không cần thiết nếu hệ thống sử dụng Address Binding ở Compile-time.",
+        "Chỉ bắt buộc nếu binding ở Load-time. Nếu hệ thống dùng Execution-time binding (có MMU), nó có thể nạp vào bất kỳ vùng trống nào trên RAM.",
+        "Bắt buộc, trừ khi tiến trình đó là virus."
+      ],
+      "correct": [2],
+      "explanation": "Nhờ vào Relocation và Execution-time binding (nhờ MMU / Base register hoặc Paging), tiến trình khi swap in có thể dễ dàng nạp vào vị trí vật lý mới mà không bị lỗi logic."
+    },
+    {
+      "id": 6,
+      "question": "Một tiến trình đang chờ hoàn tất thao tác Nhập/Xuất (I/O) với thiết bị phần cứng có thể bị Swap out một cách an toàn không?",
+      "type": "single",
+      "options": [
+        "Không bao giờ. Nếu swap out, dữ liệu I/O có thể bị ghi nhầm vào vùng nhớ đó (hiện đã chứa tiến trình khác mới được swap in).",
+        "Hoàn toàn an toàn mà không cần thiết lập gì thêm.",
+        "An toàn nếu đó là thao tác đọc bàn phím.",
+        "An toàn nếu tiến trình không dùng CPU."
+      ],
+      "correct": [0],
+      "explanation": "Nếu bộ điều khiển I/O sử dụng Direct Memory Access (DMA) để ghi trực tiếp vào RAM, mà tiến trình yêu cầu đã bị swap out và RAM đó cấp cho tiến trình mới, thiết bị I/O sẽ ghi đè hỏng dữ liệu của tiến trình mới. Do đó, cấm swap out tiến trình đang đợi I/O, hoặc chỉ thực hiện I/O vào bộ đệm (buffers) của OS."
+    },
+    {
+      "id": 7,
+      "question": "Thời gian chuyển ngữ cảnh (Context switch time) khi xảy ra Swapping phụ thuộc mạnh nhất vào yếu tố nào?",
+      "type": "single",
+      "options": [
+        "Tốc độ CPU.",
+        "Lượng dữ liệu bộ nhớ đang thực sự sử dụng của tiến trình (Transfer time).",
+        "Số lượng thanh ghi của CPU.",
+        "Tốc độ quạt tản nhiệt."
+      ],
+      "correct": [1],
+      "explanation": "Thời gian chính của việc Swap là thời gian chuyển giao dữ liệu (Transfer time) tỷ lệ thuận với lượng bộ nhớ được sao chép qua lại giữa RAM và đĩa cứng."
+    },
+    {
+      "id": 8,
+      "question": "Roll out, Roll in là một biến thể của Swapping thường được dùng dựa trên tiêu chí nào?",
+      "type": "single",
+      "options": [
+        "Dựa trên dung lượng ổ cứng rảnh.",
+        "Dựa trên thuật toán lập lịch theo Độ ưu tiên (Priority-based scheduling): Tiến trình độ ưu tiên thấp bị Roll out ra đĩa để nhường chỗ cho tiến trình ưu tiên cao hơn (Roll in).",
+        "Dựa trên chuẩn I/O.",
+        "Dựa trên nhiệt độ hệ thống."
+      ],
+      "correct": [1],
+      "explanation": "Roll out, roll in là một biến thể trong các hệ thống lập lịch theo độ ưu tiên. Khi một tiến trình ưu tiên rất cao cần RAM, nó sẽ đá (roll out) một tiến trình ưu tiên thấp ra ngoài."
+    },
+    {
+      "id": 9,
+      "question": "Swapping trong các hệ điều hành hiện đại (như Windows, Linux, macOS) hoạt động có giống Standard Swapping (Swap toàn bộ tiến trình) không?",
+      "type": "single",
+      "options": [
+        "Hoàn toàn giống hệt.",
+        "Không, các OS hiện đại KHÔNG swap toàn bộ tiến trình. Chúng sử dụng cơ chế Paging để swap (Page out/Page in) theo từng trang nhỏ lẻ (4KB) khi bộ nhớ thiếu.",
+        "Chúng không dùng Swapping nữa, bộ nhớ tự động bị xóa.",
+        "Chúng chỉ Swap các file hình ảnh."
+      ],
+      "correct": [1],
+      "explanation": "Để giảm miss penalty và transfer time, các HĐH hiện đại kết hợp Swapping với Paging: chỉ lưu/đọc các Page (trang) ít dùng ra ổ đĩa (Paging) thay vì ném toàn bộ tiến trình ra ngoài."
+    },
+    {
+      "id": 10,
+      "question": "Trong Linux, vùng không gian đĩa dùng cho swapping được cấu hình dưới dạng nào?",
+      "type": "multiple",
+      "options": [
+        "Một phân vùng vật lý riêng biệt (Swap Partition).",
+        "Một tập tin thông thường trong hệ thống file (Swap File).",
+        "Một thư mục tên là /dev/swap.",
+        "Nó chỉ là một tên gọi ảo, Linux không dùng ổ cứng cho swap."
+      ],
+      "correct": [0, 1],
+      "explanation": "Linux hỗ trợ hai dạng backing store cho việc hoán vị: Phân vùng Swap (cho hiệu suất tĩnh tốt hơn do không qua File system overhead) và File Swap (linh hoạt tạo/xóa)."
+    },
+    {
+      "id": 11,
+      "question": "Thuật ngữ 'Thrashing' (Đập trang) xảy ra khi nào trong môi trường có Swapping/Paging?",
+      "type": "single",
+      "options": [
+        "Khi ổ đĩa cứng kêu quá to.",
+        "Khi CPU chạy quá nhanh làm RAM bị nóng.",
+        "Khi hệ điều hành dành phần lớn thời gian (thậm chí 90-100%) chỉ để Swap in/Swap out (hay Page fault) dữ liệu thay vì thực sự chạy các lệnh của tiến trình, do RAM bị đầy và thiếu Frame trầm trọng.",
+        "Khi tiến trình chạy ổn định."
+      ],
+      "correct": [2],
+      "explanation": "Thrashing là trạng thái tồi tệ nhất của Memory Management, hệ thống liên tục hoán đổi các trang giữa RAM và Disk, làm hiệu năng tụt thê thảm và hệ thống như bị 'treo'."
+    },
+    {
+      "id": 12,
+      "question": "Để khắc phục hạn chế của Context Switch trong Swapping, lập trình viên hệ thống thường phải làm gì với tiến trình?",
+      "type": "single",
+      "options": [
+        "Báo cho OS biết lượng bộ nhớ THỰC SỰ đang dùng để OS chỉ hoán vị vùng nhớ đó (giảm transfer time) thay vì hoán vị cả không gian được cấp.",
+        "Ép tiến trình phải chạy ở Kernel Mode.",
+        "Mã hóa toàn bộ RAM.",
+        "Định kỳ khởi động lại máy."
+      ],
+      "correct": [0],
+      "explanation": "OS không biết tiến trình dùng bao nhiêu, nó chỉ biết kích thước cấp phát. Tiến trình nên giải phóng bộ nhớ không cần thiết hoặc thông báo kích thước đang dùng để giảm kích thước khi Swap out."
+    },
+    {
+      "id": 13,
+      "question": "Thiết bị điện thoại di động (Mobile OS) thế hệ cũ hoặc một số dòng hiện tại thường KHÔNG hỗ trợ Standard Swapping. Nguyên nhân chính là gì?",
+      "type": "single",
+      "options": [
+        "Vì RAM điện thoại rất lớn.",
+        "Vì điện thoại dùng bộ nhớ Flash (như eMMC), số lần ghi (write cycle) là hữu hạn, việc swap liên tục sẽ làm hỏng bộ nhớ Flash rất nhanh.",
+        "Vì CPU điện thoại không hỗ trợ MMU.",
+        "Vì điện thoại không có đa nhiệm."
+      ],
+      "correct": [1],
+      "explanation": "Bộ nhớ Flash của thiết bị di động có vòng đời đọc/ghi thấp hơn HDD/SSD. Swapping ghi/xóa dữ liệu liên tục gây hao mòn chip nhớ. Thay vì swap out, Mobile OS (như iOS, Android) yêu cầu ứng dụng tự giải phóng nhớ (Low memory warning) hoặc OS sẽ đóng ứng dụng."
+    },
+    {
+      "id": 14,
+      "question": "Trong Paging kết hợp Swapping (Demand Paging), 'Page fault' là gì?",
+      "type": "single",
+      "options": [
+        "Lỗi hỏng phần cứng RAM.",
+        "Là một ngắt (Trap) phát sinh khi tiến trình cố gắng truy cập vào một trang (Page) mà trang đó chưa được nạp vào RAM (đang nằm ở Backing store).",
+        "Tiến trình viết đè lên tiến trình khác.",
+        "Lỗi tràn bộ đệm TLB."
+      ],
+      "correct": [1],
+      "explanation": "Page fault báo hiệu hệ điều hành phải dừng tiến trình lại, ra lệnh cho ổ đĩa đọc trang đó (Swap in/Page in) vào RAM, cập nhật bảng trang rồi cho tiến trình chạy tiếp."
+    },
+    {
+      "id": 15,
+      "question": "Giả sử băng thông ổ đĩa là 100MB/s, kích thước bộ nhớ của một tiến trình là 10MB. Thời gian thuần túy (Transfer time) để swap out tiến trình này ra đĩa là bao nhiêu?",
+      "type": "single",
+      "options": [
+        "10 giây",
+        "0.1 giây (100 ms)",
+        "1 giây",
+        "0.01 giây"
+      ],
+      "correct": [1],
+      "explanation": "Thời gian = Dung lượng / Tốc độ = 10MB / 100MB/s = 0.1 giây (tức 100ms). Lưu ý là 100ms là một khoảng thời gian khổng lồ đối với CPU đang chạy ở tốc độ nano-giây."
+    },
+    {
+      "id": 16,
+      "question": "Khi sử dụng Swapping kết hợp với Paging (hoán vị trang), Bit nào trong Bảng trang (Page Table) được OS dùng để nhận biết trang đó có đang nằm trong RAM hay không?",
+      "type": "single",
+      "options": [
+        "Modify (Dirty) bit.",
+        "Valid/Invalid bit.",
+        "Read-only bit.",
+        "Execute bit."
+      ],
+      "correct": [1],
+      "explanation": "Valid-Invalid bit được sử dụng: Valid (1) nghĩa là trang đang nằm trong RAM và hợp lệ; Invalid (0) nghĩa là trang đó không hợp lệ (không thuộc tiến trình) hoặc đang nằm ngoài đĩa cứng (gây ra Page fault nếu truy cập)."
+    },
+    {
+      "id": 17,
+      "question": "Dirty bit (Modify bit) trong hệ thống Swapping/Paging mang lại tối ưu hóa nào?",
+      "type": "single",
+      "options": [
+        "Dọn rác bộ nhớ tự động.",
+        "Khi Swap out một trang, nếu Dirty bit là 0 (trang chưa bị sửa đổi kể từ khi nạp từ đĩa), hệ điều hành có thể BỎ QUA việc ghi nó xuống đĩa cứng (vì bản sao trên đĩa vẫn còn mới), tiết kiệm 50% thời gian I/O.",
+        "Mã hóa dữ liệu nhạy cảm.",
+        "Cho phép CPU chạy nhanh gấp đôi."
+      ],
+      "correct": [1],
+      "explanation": "Mỗi lần có thao tác Write vào RAM, phần cứng set Dirty bit = 1. Khi OS cần swap out để lấy RAM, nó xem bit này: nếu = 0 thì chỉ việc xóa sổ trong RAM; nếu = 1 thì bắt buộc ghi (write-back) ra ổ đĩa."
+    },
+    {
+      "id": 18,
+      "question": "Nếu Swap Partition (phân vùng Swap) bị đầy, hiện tượng gì sẽ xảy ra?",
+      "type": "single",
+      "options": [
+        "Máy tính sẽ bị nổ pin.",
+        "Hệ điều hành không thể Swap out thêm tiến trình. RAM tiếp tục bị đầy dẫn đến lỗi OOM (Out Of Memory), hệ điều hành có thể phải ép đóng (Kill) các tiến trình.",
+        "Hệ điều hành sẽ tự động mua thêm ổ cứng.",
+        "Hệ điều hành chuyển sang chế độ MS-DOS."
+      ],
+      "correct": [1],
+      "explanation": "Khi RAM hết, HĐH dùng Swap. Khi Swap hết, bộ nhớ thực sự hoàn toàn cạn kiệt. OS kernel (như OOM Killer trong Linux) sẽ chọn các tiến trình ngốn nhiều bộ nhớ để kill nhắm cứu hệ thống."
+    },
+    {
+      "id": 19,
+      "question": "Trong kỹ thuật Swapping, hệ điều hành cần duy trì thông tin gì trên đĩa cứng cho mỗi tiến trình đã bị swap out?",
+      "type": "single",
+      "options": [
+        "Chỉ tên tiến trình.",
+        "Địa chỉ chính xác trên Swap space (đĩa) nơi các trang của tiến trình đó đang được cất giữ.",
+        "Toàn bộ màn hình giao diện của tiến trình.",
+        "Danh sách người dùng đăng nhập mạng."
+      ],
+      "correct": [1],
+      "explanation": "HĐH phải cập nhật một bảng (hoặc vào PCB của tiến trình) trỏ đến vị trí Block/Sector cụ thể trên Swap space để sau này có thể tìm và Swap in lại đúng dữ liệu đó vào RAM."
+    },
+    {
+      "id": 20,
+      "question": "Khi nào hệ điều hành quyết định thực hiện Swap In và Swap Out?",
+      "type": "single",
+      "options": [
+        "Thực hiện định kỳ mỗi phút một lần.",
+        "Thực hiện bởi bộ điều phối trung hạn (Medium-term scheduler) dựa trên độ quá tải của bộ nhớ (Degree of multiprogramming) để duy trì mức RAM rảnh tối thiểu.",
+        "Do người dùng ra lệnh qua giao diện.",
+        "Thực hiện khi CPU nhàn rỗi."
+      ],
+      "correct": [1],
+      "explanation": "Medium-term scheduler theo dõi RAM. Nếu RAM quá chật, nó chọn tiến trình để Swap out. Khi RAM rảnh lại, nó xem xét các tiến trình trên đĩa để Swap in."
+    }
+  ]
+}

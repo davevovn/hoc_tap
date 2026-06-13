@@ -1,0 +1,202 @@
+{
+  "id": "hdh-c7-2-cac-kieu-dia-chi",
+  "title": "Hệ điều hành - Chương 7.2: Các kiểu địa chỉ nhớ",
+  "description": "Kiểm tra sự hiểu biết về địa chỉ logic, địa chỉ vật lý, và sự khác biệt giữa các không gian địa chỉ trong hệ thống máy tính.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Địa chỉ do CPU sinh ra trong quá trình thực thi chương trình được gọi là gì?",
+      "type": "single",
+      "options": [
+        "Địa chỉ vật lý (Physical Address).",
+        "Địa chỉ logic (Logical Address) hay Địa chỉ ảo (Virtual Address).",
+        "Địa chỉ MAC (MAC Address).",
+        "Địa chỉ tuyệt đối (Absolute Address)."
+      ],
+      "correct": [1],
+      "explanation": "Địa chỉ do CPU tạo ra khi chạy chương trình là địa chỉ logic (hoặc địa chỉ ảo). Địa chỉ này chưa phải là địa chỉ thực tế trên thanh RAM mà phải thông qua cơ chế chuyển đổi."
+    },
+    {
+      "id": 2,
+      "question": "Địa chỉ thực tế được thiết bị bộ nhớ (RAM) nhìn thấy và sử dụng để truy xuất ô nhớ được gọi là gì?",
+      "type": "single",
+      "options": [
+        "Địa chỉ logic.",
+        "Địa chỉ ảo.",
+        "Địa chỉ tương đối.",
+        "Địa chỉ vật lý (Physical Address)."
+      ],
+      "correct": [3],
+      "explanation": "Địa chỉ vật lý là địa chỉ thực sự tồn tại trên phần cứng của bộ nhớ chính (RAM). Thanh ghi bộ nhớ (Memory Address Register - MAR) sử dụng địa chỉ vật lý."
+    },
+    {
+      "id": 3,
+      "question": "Tập hợp tất cả các địa chỉ logic do một chương trình sinh ra được gọi là gì?",
+      "type": "single",
+      "options": [
+        "Không gian địa chỉ vật lý (Physical Address Space).",
+        "Không gian địa chỉ logic (Logical Address Space).",
+        "Bộ nhớ ảo (Virtual Memory).",
+        "Bảng trang (Page Table)."
+      ],
+      "correct": [1],
+      "explanation": "Không gian địa chỉ logic là toàn bộ dải địa chỉ mà tiến trình cho rằng nó đang sở hữu và có thể truy cập."
+    },
+    {
+      "id": 4,
+      "question": "Tập hợp tất cả các địa chỉ vật lý tương ứng với các địa chỉ logic của chương trình được gọi là gì?",
+      "type": "single",
+      "options": [
+        "Không gian địa chỉ logic.",
+        "Không gian địa chỉ vật lý (Physical Address Space).",
+        "Vùng nhớ hoán vị (Swap space).",
+        "Đoạn bộ nhớ (Memory Segment)."
+      ],
+      "correct": [1],
+      "explanation": "Không gian địa chỉ vật lý là tập hợp các vị trí thực sự trên RAM mà không gian địa chỉ logic của tiến trình được ánh xạ tới."
+    },
+    {
+      "id": 5,
+      "question": "Trong trường hợp binding (liên kết địa chỉ) được thực hiện ở thời điểm biên dịch (Compile-time) hoặc thời điểm nạp (Load-time), nhận định nào sau đây là đúng?",
+      "type": "single",
+      "options": [
+        "Địa chỉ logic và địa chỉ vật lý hoàn toàn khác biệt.",
+        "Địa chỉ logic và địa chỉ vật lý là giống nhau.",
+        "Chương trình không có địa chỉ logic.",
+        "Chương trình không có địa chỉ vật lý."
+      ],
+      "correct": [1],
+      "explanation": "Khi liên kết địa chỉ xảy ra ở Compile-time hoặc Load-time, mã nguồn sẽ được gắn với các địa chỉ tuyệt đối. Do đó, địa chỉ logic sinh ra cũng chính là địa chỉ vật lý trên RAM."
+    },
+    {
+      "id": 6,
+      "question": "Trong trường hợp binding địa chỉ diễn ra ở thời điểm thực thi (Execution-time), nhận định nào sau đây là đúng?",
+      "type": "single",
+      "options": [
+        "Địa chỉ logic và địa chỉ vật lý là giống nhau.",
+        "Địa chỉ logic và địa chỉ vật lý là khác biệt.",
+        "CPU trực tiếp tạo ra địa chỉ vật lý.",
+        "Chương trình phải nằm cố định ở một vùng RAM duy nhất."
+      ],
+      "correct": [1],
+      "explanation": "Với Execution-time binding, CPU tiếp tục dùng địa chỉ logic (thường bắt đầu từ 0), và MMU sẽ dịch nó sang địa chỉ vật lý thực tế. Do đó, hai loại địa chỉ này khác nhau."
+    },
+    {
+      "id": 7,
+      "question": "Một tiến trình có thể có không gian địa chỉ logic lớn hơn dung lượng bộ nhớ vật lý (RAM) hiện có không?",
+      "type": "single",
+      "options": [
+        "Không thể, vì không đủ RAM để chứa.",
+        "Có thể, nhờ vào cơ chế Bộ nhớ ảo (Virtual Memory).",
+        "Có thể, nhờ vào thanh ghi Cache.",
+        "Không thể, MMU sẽ báo lỗi ngay từ đầu."
+      ],
+      "correct": [1],
+      "explanation": "Khái niệm Bộ nhớ ảo cho phép một tiến trình có không gian địa chỉ logic lớn hơn nhiều so với RAM vật lý, bằng cách chuyển các phần ít dùng ra ổ đĩa (backing store)."
+    },
+    {
+      "id": 8,
+      "question": "Địa chỉ tuyến tính (Linear Address) xuất hiện ở đâu trong kiến trúc vi xử lý x86?",
+      "type": "single",
+      "options": [
+        "Nó là địa chỉ vật lý cuối cùng gởi tới RAM.",
+        "Nó là bước trung gian sau khi dịch địa chỉ Logic (Segment) nhưng trước khi qua bộ phân trang (Paging) để thành địa chỉ vật lý.",
+        "Nó chính là địa chỉ Logic ban đầu do CPU sinh ra.",
+        "Nó chỉ có trong ổ đĩa cứng."
+      ],
+      "correct": [1],
+      "explanation": "Trong kiến trúc phân đoạn kết hợp phân trang (như x86), Địa chỉ Logic (Segment:Offset) được dịch thành Địa chỉ Tuyến tính thông qua Segmentation Unit. Sau đó Địa chỉ Tuyến tính mới qua Paging Unit để thành Địa chỉ Vật lý."
+    },
+    {
+      "id": 9,
+      "question": "Địa chỉ logic giúp tiến trình độc lập với vị trí thực tế của nó trên RAM. Lợi ích của việc này là gì? (Chọn tất cả các đáp án đúng)",
+      "type": "multiple",
+      "options": [
+        "Tiến trình có thể được nạp vào bất kỳ vùng nhớ trống nào.",
+        "Tiến trình có thể di chuyển trong RAM khi đang thực thi (nếu hỗ trợ binding runtime).",
+        "Hệ điều hành dễ dàng chia sẻ bộ nhớ và bảo vệ các tiến trình.",
+        "Trình biên dịch không cần biết cấu hình RAM của máy khách."
+      ],
+      "correct": [0, 1, 2, 3],
+      "explanation": "Tất cả đều đúng. Việc tách biệt địa chỉ logic và vật lý giúp hệ điều hành linh hoạt nạp, di dời tiến trình, cung cấp cơ chế bảo vệ và đơn giản hóa việc biên dịch chương trình."
+    },
+    {
+      "id": 10,
+      "question": "Lệnh hợp ngữ 'JMP 1000' (nhảy đến địa chỉ 1000) thường chứa loại địa chỉ nào khi chương trình đang thực thi ở user-mode trong HĐH hiện đại?",
+      "type": "single",
+      "options": [
+        "Địa chỉ vật lý 1000 trên RAM.",
+        "Địa chỉ logic 1000 trong không gian địa chỉ của tiến trình đó.",
+        "Địa chỉ sector trên ổ đĩa.",
+        "Địa chỉ thanh ghi phần cứng."
+      ],
+      "correct": [1],
+      "explanation": "Trong các hệ điều hành hiện đại, user mode chỉ làm việc với địa chỉ logic. Số '1000' ở đây là địa chỉ logic. Khi thực thi, MMU sẽ cộng thêm (hoặc tra bảng) để ra địa chỉ vật lý."
+    },
+    {
+      "id": 11,
+      "question": "Tại sao người lập trình ứng dụng thường không cần quan tâm đến địa chỉ vật lý?",
+      "type": "single",
+      "options": [
+        "Vì RAM hiện đại quá lớn nên không bao giờ bị đầy.",
+        "Vì địa chỉ vật lý được hệ điều hành và phần cứng (MMU) quản lý tự động và hoàn toàn trong suốt (transparent) với người lập trình.",
+        "Vì các ngôn ngữ bậc cao không cho phép truy xuất bộ nhớ.",
+        "Vì địa chỉ vật lý chỉ được dùng khi khởi động máy."
+      ],
+      "correct": [1],
+      "explanation": "Trừ những người lập trình nhúng (bare-metal) hay viết trình điều khiển (driver), phần lớn lập trình viên chỉ tương tác với không gian địa chỉ logic/ảo do OS cung cấp."
+    },
+    {
+      "id": 12,
+      "question": "Địa chỉ tương đối (Relative Address) thường được dùng trong trường hợp nào?",
+      "type": "single",
+      "options": [
+        "Trong mã nguồn có khả năng tái định vị (Relocatable code), địa chỉ được tính từ đầu của một module/segment.",
+        "Trong việc xác định vị trí của RAM trên Mainboard.",
+        "Chỉ dành riêng cho các chương trình viết bằng hợp ngữ (Assembly).",
+        "Trong các hệ thống phân tán qua mạng."
+      ],
+      "correct": [0],
+      "explanation": "Khi biên dịch một module, compiler thường sinh ra các địa chỉ tương đối (so với điểm bắt đầu module, ví dụ offset 0). Khi load vào bộ nhớ, OS mới định vị (relocate) chúng."
+    },
+    {
+      "id": 13,
+      "question": "Loại địa chỉ nào là cố định và không bao giờ thay đổi đối với một ô nhớ cụ thể trên RAM phần cứng?",
+      "type": "single",
+      "options": [
+        "Địa chỉ Logic.",
+        "Địa chỉ Tuyến tính.",
+        "Địa chỉ Tương đối.",
+        "Địa chỉ Vật lý (Physical Address)."
+      ],
+      "correct": [3],
+      "explanation": "Địa chỉ vật lý là thuộc tính phần cứng của RAM. Mỗi ô nhớ có một địa chỉ vật lý duy nhất, cố định từ khi sản xuất."
+    },
+    {
+      "id": 14,
+      "question": "Một tiến trình có địa chỉ logic bắt đầu từ 0 đến 1024. Nếu được nạp vào vùng nhớ vật lý bắt đầu từ 5000, địa chỉ vật lý tương ứng với địa chỉ logic 100 là bao nhiêu?",
+      "type": "single",
+      "options": [
+        "100",
+        "5100",
+        "1124",
+        "5000"
+      ],
+      "correct": [1],
+      "explanation": "Theo cơ chế relocation đơn giản (dùng thanh ghi base), địa chỉ vật lý = địa chỉ logic + base. Ở đây base là 5000, nên địa chỉ vật lý là 5000 + 100 = 5100."
+    },
+    {
+      "id": 15,
+      "question": "Bộ vi xử lý (CPU) tương tác với bộ phận nào để chuyển đổi địa chỉ logic thành địa chỉ vật lý?",
+      "type": "single",
+      "options": [
+        "Trình biên dịch (Compiler).",
+        "Khối quản lý bộ nhớ (MMU - Memory Management Unit).",
+        "Bộ điều khiển đĩa cứng (Disk Controller).",
+        "Bộ đệm bàn phím."
+      ],
+      "correct": [1],
+      "explanation": "MMU là thành phần phần cứng chuyên trách nhận các địa chỉ logic do CPU sinh ra và dịch chúng thành địa chỉ vật lý để đưa lên Memory Bus truy cập RAM."
+    }
+  ]
+}

@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c7-3-chuyen-doi-dia-chi",
+  "title": "Hệ điều hành - Chương 7.3: Chuyển đổi địa chỉ nhớ",
+  "description": "Kiểm tra kiến thức về các giai đoạn gắn địa chỉ (Address Binding), cơ chế định vị lại (Relocation) và hoạt động của MMU.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Quá trình gắn (binding) các tập lệnh và dữ liệu vào các địa chỉ bộ nhớ có thể xảy ra ở những giai đoạn nào?",
+      "type": "multiple",
+      "options": [
+        "Lúc biên dịch (Compile time).",
+        "Lúc nạp (Load time).",
+        "Lúc thực thi (Execution time).",
+        "Lúc chỉnh sửa mã nguồn (Edit time)."
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Address binding có thể diễn ra ở một trong ba thời điểm: Compile time (sinh mã tuyệt đối), Load time (sinh mã có thể định vị lại), hoặc Execution time (địa chỉ được tính toán tại thời gian chạy)."
+    },
+    {
+      "id": 2,
+      "question": "Nếu biết trước được tiến trình sẽ nằm ở đâu trong bộ nhớ ngay từ lúc viết code, binding có thể được thực hiện lúc nào?",
+      "type": "single",
+      "options": [
+        "Load time.",
+        "Compile time.",
+        "Execution time.",
+        "Không thể thực hiện được."
+      ],
+      "correct": [1],
+      "explanation": "Nếu vị trí bộ nhớ được biết trước, trình biên dịch có thể sinh ra mã tuyệt đối (absolute code) với binding ở compile time (ví dụ các chương trình MS-DOS (.COM))."
+    },
+    {
+      "id": 3,
+      "question": "Mã nguồn có thể định vị lại (Relocatable code) được trình biên dịch sinh ra khi nào?",
+      "type": "single",
+      "options": [
+        "Khi vị trí nạp tiến trình chưa được biết ở compile time.",
+        "Khi chương trình bị lỗi cú pháp.",
+        "Khi bộ nhớ RAM không đủ lớn.",
+        "Khi chương trình không có biến toàn cục."
+      ],
+      "correct": [0],
+      "explanation": "Nếu không biết tiến trình sẽ nằm ở đâu, compiler phải sinh ra mã với các địa chỉ tương đối (relocatable code). Việc binding cuối cùng sẽ hoãn lại đến Load time hoặc Execution time."
+    },
+    {
+      "id": 4,
+      "question": "Đa số các hệ điều hành đa nhiệm hiện đại như Windows, Linux sử dụng thời điểm binding nào cho các tiến trình người dùng?",
+      "type": "single",
+      "options": [
+        "Compile time.",
+        "Load time.",
+        "Execution time.",
+        "Link time."
+      ],
+      "correct": [2],
+      "explanation": "Các OS hiện đại dùng Execution-time binding. Tiến trình có thể bị hoán vị (swap) ra/vào bộ nhớ, hoặc nạp lại ở các địa chỉ khác nhau trong thời gian chạy. Điều này yêu cầu phần cứng hỗ trợ chuyển đổi (MMU)."
+    },
+    {
+      "id": 5,
+      "question": "Thành phần phần cứng nào thực hiện việc chuyển đổi từ địa chỉ ảo sang địa chỉ vật lý ở thời điểm thực thi?",
+      "type": "single",
+      "options": [
+        "ALU (Arithmetic Logic Unit).",
+        "FPU (Floating Point Unit).",
+        "MMU (Memory Management Unit).",
+        "DMA (Direct Memory Access)."
+      ],
+      "correct": [2],
+      "explanation": "MMU (Bộ quản lý bộ nhớ) là bộ phận của phần cứng chịu trách nhiệm dịch địa chỉ ảo (logic) thành địa chỉ vật lý trong thời gian thực thi (run-time)."
+    },
+    {
+      "id": 6,
+      "question": "Trong cơ chế MMU đơn giản nhất (sử dụng thanh ghi base/relocation register), điều gì xảy ra với mỗi địa chỉ logic sinh ra bởi CPU?",
+      "type": "single",
+      "options": [
+        "Nó được gửi trực tiếp đến RAM.",
+        "Nó được nhân với giá trị trong thanh ghi limit.",
+        "Nó được cộng thêm giá trị của thanh ghi định vị (relocation register) trước khi gửi đến RAM.",
+        "Nó được xóa đi nếu lớn hơn thanh ghi base."
+      ],
+      "correct": [2],
+      "explanation": "Trong mô hình MMU cơ bản, giá trị thanh ghi định vị (Relocation Register / Base Register) được tự động cộng vào mỗi địa chỉ do user process sinh ra để tạo thành địa chỉ vật lý cuối cùng."
+    },
+    {
+      "id": 7,
+      "question": "Chương trình người dùng (user program) có bao giờ nhìn thấy địa chỉ vật lý không?",
+      "type": "single",
+      "options": [
+        "Có, khi gọi các hàm cấp phát như malloc().",
+        "Có, khi dùng ngôn ngữ C/C++ với con trỏ.",
+        "Không, user program chỉ tương tác với địa chỉ logic.",
+        "Có, nhưng chỉ trên hệ điều hành Linux."
+      ],
+      "correct": [2],
+      "explanation": "Chương trình người dùng luôn tạo ra và sử dụng địa chỉ logic (dù là dùng con trỏ trong C). Hệ thống MMU ẩn giấu và tự động chuyển đổi thành địa chỉ vật lý. User program không bao giờ nhìn thấy địa chỉ vật lý."
+    },
+    {
+      "id": 8,
+      "question": "Dynamic Loading (Nạp động) là kỹ thuật gì?",
+      "type": "single",
+      "options": [
+        "Các module hoặc hàm không được nạp vào bộ nhớ cho đến khi chúng thực sự được gọi đến.",
+        "Hệ điều hành liên tục nạp và xóa các chương trình trong RAM.",
+        "Khả năng nạp mã nguồn từ internet thay vì đĩa cứng.",
+        "Chia RAM thành các khối động có kích thước khác nhau."
+      ],
+      "correct": [0],
+      "explanation": "Với Dynamic Loading, một routine/hàm được lưu ở dạng relocatable trên đĩa cứng và không được load vào memory cho tới khi nó được gọi. Giúp tiết kiệm RAM cho các đoạn code ít dùng (ví dụ xử lý lỗi hiếm gặp)."
+    },
+    {
+      "id": 9,
+      "question": "Dynamic Linking (Liên kết động) mang lại lợi ích chính nào so với Static Linking (Liên kết tĩnh)?",
+      "type": "single",
+      "options": [
+        "Chương trình chạy nhanh hơn gấp nhiều lần.",
+        "Giảm kích thước file thực thi và tiết kiệm không gian bộ nhớ vì nhiều chương trình có thể dùng chung một bản sao của thư viện trong RAM.",
+        "Lập trình viên không cần biên dịch lại mã nguồn.",
+        "Chương trình không bao giờ bị lỗi bộ nhớ."
+      ],
+      "correct": [1],
+      "explanation": "Trong Static Linking, code của thư viện được copy hẳn vào file thực thi. Với Dynamic Linking (như file .dll hoặc .so), thư viện chỉ được load vào memory khi cần và nhiều process có thể share chung thư viện đó, tiết kiệm không gian."
+    },
+    {
+      "id": 10,
+      "question": "Trong Dynamic Linking, một đoạn mã nhỏ gọi là 'stub' được sử dụng để làm gì?",
+      "type": "single",
+      "options": [
+        "Để xóa thư viện khỏi RAM khi không dùng.",
+        "Để định vị routine thư viện thích hợp trong bộ nhớ hoặc nạp nó nếu chưa có, sau đó thay thế bản thân stub bằng địa chỉ của routine đó.",
+        "Để nén file thực thi.",
+        "Để mã hóa đoạn mã, chống dịch ngược."
+      ],
+      "correct": [1],
+      "explanation": "Stub là đoạn mã mồi. Khi hàm thuộc thư viện động được gọi lần đầu, stub chạy để tìm/nạp thư viện vào RAM, và tự thay thế mình bằng lệnh gọi trực tiếp đến thư viện đó để các lần gọi sau nhanh hơn."
+    },
+    {
+      "id": 11,
+      "question": "Shared Libraries (Thư viện dùng chung) dựa trên cơ chế nào để hoạt động hiệu quả?",
+      "type": "single",
+      "options": [
+        "Static Linking.",
+        "Dynamic Linking.",
+        "Dynamic Loading.",
+        "Compile-time Binding."
+      ],
+      "correct": [1],
+      "explanation": "Shared Libraries (.dll ở Windows, .so ở Unix) phụ thuộc mạnh mẽ vào Dynamic Linking. OS hỗ trợ liên kết động bằng cách cung cấp địa chỉ của thư viện dùng chung trong RAM cho các process cần dùng."
+    },
+    {
+      "id": 12,
+      "question": "Nếu thanh ghi Relocation (Base) có giá trị 14000, và thanh ghi Limit có giá trị 1000. Điều gì xảy ra khi CPU yêu cầu truy cập địa chỉ logic 1200?",
+      "type": "single",
+      "options": [
+        "Truy cập thành công vào địa chỉ vật lý 15200.",
+        "Truy cập thành công vào địa chỉ vật lý 1200.",
+        "Lỗi Trap (Addressing Error) vì địa chỉ logic lớn hơn thanh ghi Limit.",
+        "Lỗi Trap vì địa chỉ logic nhỏ hơn thanh ghi Limit."
+      ],
+      "correct": [2],
+      "explanation": "MMU trước tiên kiểm tra: Địa chỉ logic (1200) có < Limit (1000) hay không? 1200 > 1000, nên phát sinh ngắt (trap) báo lỗi vượt giới hạn không gian địa chỉ. Truy cập bị hủy."
+    },
+    {
+      "id": 13,
+      "question": "Giả sử thanh ghi Base = 3000, Limit = 500. Địa chỉ logic sinh ra là 340. Địa chỉ vật lý nào sẽ được truy cập?",
+      "type": "single",
+      "options": [
+        "3000",
+        "3340",
+        "500",
+        "3500"
+      ],
+      "correct": [1],
+      "explanation": "Kiểm tra: 340 < 500 (Hợp lệ). Dịch: Địa chỉ vật lý = Base + Logic = 3000 + 340 = 3340."
+    },
+    {
+      "id": 14,
+      "question": "Đặc quyền nào được yêu cầu để thay đổi giá trị của các thanh ghi Relocation và Limit?",
+      "type": "single",
+      "options": [
+        "User mode.",
+        "Kernel mode (Chế độ hệ điều hành).",
+        "Network mode.",
+        "Bất kỳ tiến trình nào cũng có thể đổi."
+      ],
+      "correct": [1],
+      "explanation": "Chỉ hệ điều hành (chạy ở Kernel Mode) mới được phép thiết lập lại giá trị của các thanh ghi này trong quá trình chuyển ngữ cảnh (context switch) để đảm bảo bảo mật giữa các tiến trình."
+    },
+    {
+      "id": 15,
+      "question": "Việc sử dụng Address Binding ở Execution Time yêu cầu điều kiện phần cứng nào?",
+      "type": "single",
+      "options": [
+        "Ổ cứng phải là SSD.",
+        "Bộ vi xử lý phải có hỗ trợ MMU (Memory Management Unit).",
+        "Bộ nhớ RAM phải từ 4GB trở lên.",
+        "CPU phải có tối thiểu 2 nhân (dual-core)."
+      ],
+      "correct": [1],
+      "explanation": "Vì địa chỉ được dịch mọi lúc khi chương trình đang chạy, cần phải có một khối phần cứng chuyên trách như MMU để dịch một cách tự động và cực kỳ nhanh mà không tốn tài nguyên tính toán của ALU."
+    },
+    {
+      "id": 16,
+      "question": "Khái niệm 'Relocation' (Định vị lại) bộ nhớ giải quyết vấn đề gì?",
+      "type": "single",
+      "options": [
+        "Giúp hệ điều hành dọn dẹp các tập tin rác.",
+        "Cho phép một chương trình được nạp vào các vùng nhớ vật lý khác nhau trong những lần chạy khác nhau, hoặc di chuyển khi đang chạy.",
+        "Cho phép người dùng đổi tên tập tin thực thi.",
+        "Giảm tốc độ quạt của CPU."
+      ],
+      "correct": [1],
+      "explanation": "Relocation là quá trình cập nhật/dịch các địa chỉ trong chương trình sao cho chương trình có thể thực thi chính xác bất kể nó được hệ điều hành nạp vào đâu trong bộ nhớ vật lý."
+    },
+    {
+      "id": 17,
+      "question": "Điều nào sau đây là NHƯỢC ĐIỂM của việc gắn địa chỉ lúc Compile-time?",
+      "type": "single",
+      "options": [
+        "Chạy rất chậm do phải dịch địa chỉ liên tục.",
+        "Chương trình chỉ có thể nạp vào đúng một vùng nhớ vật lý cố định. Nếu vùng nhớ đó đang bị chiếm, chương trình không thể chạy.",
+        "Không thể sử dụng được các cấu trúc dữ liệu như Mảng (Array).",
+        "Chỉ lập trình được bằng ngôn ngữ Assembly."
+      ],
+      "correct": [1],
+      "explanation": "Nếu biên dịch ra mã tuyệt đối (compile-time binding), nếu vùng địa chỉ quy định trước đó đã có người dùng, chương trình không thể nạp. Cần biên dịch lại nếu muốn nạp chỗ khác."
+    },
+    {
+      "id": 18,
+      "question": "Dynamic Loading yêu cầu sự hỗ trợ đặc biệt từ đâu?",
+      "type": "single",
+      "options": [
+        "Phải có sự hỗ trợ trực tiếp từ Hệ điều hành.",
+        "Không yêu cầu hỗ trợ đặc biệt từ OS; nó được tự quản lý bởi thiết kế của chính chương trình người dùng (thường qua các thư viện).",
+        "Yêu cầu hỗ trợ từ phần cứng MMU riêng biệt.",
+        "Yêu cầu CPU có lệnh Load_Dynamic."
+      ],
+      "correct": [1],
+      "explanation": "Khác với Dynamic Linking do hệ điều hành hỗ trợ sâu (để share libs), Dynamic Loading là trách nhiệm của lập trình viên thiết kế chương trình nạp đè module khi cần, OS chỉ hỗ trợ gián tiếp qua các hàm thư viện chuẩn hệ thống."
+    },
+    {
+      "id": 19,
+      "question": "Khi xảy ra Context Switch (Chuyển ngữ cảnh) giữa 2 tiến trình, hệ điều hành phải làm gì với cơ chế dịch địa chỉ?",
+      "type": "single",
+      "options": [
+        "Xóa toàn bộ RAM của tiến trình cũ.",
+        "Lưu lại và cập nhật (nạp mới) các giá trị của thanh ghi Base và Limit (hoặc con trỏ bảng trang) trong MMU tương ứng với tiến trình mới.",
+        "Tắt và bật lại MMU.",
+        "Chờ tiến trình cũ dịch xong tất cả các địa chỉ của nó."
+      ],
+      "correct": [1],
+      "explanation": "Để tiến trình mới có không gian địa chỉ riêng biệt và an toàn, OS nạp các thanh ghi của MMU (Base/Limit hoặc thanh ghi trỏ Page Table) từ Process Control Block (PCB) của tiến trình mới."
+    },
+    {
+      "id": 20,
+      "question": "Trong hệ điều hành, 'Logical Address' đồng nghĩa với từ nào sau đây?",
+      "type": "single",
+      "options": [
+        "Physical Address",
+        "Virtual Address",
+        "MAC Address",
+        "Absolute Address"
+      ],
+      "correct": [1],
+      "explanation": "Trong ngữ cảnh của quản lý bộ nhớ, Logical Address và Virtual Address thường được dùng thay thế cho nhau (interchangeable) để chỉ địa chỉ sinh ra bởi CPU."
+    }
+  ]
+}

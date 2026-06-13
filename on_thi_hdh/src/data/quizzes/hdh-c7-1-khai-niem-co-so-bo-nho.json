@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c7-1-khai-niem-co-so",
+  "title": "Hệ điều hành - Chương 7.1: Khái niệm cơ sở về bộ nhớ",
+  "description": "Kiểm tra kiến thức cơ sở về hệ thống bộ nhớ, vai trò của bộ nhớ chính, và các khái niệm cơ bản trong quản lý bộ nhớ của hệ điều hành.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Bộ nhớ chính (Main Memory) trong máy tính thường được xây dựng từ loại bộ nhớ nào?",
+      "type": "single",
+      "options": [
+        "SRAM",
+        "DRAM",
+        "Flash Memory",
+        "ROM"
+      ],
+      "correct": [1],
+      "explanation": "Bộ nhớ chính thường sử dụng DRAM (Dynamic Random Access Memory) vì dung lượng lớn và chi phí thấp hơn SRAM, mặc dù tốc độ chậm hơn một chút."
+    },
+    {
+      "id": 2,
+      "question": "CPU có thể truy cập trực tiếp vào các loại bộ nhớ nào sau đây? (Chọn tất cả các đáp án đúng)",
+      "type": "multiple",
+      "options": [
+        "Thanh ghi (Registers)",
+        "Bộ nhớ đệm (Cache)",
+        "Bộ nhớ chính (RAM)",
+        "Đĩa từ (Magnetic Disk)"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "CPU chỉ có thể truy cập trực tiếp vào thanh ghi, bộ nhớ đệm (cache) và bộ nhớ chính (RAM). Đĩa cứng và các thiết bị lưu trữ thứ cấp khác phải được nạp vào RAM trước khi CPU có thể xử lý."
+    },
+    {
+      "id": 3,
+      "question": "Chức năng chính của Hệ điều hành trong việc quản lý bộ nhớ là gì?",
+      "type": "single",
+      "options": [
+        "Tăng tốc độ truy xuất của CPU vào RAM.",
+        "Cấp phát và thu hồi không gian bộ nhớ cho các tiến trình, đồng thời bảo vệ các vùng nhớ tránh sự truy cập trái phép.",
+        "Chuyển đổi dữ liệu từ tín hiệu analog sang digital.",
+        "Chống phân mảnh ổ cứng từ tính."
+      ],
+      "correct": [1],
+      "explanation": "Quản lý bộ nhớ của Hệ điều hành bao gồm việc theo dõi vùng nhớ nào đang được sử dụng, cấp phát vùng nhớ khi tiến trình yêu cầu, thu hồi vùng nhớ khi tiến trình kết thúc, và bảo vệ vùng nhớ của các tiến trình khác nhau."
+    },
+    {
+      "id": 4,
+      "question": "Thanh ghi (Register) trong CPU có đặc điểm gì?",
+      "type": "single",
+      "options": [
+        "Tốc độ truy xuất chậm nhưng dung lượng rất lớn.",
+        "Được tích hợp sẵn trong CPU, có tốc độ truy xuất nhanh nhất nhưng dung lượng rất nhỏ.",
+        "Là một dạng lưu trữ không điện động (non-volatile).",
+        "Chỉ được sử dụng để lưu trữ dữ liệu đồ họa."
+      ],
+      "correct": [1],
+      "explanation": "Thanh ghi là bộ nhớ nằm ngay bên trong CPU, có tốc độ truy xuất nhanh nhất (chỉ tốn 1 hoặc vài chu kỳ xung nhịp CPU) nhưng dung lượng vô cùng nhỏ (thường chỉ vài chục đến vài trăm byte)."
+    },
+    {
+      "id": 5,
+      "question": "Stall (đình trệ) của CPU liên quan đến bộ nhớ là hiện tượng gì?",
+      "type": "single",
+      "options": [
+        "CPU ngừng hoạt động do lỗi phần cứng.",
+        "CPU phải chờ đợi dữ liệu được nạp từ bộ nhớ chính do tốc độ truy xuất RAM chậm hơn tốc độ xử lý của CPU.",
+        "Tiến trình bị hệ điều hành tạm dừng để nhường CPU cho tiến trình khác.",
+        "Bộ nhớ đầy và không thể cấp phát thêm."
+      ],
+      "correct": [1],
+      "explanation": "Do tốc độ xử lý của CPU nhanh hơn rất nhiều so với tốc độ đọc/ghi của bộ nhớ chính (RAM), CPU đôi khi phải chờ nhiều chu kỳ xung nhịp để lấy được dữ liệu, hiện tượng này gọi là stall."
+    },
+    {
+      "id": 6,
+      "question": "Bộ nhớ đệm (Cache) được sử dụng để giải quyết vấn đề gì?",
+      "type": "single",
+      "options": [
+        "Tăng dung lượng lưu trữ tổng thể của hệ thống.",
+        "Giải quyết sự chênh lệch tốc độ giữa CPU và bộ nhớ chính (RAM).",
+        "Ngăn chặn virus phá hoại dữ liệu trong RAM.",
+        "Lưu trữ dữ liệu vĩnh viễn khi mất điện."
+      ],
+      "correct": [1],
+      "explanation": "Cache là bộ nhớ tốc độ cao (thường dùng SRAM) nằm giữa CPU và RAM, giúp lưu trữ tạm thời các dữ liệu/lệnh thường xuyên được sử dụng, giảm thiểu số lần CPU phải truy cập trực tiếp vào RAM chậm chạp."
+    },
+    {
+      "id": 7,
+      "question": "Để bảo vệ bộ nhớ không bị truy cập trái phép bởi các tiến trình khác, phần cứng thường sử dụng cặp thanh ghi nào?",
+      "type": "single",
+      "options": [
+        "Thanh ghi PC (Program Counter) và IR (Instruction Register).",
+        "Thanh ghi Base (Cơ sở) và Limit (Giới hạn).",
+        "Thanh ghi AX và BX.",
+        "Thanh ghi Status và Control."
+      ],
+      "correct": [1],
+      "explanation": "Thanh ghi Base lưu địa chỉ bắt đầu của vùng nhớ hợp lệ, và thanh ghi Limit lưu kích thước của vùng nhớ đó. Phần cứng sẽ kiểm tra mọi địa chỉ do tiến trình tạo ra xem có nằm trong khoảng từ Base đến Base+Limit hay không."
+    },
+    {
+      "id": 8,
+      "question": "Nếu một tiến trình ở chế độ người dùng (user mode) cố tình truy cập vào vùng nhớ ngoài giới hạn (vượt quá thanh ghi Limit), điều gì sẽ xảy ra?",
+      "type": "single",
+      "options": [
+        "Hệ điều hành sẽ tự động mở rộng giới hạn bộ nhớ cho tiến trình đó.",
+        "CPU sẽ bỏ qua lệnh đó và chuyển sang lệnh tiếp theo.",
+        "Phần cứng sẽ sinh ra một ngắt (trap) gửi đến hệ điều hành, thường dẫn đến việc tiến trình bị kết thúc (Segmentation fault).",
+        "Dữ liệu của tiến trình khác sẽ bị ghi đè."
+      ],
+      "correct": [2],
+      "explanation": "Bất kỳ nỗ lực truy cập vùng nhớ không hợp lệ nào đều bị phần cứng ngăn chặn bằng cách tạo ra một ngắt (trap) báo lỗi 'addressing error' cho hệ điều hành. Hệ điều hành thường phản ứng bằng cách kill tiến trình đó."
+    },
+    {
+      "id": 9,
+      "question": "Thanh ghi Cơ sở (Base) và Giới hạn (Limit) chỉ có thể được nạp giá trị mới bởi ai?",
+      "type": "single",
+      "options": [
+        "Bởi bất kỳ tiến trình nào đang chạy.",
+        "Bởi trình biên dịch (Compiler).",
+        "Chỉ bởi Hệ điều hành khi hoạt động ở chế độ đặc quyền (Kernel mode).",
+        "Bởi người dùng thông qua giao diện dòng lệnh."
+      ],
+      "correct": [2],
+      "explanation": "Để đảm bảo an ninh, các lệnh nạp giá trị vào thanh ghi Base và Limit là các lệnh đặc quyền (privileged instructions) chỉ có thể thực thi trong kernel mode bởi hệ điều hành."
+    },
+    {
+      "id": 10,
+      "question": "Trong kiến trúc phân cấp bộ nhớ (Memory Hierarchy), thứ tự từ tốc độ nhanh nhất đến chậm nhất là gì?",
+      "type": "single",
+      "options": [
+        "Registers -> RAM -> Cache -> Disk",
+        "Cache -> Registers -> RAM -> Disk",
+        "Registers -> Cache -> RAM -> Disk",
+        "Registers -> Cache -> Disk -> RAM"
+      ],
+      "correct": [2],
+      "explanation": "Phân cấp bộ nhớ: Registers (nhanh nhất, nhỏ nhất) -> Cache (L1, L2, L3) -> Main Memory (RAM) -> Magnetic/Solid State Disk (chậm nhất, lớn nhất)."
+    },
+    {
+      "id": 11,
+      "question": "Bộ nhớ nào sau đây là bộ nhớ không khả biến (Non-volatile), tức là giữ nguyên dữ liệu khi mất điện?",
+      "type": "multiple",
+      "options": [
+        "RAM",
+        "ROM",
+        "Thanh ghi (Registers)",
+        "Đĩa cứng (Hard Disk/SSD)"
+      ],
+      "correct": [1, 3],
+      "explanation": "ROM và Đĩa cứng là bộ nhớ không khả biến, chúng lưu trữ dữ liệu ngay cả khi hệ thống tắt điện. RAM và thanh ghi là bộ nhớ khả biến (volatile), sẽ mất dữ liệu khi mất điện."
+    },
+    {
+      "id": 12,
+      "question": "Khái niệm 'Không gian địa chỉ' (Address Space) của một tiến trình là gì?",
+      "type": "single",
+      "options": [
+        "Là tổng dung lượng ổ cứng mà tiến trình đó sử dụng.",
+        "Là tập hợp tất cả các địa chỉ hợp lệ mà tiến trình có thể sử dụng để truy cập bộ nhớ.",
+        "Là địa chỉ IP mạng mà tiến trình sử dụng để giao tiếp.",
+        "Là vị trí vật lý cụ thể của tiến trình trên thanh RAM."
+      ],
+      "correct": [1],
+      "explanation": "Không gian địa chỉ là tập hợp các địa chỉ logic mà tiến trình nhận biết và sử dụng. Hệ điều hành và MMU đảm bảo không gian địa chỉ này được ánh xạ đúng đắn vào bộ nhớ vật lý và tách biệt với các tiến trình khác."
+    },
+    {
+      "id": 13,
+      "question": "Tại sao cần có cơ chế bảo vệ bộ nhớ trong hệ điều hành đa nhiệm?",
+      "type": "single",
+      "options": [
+        "Để tăng dung lượng bộ nhớ khả dụng.",
+        "Để ngăn chặn một tiến trình (do lỗi hoặc ác ý) đọc/ghi vào vùng nhớ của tiến trình khác hoặc của hệ điều hành.",
+        "Để tự động dọn dẹp bộ nhớ rác.",
+        "Để giúp CPU chạy ở xung nhịp cao hơn."
+      ],
+      "correct": [1],
+      "explanation": "Trong môi trường đa nhiệm, nhiều tiến trình cùng chia sẻ bộ nhớ chính. Bảo vệ bộ nhớ là bắt buộc để đảm bảo sự ổn định và bảo mật, ngăn không cho tiến trình này phá hỏng dữ liệu của tiến trình khác."
+    },
+    {
+      "id": 14,
+      "question": "Ai là người chịu trách nhiệm chính trong việc dịch địa chỉ logic sang địa chỉ vật lý trong quá trình thực thi?",
+      "type": "single",
+      "options": [
+        "Trình biên dịch (Compiler).",
+        "Bộ quản lý bộ nhớ phần cứng (MMU).",
+        "Người lập trình.",
+        "Trình liên kết (Linker)."
+      ],
+      "correct": [1],
+      "explanation": "MMU (Memory Management Unit) là thành phần phần cứng chịu trách nhiệm ánh xạ (dịch) các địa chỉ logic/ảo sinh ra bởi CPU sang địa chỉ vật lý trên RAM tại thời điểm thực thi (run-time)."
+    },
+    {
+      "id": 15,
+      "question": "Bộ nhớ Cache L1 thường nằm ở đâu?",
+      "type": "single",
+      "options": [
+        "Trên bo mạch chủ (Motherboard).",
+        "Bên trong nhân của CPU.",
+        "Trên thanh RAM.",
+        "Bên trong ổ cứng."
+      ],
+      "correct": [1],
+      "explanation": "Cache L1 là cấp độ cache nhanh nhất và nhỏ nhất, thường được tích hợp trực tiếp bên trong từng nhân (core) của CPU để đảm bảo độ trễ truy xuất thấp nhất."
+    },
+    {
+      "id": 16,
+      "question": "Hệ điều hành thường được nạp vào vùng nhớ nào của RAM?",
+      "type": "single",
+      "options": [
+        "Thường ở các địa chỉ bộ nhớ thấp (kèm ngắt vector), hoặc địa chỉ cao, tùy thuộc vào kiến trúc, nhưng luôn là một vùng nhớ được bảo vệ riêng biệt.",
+        "Được nạp rải rác đan xen với các tiến trình người dùng.",
+        "Hệ điều hành không nằm trong RAM mà nằm trong bộ nhớ Cache.",
+        "Hệ điều hành chỉ chạy trực tiếp từ đĩa cứng."
+      ],
+      "correct": [0],
+      "explanation": "Hệ điều hành thường chiếm một phần vùng nhớ cố định trong RAM (có thể là vùng nhớ thấp hoặc cao) và vùng nhớ này được bảo vệ nghiêm ngặt khỏi sự truy cập của các tiến trình user."
+    },
+    {
+      "id": 17,
+      "question": "Việc bảo vệ bộ nhớ bằng thanh ghi Base và Limit được thực hiện ở thời điểm nào?",
+      "type": "single",
+      "options": [
+        "Lúc biên dịch (Compile time).",
+        "Lúc nạp (Load time).",
+        "Lúc thực thi (Run time), cho mọi truy cập bộ nhớ.",
+        "Lúc hệ điều hành khởi động."
+      ],
+      "correct": [2],
+      "explanation": "Sự kiểm tra bảo vệ bằng thanh ghi Base và Limit do phần cứng thực hiện cực kỳ nhanh và diễn ra trong thời gian thực thi (run-time) đối với MỌI truy cập bộ nhớ mà CPU yêu cầu."
+    },
+    {
+      "id": 18,
+      "question": "Hệ thống máy tính hiện đại sử dụng đơn vị truyền tải dữ liệu giữa RAM và Cache theo đơn vị nào?",
+      "type": "single",
+      "options": [
+        "Từng bit một.",
+        "Từng byte một.",
+        "Theo khối (Cache Line / Block).",
+        "Toàn bộ RAM một lần."
+      ],
+      "correct": [2],
+      "explanation": "Để tối ưu hóa thông lượng và tận dụng nguyên lý cục bộ (locality), dữ liệu được truyền giữa RAM và Cache theo các khối gọi là Cache Line (thường là 64 bytes)."
+    },
+    {
+      "id": 19,
+      "question": "Trong quản lý bộ nhớ, 'Nguyên lý cục bộ không gian' (Spatial Locality) có nghĩa là gì?",
+      "type": "single",
+      "options": [
+        "Nếu một ô nhớ được truy cập, ô nhớ đó có khả năng sẽ sớm được truy cập lại.",
+        "Nếu một ô nhớ được truy cập, các ô nhớ có địa chỉ gần đó có khả năng sẽ sớm được truy cập.",
+        "Dữ liệu trong RAM bị phân mảnh nhiều nơi.",
+        "Bộ nhớ bị giới hạn về không gian lưu trữ vật lý."
+      ],
+      "correct": [1],
+      "explanation": "Spatial Locality phát biểu rằng các lệnh hoặc dữ liệu nằm gần nhau trong bộ nhớ có xu hướng được truy cập cùng nhau (ví dụ: truy cập các phần tử liên tiếp của mảng). Đây là lý do cache thường nạp theo khối (cache line)."
+    },
+    {
+      "id": 20,
+      "question": "Trong quản lý bộ nhớ, 'Nguyên lý cục bộ thời gian' (Temporal Locality) phát biểu điều gì?",
+      "type": "single",
+      "options": [
+        "Nếu một ô nhớ được truy cập, các ô nhớ có địa chỉ gần đó sẽ được truy cập.",
+        "Nếu một ô nhớ được truy cập, chính ô nhớ đó có khả năng sẽ sớm được truy cập lại trong tương lai gần.",
+        "Thời gian truy xuất bộ nhớ phụ thuộc vào dung lượng bộ nhớ.",
+        "Hệ điều hành phân bổ thời gian CPU dựa trên kích thước bộ nhớ."
+      ],
+      "correct": [1],
+      "explanation": "Temporal Locality chỉ ra rằng các dữ liệu/lệnh vừa được dùng có xác suất cao sẽ được dùng lại trong tương lai gần (ví dụ: các biến đếm trong vòng lặp), giúp cache phát huy tối đa hiệu quả."
+    }
+  ]
+}

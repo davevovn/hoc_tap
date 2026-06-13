@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c7-5-co-che-phan-trang",
+  "title": "Hệ điều hành - Chương 7.5: Cơ chế phân trang",
+  "description": "Kiểm tra sự hiểu biết về Paging, trang (page), khung trang (frame), bảng trang (page table), và TLB.",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Cơ chế phân trang (Paging) được thiết kế chủ yếu để giải quyết vấn đề gì của mô hình cấp phát liên tục?",
+      "type": "single",
+      "options": [
+        "Phân mảnh trong (Internal Fragmentation).",
+        "Phân mảnh ngoài (External Fragmentation).",
+        "Tốc độ xử lý của CPU.",
+        "Thiếu dung lượng ổ cứng."
+      ],
+      "correct": [1],
+      "explanation": "Paging loại bỏ hoàn toàn hiện tượng phân mảnh ngoài bằng cách cho phép không gian địa chỉ vật lý của tiến trình KHÔNG cần phải liên tục (non-contiguous)."
+    },
+    {
+      "id": 2,
+      "question": "Trong cơ chế Paging, bộ nhớ vật lý (RAM) được chia thành các khối có kích thước cố định bằng nhau gọi là gì?",
+      "type": "single",
+      "options": [
+        "Page (Trang).",
+        "Segment (Đoạn).",
+        "Frame (Khung trang).",
+        "Block (Khối)."
+      ],
+      "correct": [2],
+      "explanation": "RAM được chia thành các Frame (Khung trang) có kích thước cố định."
+    },
+    {
+      "id": 3,
+      "question": "Trong cơ chế Paging, bộ nhớ logic (ảo) của tiến trình được chia thành các khối có kích thước cố định bằng nhau gọi là gì?",
+      "type": "single",
+      "options": [
+        "Page (Trang).",
+        "Segment (Đoạn).",
+        "Frame (Khung trang).",
+        "Sector (Cung)."
+      ],
+      "correct": [0],
+      "explanation": "Không gian địa chỉ ảo/logic của tiến trình được chia thành các Page (Trang). Kích thước của Page luôn BẰNG kích thước của Frame."
+    },
+    {
+      "id": 4,
+      "question": "Mối quan hệ giữa kích thước của Page và kích thước của Frame là gì?",
+      "type": "single",
+      "options": [
+        "Page lớn hơn Frame.",
+        "Page nhỏ hơn Frame.",
+        "Page và Frame phải có kích thước hoàn toàn bằng nhau.",
+        "Page và Frame không có sự liên quan về kích thước."
+      ],
+      "correct": [2],
+      "explanation": "Để dễ dàng ánh xạ (map) một trang logic vào một khung trang vật lý mà không cần biến đổi kích thước, cả hai bắt buộc phải bằng nhau (thường từ 4KB đến 8KB)."
+    },
+    {
+      "id": 5,
+      "question": "Địa chỉ logic sinh ra bởi CPU trong cơ chế Paging bao gồm hai thành phần nào?",
+      "type": "single",
+      "options": [
+        "Page Number (p) và Page Offset (d).",
+        "Segment Number (s) và Segment Offset (d).",
+        "Base và Limit.",
+        "Frame Number (f) và Page Number (p)."
+      ],
+      "correct": [0],
+      "explanation": "Địa chỉ logic gồm: Số hiệu trang (Page number - p) dùng làm index tra bảng trang, và độ dời (Page offset - d) xác định vị trí byte cụ thể trong trang đó."
+    },
+    {
+      "id": 6,
+      "question": "Thành phần nào làm nhiệm vụ ánh xạ Số hiệu trang (Page number - p) thành Số hiệu khung trang (Frame number - f)?",
+      "type": "single",
+      "options": [
+        "CPU Cache.",
+        "Page Table (Bảng trang).",
+        "Hard Drive.",
+        "ALU."
+      ],
+      "correct": [1],
+      "explanation": "Bảng trang (Page Table) lưu trữ thông tin ánh xạ, mỗi entry chứa frame number 'f' tương ứng với page number 'p'."
+    },
+    {
+      "id": 7,
+      "question": "Trong Paging, địa chỉ vật lý cuối cùng được tạo ra bằng cách nào?",
+      "type": "single",
+      "options": [
+        "Cộng Page Number và Page Offset.",
+        "Ghép nối Frame Number (f) với Page Offset (d).",
+        "Nhân Page Number với kích thước Page.",
+        "Base + Limit."
+      ],
+      "correct": [1],
+      "explanation": "Phần offset (d) không bị thay đổi. Địa chỉ vật lý được ghép từ Số hiệu khung trang 'f' (lấy từ bảng trang) và độ dời 'd' (giữ nguyên từ địa chỉ logic)."
+    },
+    {
+      "id": 8,
+      "question": "Cơ chế Paging có loại bỏ hoàn toàn hiện tượng phân mảnh trong (Internal Fragmentation) không?",
+      "type": "single",
+      "options": [
+        "Có, nó loại bỏ hoàn toàn.",
+        "Không, Paging không có phân mảnh ngoài nhưng VẪN CÒN phân mảnh trong ở trang cuối cùng của mỗi tiến trình.",
+        "Nó làm tăng phân mảnh trong ở mọi trang.",
+        "Paging gây ra cả phân mảnh trong và ngoài."
+      ],
+      "correct": [1],
+      "explanation": "Kích thước chương trình không phải lúc nào cũng là bội số của Page Size. Nếu một tiến trình yêu cầu 72KB bộ nhớ và Page Size là 4KB (cần 18 pages). Nhưng nếu nó xin 73KB, nó sẽ cần 19 pages, trong đó page cuối cùng chỉ dùng 1KB và lãng phí 3KB (phân mảnh trong)."
+    },
+    {
+      "id": 9,
+      "question": "Với không gian địa chỉ ảo 32-bit và kích thước trang là 4KB ($2^{12}$ bytes). Một bảng trang đơn cấp của một tiến trình có thể chứa tối đa bao nhiêu mục (entries)?",
+      "type": "single",
+      "options": [
+        "$2^{12}$ mục.",
+        "$2^{20}$ mục (hơn 1 triệu mục).",
+        "$2^{32}$ mục.",
+        "4096 mục."
+      ],
+      "correct": [1],
+      "explanation": "32 bits = 20 bits (Page number) + 12 bits (Offset 4KB). Số lượng trang logic tối đa = $2^{20}$ trang = 1,048,576 trang. Vậy bảng trang cần $2^{20}$ entries."
+    },
+    {
+      "id": 10,
+      "question": "Bảng trang (Page Table) của các tiến trình thường được lưu ở đâu?",
+      "type": "single",
+      "options": [
+        "Hoàn toàn trong thanh ghi của CPU.",
+        "Hoàn toàn trong bộ nhớ Cache L1.",
+        "Trong bộ nhớ chính (RAM).",
+        "Trên ổ đĩa từ tính."
+      ],
+      "correct": [2],
+      "explanation": "Do bảng trang thường có kích thước khá lớn (ví dụ vài MB mỗi tiến trình ở hệ 32-bit), chúng không thể lưu vừa trong thanh ghi mà phải được lưu trữ trong RAM."
+    },
+    {
+      "id": 11,
+      "question": "Thanh ghi PTBR (Page-Table Base Register) có chức năng gì?",
+      "type": "single",
+      "options": [
+        "Lưu kích thước của bảng trang.",
+        "Trỏ tới địa chỉ vật lý bắt đầu của bảng trang trong bộ nhớ RAM.",
+        "Lưu địa chỉ của trang cuối cùng.",
+        "Đếm số lượng khung trang trống."
+      ],
+      "correct": [1],
+      "explanation": "PTBR lưu địa chỉ cơ sở của bảng trang của tiến trình đang chạy. Khi chuyển ngữ cảnh, OS cập nhật PTBR để CPU biết phải lấy bảng trang của tiến trình mới ở đâu."
+    },
+    {
+      "id": 12,
+      "question": "Vấn đề lớn nhất của việc lưu Bảng trang trong RAM là gì?",
+      "type": "single",
+      "options": [
+        "Làm mất dữ liệu khi mất điện.",
+        "Mỗi lần truy xuất bộ nhớ logic yêu cầu HAI LẦN truy xuất RAM vật lý (1 lần đọc bảng trang, 1 lần đọc dữ liệu), làm giảm một nửa tốc độ thực thi.",
+        "Gây phân mảnh ngoài.",
+        "Hệ điều hành không thể đọc được."
+      ],
+      "correct": [1],
+      "explanation": "Để lấy được dữ liệu ở địa chỉ X, CPU phải: (1) ra RAM lấy Frame tương ứng từ Page Table, (2) ra RAM một lần nữa tại địa chỉ Frame đó để lấy dữ liệu. Quá trình này quá chậm."
+    },
+    {
+      "id": 13,
+      "question": "Để giải quyết vấn đề truy xuất RAM 2 lần của Paging, phần cứng sử dụng thành phần nào?",
+      "type": "single",
+      "options": [
+        "TLB (Translation Look-aside Buffer).",
+        "SSD.",
+        "ROM.",
+        "Dual-channel RAM."
+      ],
+      "correct": [0],
+      "explanation": "TLB là một bộ đệm cache phần cứng cực nhỏ, tốc độ cực nhanh (Associative Memory) nằm bên trong MMU. TLB lưu trữ một số lượng nhỏ các ánh xạ Page -> Frame dùng gần đây nhất."
+    },
+    {
+      "id": 14,
+      "question": "Khi CPU tìm kiếm một Số hiệu trang (Page number), TLB hoạt động như thế nào?",
+      "type": "single",
+      "options": [
+        "TLB tìm kiếm tuần tự từ đầu đến cuối.",
+        "TLB tìm kiếm nhị phân.",
+        "TLB so sánh Page Number với TẤT CẢ các mục trong TLB ĐỒNG THỜI (song song) nhờ phần cứng Associative Memory.",
+        "TLB gửi yêu cầu cho OS để tìm kiếm."
+      ],
+      "correct": [2],
+      "explanation": "Bộ nhớ kết hợp (Associative Memory) của TLB cho phép so sánh song song cực nhanh, trả về kết quả (Frame Number) gần như tức thời nếu trang đó có trong TLB (TLB Hit)."
+    },
+    {
+      "id": 15,
+      "question": "Khái niệm 'TLB Miss' nghĩa là gì?",
+      "type": "single",
+      "options": [
+        "Dữ liệu không có trong RAM.",
+        "Số hiệu trang (Page Number) cần tìm KHÔNG có trong TLB, bắt buộc MMU phải ra RAM để đọc từ Bảng trang (Page Table).",
+        "Tiến trình bị lỗi và bị đóng lại.",
+        "TLB bị hỏng phần cứng."
+      ],
+      "correct": [1],
+      "explanation": "Khi TLB Miss xảy ra, phần cứng (hoặc OS) phải mất thời gian ra RAM duyệt bảng trang, lấy Frame Number, nạp nó vào TLB, sau đó mới tiến hành truy xuất dữ liệu."
+    },
+    {
+      "id": 16,
+      "question": "Chỉ số ASIDs (Address-Space Identifiers) có thể được thêm vào TLB nhằm mục đích gì?",
+      "type": "single",
+      "options": [
+        "Tăng dung lượng của TLB.",
+        "Cho phép TLB chứa các mục nhập (entries) của NHIỀU tiến trình khác nhau cùng một lúc để bảo vệ và tránh phải xóa toàn bộ (flush) TLB khi chuyển ngữ cảnh.",
+        "Mã hóa dữ liệu trong TLB.",
+        "Giảm lượng điện tiêu thụ."
+      ],
+      "correct": [1],
+      "explanation": "ASID giúp phân biệt ánh xạ trang của tiến trình A với tiến trình B. Nếu không có ASID, mỗi khi Context Switch, OS phải flush (xóa sạch) toàn bộ TLB, gây miss penalty rất cao cho tiến trình mới."
+    },
+    {
+      "id": 17,
+      "question": "Cơ chế 'Bảng trang đa cấp' (Hierarchical Paging / Multilevel Paging) được sử dụng nhằm giải quyết vấn đề gì?",
+      "type": "single",
+      "options": [
+        "Giải quyết phân mảnh trong.",
+        "Khắc phục việc kích thước bảng trang (đơn cấp) quá lớn phải chiếm một vùng nhớ liên tục khổng lồ trong RAM đối với các hệ thống 32-bit và 64-bit.",
+        "Tăng tốc độ tìm kiếm trong TLB.",
+        "Tránh phải sử dụng RAM."
+      ],
+      "correct": [1],
+      "explanation": "Với hệ 32-bit, bảng trang chiếm khoảng 4MB. Với 64-bit, kích thước là vô cùng lớn. Phân cấp (ví dụ: Page Directory -> Page Table) giúp chia nhỏ bảng trang ra và không yêu cầu toàn bộ bảng trang phải liên tục hay nằm hoàn toàn trong RAM cùng lúc."
+    },
+    {
+      "id": 18,
+      "question": "Bảng trang nghịch đảo (Inverted Page Table) khác biệt với Bảng trang thông thường như thế nào?",
+      "type": "single",
+      "options": [
+        "Bảng trang thông thường có một mục (entry) cho mỗi trang ẢO, còn Bảng trang nghịch đảo chỉ có duy nhất một mục (entry) cho mỗi khung trang VẬT LÝ trên RAM.",
+        "Bảng trang nghịch đảo lưu ở ổ cứng thay vì RAM.",
+        "Bảng trang nghịch đảo đảo ngược thứ tự các bit.",
+        "Bảng trang nghịch đảo không cho phép chia sẻ bộ nhớ."
+      ],
+      "correct": [0],
+      "explanation": "Inverted Page Table chỉ phụ thuộc vào dung lượng RAM, giúp tiết kiệm bộ nhớ đáng kể. Thay vì mỗi tiến trình có 1 bảng trang ảo khổng lồ, toàn hệ thống dùng chung 1 bảng, số entry bằng chính xác số Frame vật lý."
+    },
+    {
+      "id": 19,
+      "question": "Nhược điểm lớn nhất của Bảng trang nghịch đảo (Inverted Page Table) là gì?",
+      "type": "single",
+      "options": [
+        "Tốn quá nhiều RAM.",
+        "Gây ra TLB Miss nhiều hơn.",
+        "Việc tìm kiếm (dịch địa chỉ) chậm hơn vì phải tìm theo PID và Page Number trên toàn bảng, đòi hỏi kỹ thuật băm (Hashing) phức tạp.",
+        "Không thể dùng cho hệ thống 64-bit."
+      ],
+      "correct": [2],
+      "explanation": "Vì index của bảng là Frame Number vật lý, trong khi CPU yêu cầu dịch từ Page Number ảo, nên phải duyệt bảng hoặc dùng Hash table để tìm. Tốn thời gian tìm kiếm."
+    },
+    {
+      "id": 20,
+      "question": "Tính năng 'Shared Pages' (Chia sẻ trang) trong cơ chế Paging cho phép gì?",
+      "type": "single",
+      "options": [
+        "Cho phép nhiều máy tính trên mạng chia sẻ bộ nhớ.",
+        "Nhiều tiến trình có thể cùng ánh xạ (map) một số trang logic của chúng trỏ vào CÙNG MỘT khung trang vật lý (Frame) duy nhất để chia sẻ code (ví dụ thư viện libc).",
+        "Cho phép TLB truy cập ổ cứng.",
+        "Nhiều CPU xử lý cùng một lúc một tiến trình."
+      ],
+      "correct": [1],
+      "explanation": "Shared Pages (hoặc Shared Memory) rất dễ cài đặt với Paging: các Page Table entry của nhiều tiến trình cùng trỏ đến 1 Frame chung (Reentrant code), tiết kiệm rất nhiều RAM."
+    }
+  ]
+}

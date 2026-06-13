@@ -1,0 +1,267 @@
+{
+  "id": "hdh-c7-4-mo-hinh-quan-ly-bo-nho",
+  "title": "Hệ điều hành - Chương 7.4: Mô hình quản lý bộ nhớ",
+  "description": "Kiểm tra về cấp phát bộ nhớ liên tục, cấp phát động, các thuật toán Best-fit, First-fit và vấn đề phân mảnh (Fragmentation).",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Mô hình cấp phát bộ nhớ liên tục (Contiguous Memory Allocation) có đặc điểm gì?",
+      "type": "single",
+      "options": [
+        "Mỗi tiến trình được cấp phát một vùng nhớ gồm các địa chỉ vật lý liền kề nhau liên tục.",
+        "Tiến trình được chia thành nhiều khối nhỏ rải rác khắp RAM.",
+        "Chỉ cấp phát bộ nhớ khi CPU thực sự cần đến.",
+        "Tiến trình nằm hoàn toàn trên ổ đĩa cứng và không nằm trong RAM."
+      ],
+      "correct": [0],
+      "explanation": "Trong cấp phát liên tục, toàn bộ không gian địa chỉ logic của tiến trình phải được đặt vào một khối các địa chỉ vật lý liên tiếp nhau (thường dùng chung với thanh ghi base/limit)."
+    },
+    {
+      "id": 2,
+      "question": "Thuật toán cấp phát bộ nhớ 'First-fit' hoạt động như thế nào?",
+      "type": "single",
+      "options": [
+        "Tìm vùng nhớ trống (hole) lớn nhất trong RAM để cấp phát.",
+        "Tìm vùng nhớ trống nhỏ nhất vừa đủ để chứa tiến trình.",
+        "Duyệt RAM từ đầu và cấp phát vùng nhớ trống đầu tiên tìm thấy có kích thước đủ lớn.",
+        "Cấp phát vào vùng nhớ cuối cùng của RAM."
+      ],
+      "correct": [2],
+      "explanation": "First-fit quét danh sách các lỗ hổng (holes) và dừng lại ở lỗ hổng ĐẦU TIÊN có kích thước thỏa mãn yêu cầu của tiến trình. Thuật toán này thường nhanh nhất."
+    },
+    {
+      "id": 3,
+      "question": "Thuật toán cấp phát bộ nhớ 'Best-fit' hoạt động như thế nào?",
+      "type": "single",
+      "options": [
+        "Chọn lỗ hổng đầu tiên đủ lớn.",
+        "Tìm kiếm trên toàn bộ RAM và chọn lỗ hổng nhỏ nhất đủ lớn (có kích thước sát nhất với yêu cầu) để cấp phát.",
+        "Chọn lỗ hổng lớn nhất.",
+        "Chọn ngẫu nhiên một lỗ hổng."
+      ],
+      "correct": [1],
+      "explanation": "Best-fit tìm khoảng trống vừa vặn nhất để tiết kiệm không gian, nhằm sinh ra phần dư thừa (hole mới) nhỏ nhất có thể. Tuy nhiên việc tìm kiếm thường chậm."
+    },
+    {
+      "id": 4,
+      "question": "Thuật toán cấp phát bộ nhớ 'Worst-fit' hoạt động như thế nào?",
+      "type": "single",
+      "options": [
+        "Chọn lỗ hổng đầu tiên đủ lớn.",
+        "Chọn lỗ hổng nhỏ nhất đủ lớn.",
+        "Tìm kiếm trên toàn bộ RAM và chọn lỗ hổng lớn nhất để cấp phát.",
+        "Gây ra lỗi sập hệ thống."
+      ],
+      "correct": [2],
+      "explanation": "Worst-fit cấp phát sử dụng lỗ hổng lớn nhất hiện có. Ý tưởng là phần còn lại sau khi cấp phát vẫn sẽ đủ lớn để phục vụ các tiến trình khác."
+    },
+    {
+      "id": 5,
+      "question": "Theo thực nghiệm, so sánh về hiệu năng tốc độ và khả năng tận dụng không gian giữa First-fit, Best-fit và Worst-fit, kết luận nào thường đúng?",
+      "type": "single",
+      "options": [
+        "Worst-fit luôn tốt nhất về mọi mặt.",
+        "First-fit và Best-fit thường tốt hơn Worst-fit về mặt tận dụng không gian và thời gian. First-fit thường nhanh nhất.",
+        "Best-fit nhanh hơn First-fit.",
+        "Cả ba thuật toán đều có tốc độ bằng nhau."
+      ],
+      "correct": [1],
+      "explanation": "Các mô phỏng chỉ ra rằng First-fit và Best-fit hiệu quả hơn Worst-fit trong việc tận dụng storage. First-fit chạy nhanh nhất do không cần duyệt hết danh sách."
+    },
+    {
+      "id": 6,
+      "question": "Hiện tượng 'Phân mảnh ngoài' (External Fragmentation) là gì?",
+      "type": "single",
+      "options": [
+        "Tổng dung lượng các vùng nhớ trống (holes) lớn hơn kích thước yêu cầu của tiến trình, nhưng không thể cấp phát vì các vùng trống này không liên tục.",
+        "Tiến trình được cấp phát vùng nhớ lớn hơn yêu cầu thực tế, dẫn đến phần nhớ thừa bên trong không được dùng đến.",
+        "Đĩa cứng bị chia thành quá nhiều phân vùng nhỏ.",
+        "RAM vật lý bị hỏng theo từng vùng nhỏ."
+      ],
+      "correct": [0],
+      "explanation": "Phân mảnh ngoài xảy ra ở cấp phát liên tục: hệ thống có rất nhiều mảnh nhớ nhỏ rời rác, tổng lại thì lớn, nhưng không có mảnh nào liền mạch đủ lớn để nạp nguyên một tiến trình."
+    },
+    {
+      "id": 7,
+      "question": "Trong mô hình cấp phát liên tục, thuật toán First-fit hay Best-fit có thể tránh được hiện tượng phân mảnh ngoài không?",
+      "type": "single",
+      "options": [
+        "First-fit tránh được, Best-fit thì không.",
+        "Best-fit tránh được, First-fit thì không.",
+        "Cả hai đều tránh được hoàn toàn.",
+        "Không thuật toán nào tránh được, cả hai đều gây ra phân mảnh ngoài."
+      ],
+      "correct": [3],
+      "explanation": "Bất kỳ thuật toán cấp phát liên tục nào (first-fit, best-fit, worst-fit) theo thời gian khi các tiến trình vào/ra đều để lại các lỗ hổng rải rác, gây ra Phân mảnh ngoài."
+    },
+    {
+      "id": 8,
+      "question": "Hiện tượng 'Phân mảnh trong' (Internal Fragmentation) là gì?",
+      "type": "single",
+      "options": [
+        "Không gian trống giữa các khối nhớ đã cấp phát không đủ để cấp cho tiến trình mới.",
+        "Vùng nhớ được cấp phát cho tiến trình hơi lớn hơn yêu cầu thực tế của tiến trình đó, phần dư thừa NẰM BÊN TRONG khối đã cấp phát nhưng tiến trình không dùng tới.",
+        "Lỗi xảy ra bên trong bộ phận MMU.",
+        "Dữ liệu trong đĩa cứng bị vỡ vụn."
+      ],
+      "correct": [1],
+      "explanation": "Phân mảnh trong xảy ra do OS thường cấp phát nhớ theo kích thước khối cố định (ví dụ khối 4KB). Nếu tiến trình xin 3KB, OS vẫn cấp 1 khối 4KB, 1KB còn lại bên trong khối bị lãng phí."
+    },
+    {
+      "id": 9,
+      "question": "Kỹ thuật 'Compaction' (Dồn bộ nhớ) được sử dụng để giải quyết vấn đề gì?",
+      "type": "single",
+      "options": [
+        "Phân mảnh trong.",
+        "Phân mảnh ngoài.",
+        "Tràn bộ nhớ Cache.",
+        "Lỗi rò rỉ bộ nhớ (Memory leak)."
+      ],
+      "correct": [1],
+      "explanation": "Compaction (Dồn bộ nhớ) là quá trình di chuyển tất cả các tiến trình đang có trên RAM về một đầu, gom tất cả các lỗ hổng rời rạc thành một khối trống liên tục lớn (giải quyết phân mảnh ngoài)."
+    },
+    {
+      "id": 10,
+      "question": "Điều kiện CẦN THIẾT để hệ điều hành có thể thực hiện kỹ thuật Compaction (Dồn nhớ) là gì?",
+      "type": "single",
+      "options": [
+        "Hệ thống phải có từ 2 CPU trở lên.",
+        "Địa chỉ phải được binding ở Compile-time.",
+        "Việc Relocation (định vị lại) phải được thực hiện ở Execution-time, tức là tiến trình có thể di chuyển trong bộ nhớ khi đang chạy.",
+        "Tiến trình phải ở trạng thái Wait (Chờ) I/O."
+      ],
+      "correct": [2],
+      "explanation": "Để dồn nhớ, OS phải copy (di chuyển) tiến trình vật lý sang vùng nhớ khác. Điều này chỉ có thể nếu tiến trình hỗ trợ binding ở execution time (thông qua thanh ghi base), nếu binding tĩnh thì không dời đi được."
+    },
+    {
+      "id": 11,
+      "question": "Nhược điểm lớn nhất của kỹ thuật Compaction (Dồn nhớ) là gì?",
+      "type": "single",
+      "options": [
+        "Nó làm tăng phân mảnh trong.",
+        "Chi phí hiệu năng cực kỳ đắt đỏ vì CPU phải tạm dừng các tiến trình để sao chép lượng lớn dữ liệu bộ nhớ.",
+        "Nó xóa mất dữ liệu của tiến trình.",
+        "Nó làm RAM nóng lên quá mức."
+      ],
+      "correct": [1],
+      "explanation": "Việc copy hàng Megabytes/Gigabytes RAM tiêu tốn rất nhiều thời gian CPU. Trong lúc dồn bộ nhớ, hệ thống thường bị đóng băng (đóng vai trò như Garbage Collection tốn kém)."
+    },
+    {
+      "id": 12,
+      "question": "Nguyên lý 'Luật 50%' (50-percent rule) trong cấp phát First-fit của Donald Knuth phát biểu điều gì?",
+      "type": "single",
+      "options": [
+        "50% CPU bị lãng phí cho việc tìm kiếm bộ nhớ.",
+        "Tiến trình chỉ dùng 50% lượng RAM mà nó xin cấp.",
+        "Cho N khối đã cấp phát, sẽ có thêm N/2 khối trống (holes) bị thất thoát do phân mảnh, tương đương mất 1/3 tổng bộ nhớ trống.",
+        "Bộ nhớ luôn đầy ở mức 50%."
+      ],
+      "correct": [2],
+      "explanation": "Luật 50% chỉ ra rằng ngay cả với thuật toán tốt, phân mảnh ngoài sẽ làm tổn hao khoảng 1/3 bộ nhớ (mất N/2 holes cho N cấp phát) khiến không gian này không dùng được."
+    },
+    {
+      "id": 13,
+      "question": "Một hệ thống RAM có các vùng nhớ trống theo thứ tự là: 100K, 500K, 200K, 300K, 600K. Một tiến trình xin cấp 212K. Theo thuật toán First-fit, vùng nhớ trống nào sẽ được sử dụng?",
+      "type": "single",
+      "options": [
+        "100K",
+        "500K",
+        "300K",
+        "200K"
+      ],
+      "correct": [1],
+      "explanation": "First-fit duyệt từ đầu: 100K (không đủ) -> 500K (Đủ). Nó sẽ chia 500K này, lấy 212K cho tiến trình và để lại lỗ hổng 288K."
+    },
+    {
+      "id": 14,
+      "question": "Với cùng kịch bản: RAM có các vùng nhớ trống (100K, 500K, 200K, 300K, 600K). Một tiến trình xin 212K. Thuật toán Best-fit sẽ chọn vùng nào?",
+      "type": "single",
+      "options": [
+        "500K",
+        "600K",
+        "300K",
+        "200K"
+      ],
+      "correct": [2],
+      "explanation": "Best-fit tìm lỗ hổng nhỏ nhất mà chứa đủ 212K. Trong danh sách (100, 500, 200, 300, 600), vùng 300K là vừa vặn nhất (dư 88K). Vùng 200K không đủ."
+    },
+    {
+      "id": 15,
+      "question": "Với cùng kịch bản: RAM có vùng trống (100K, 500K, 200K, 300K, 600K) và tiến trình xin 212K. Thuật toán Worst-fit sẽ chọn vùng nào?",
+      "type": "single",
+      "options": [
+        "500K",
+        "600K",
+        "300K",
+        "100K"
+      ],
+      "correct": [1],
+      "explanation": "Worst-fit tìm lỗ hổng to nhất hiện có là 600K. Sau khi cấp 212K, sẽ dư lại một lỗ hổng 388K."
+    },
+    {
+      "id": 16,
+      "question": "Khi quản lý bộ nhớ sử dụng cơ chế Bitmap, RAM được chia làm các khối nhỏ. Mỗi khối tương ứng với 1 bit trong Bitmap (0 là trống, 1 là có dữ liệu). Nhược điểm của Bitmap là gì?",
+      "type": "single",
+      "options": [
+        "Rất khó để lập trình.",
+        "Chỉ quản lý được RAM kích thước nhỏ.",
+        "Bản thân Bitmap cũng chiếm một lượng lớn không gian bộ nhớ khi RAM có kích thước lớn và phải duyệt tuần tự tốn thời gian để tìm khối trống.",
+        "Không cho phép cấp phát liên tục."
+      ],
+      "correct": [2],
+      "explanation": "Bitmap yêu cầu duyệt từng bit để tìm chuỗi bit 0 liên tiếp đủ dài (tốn CPU). Ngoài ra, nếu chia khối nhỏ, Bitmap có thể rất lớn và chiếm một lượng RAM đáng kể."
+    },
+    {
+      "id": 17,
+      "question": "Cấp phát liên tục (Contiguous Allocation) ngày nay còn được sử dụng rộng rãi trên các hệ điều hành máy tính cá nhân (PC/Server) hiện đại không?",
+      "type": "single",
+      "options": [
+        "Vẫn là mô hình phổ biến và duy nhất.",
+        "Không, các hệ điều hành hiện đại sử dụng Paging (Phân trang) để khắc phục nhược điểm phân mảnh ngoài của cấp phát liên tục.",
+        "Có, nhưng chỉ dùng cho tiến trình của người dùng, kernel dùng Paging.",
+        "Không, hệ thống hiện đại chỉ dùng thanh ghi (registers)."
+      ],
+      "correct": [1],
+      "explanation": "Do vấn đề phân mảnh ngoài quá nghiêm trọng, cấp phát liên tục thuần túy không còn dùng trên OS đa dụng hiện đại. Chúng đã chuyển sang Phân trang (Paging) và Phân đoạn (Segmentation)."
+    },
+    {
+      "id": 18,
+      "question": "Trong danh sách liên kết quản lý bộ nhớ (Linked list), mỗi node (nút) thường lưu trữ những thông tin gì?",
+      "type": "single",
+      "options": [
+        "Tên tiến trình và mã nguồn.",
+        "Trạng thái (Hole hay Process), Địa chỉ bắt đầu, Kích thước, và con trỏ trỏ tới khối tiếp theo.",
+        "Nội dung dữ liệu của tiến trình đó.",
+        "Mật khẩu của tiến trình."
+      ],
+      "correct": [1],
+      "explanation": "Danh sách liên kết giữ track xem khối đó là Hole (trống) hay Process (đã cấp), địa chỉ bắt đầu (base address), kích thước (length), và con trỏ trỏ đi."
+    },
+    {
+      "id": 19,
+      "question": "Cấu trúc dữ liệu Buddy System (Hệ thống bạn bè) cấp phát bộ nhớ theo đặc điểm nào?",
+      "type": "single",
+      "options": [
+        "Cấp phát theo kích thước ngẫu nhiên.",
+        "Cấp phát theo các block (khối) có kích thước luôn là lũy thừa của 2 (ví dụ: 2, 4, 8, 16, 32KB...).",
+        "Cấp phát liên tục không chia khối.",
+        "Chỉ cấp phát chính xác đúng số byte yêu cầu."
+      ],
+      "correct": [1],
+      "explanation": "Buddy System là một biến thể tối ưu của cấp phát động. Nếu không có block vừa, nó chia đôi (split) một block to thành 2 'buddies' nhỏ hơn cho đến khi được kích cỡ là lũy thừa của 2 gần nhất."
+    },
+    {
+      "id": 20,
+      "question": "Nhược điểm lớn nhất của Buddy System là gì?",
+      "type": "single",
+      "options": [
+        "Gây ra Phân mảnh ngoài cực kỳ lớn.",
+        "Rất khó dồn bộ nhớ (Compaction).",
+        "Gây ra Phân mảnh trong (Internal Fragmentation) đáng kể do luôn làm tròn lên lũy thừa của 2.",
+        "Tốc độ cấp phát rất chậm."
+      ],
+      "correct": [2],
+      "explanation": "Vì luôn làm tròn kích thước yêu cầu lên lũy thừa của 2 tiếp theo (ví dụ xin 33KB thì bị cấp hẳn 64KB), Buddy System sinh ra rác phân mảnh trong (Internal Fragmentation) lên đến gần 50% trong trường hợp xấu nhất."
+    }
+  ]
+}
